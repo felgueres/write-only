@@ -1,3 +1,7 @@
 data/
 .env
 chromedriver
+__pycache__/
+.python-version
+mcp-client/
+mcp-server/
