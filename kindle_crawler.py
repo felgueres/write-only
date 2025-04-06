@@ -21,7 +21,7 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
     chrome_options = Options()
     chrome_options.add_argument("--window-size=1920,1080")
     driver = None
-    books_to_parse = 10
+    books_to_parse = 4
     try:
         assert os.path.exists('./chromedriver'), "chromedriver not found"
 
@@ -30,6 +30,7 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
         driver.get("https://read.amazon.com/notebook")
 
         input("Press Enter after you've logged in...")
+
         WebDriverWait(driver, 5).until(
             EC.presence_of_element_located((By.ID, "library"))
         )
@@ -46,12 +47,19 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
             )
             book_title = book_info.text.strip()
             book_id = generate_id(book_title)
+
+            cover_img = book_element.find_element(By.CSS_SELECTOR, ".kp-notebook-cover-image")
+            cover_url = cover_img.get_attribute("src") if cover_img else None
+
+
             if book_id not in books_data:
                 books_data[book_id] = {
                     "title": book_info.text.strip() or "Title Error",
                     "highlights": [],
-                    "id": book_id
+                    "id": book_id,
+                    "cover_url": cover_url
                 }
+            
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "kp-notebook-annotations"))
             )
