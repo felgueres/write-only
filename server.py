@@ -15,7 +15,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,6 +24,8 @@ app.add_middleware(
 class KindleHighlight(BaseModel):
     text: str
     note: Optional[str] = ""
+    location: Optional[int] = None
+    page: Optional[int] = None
 
 class KindleBook(BaseModel):
     title: str
@@ -31,17 +33,11 @@ class KindleBook(BaseModel):
     cover_url: Optional[str] = None
     id: Optional[str] = None
 
-class Highlight(BaseModel):
-    id: int
-    title: str
-    content: str
-    location: str = Field(default="No location")
-    cover_url: Optional[str] = None
 class SearchResponse(BaseModel):
     results: List[KindleBook]
     count: int
 
-async def load_kindle_highlights(file_path="kindle_highlights_02032025.jsonl"):
+async def load_kindle_highlights(file_path="kindle_highlights_04062025.jsonl"):
     await asyncio.sleep(0.1)
     books = {}
     
@@ -59,7 +55,7 @@ async def load_kindle_highlights(file_path="kindle_highlights_02032025.jsonl"):
                 except Exception as e:
                     print(f"Error processing book: {e}")
     except Exception as e:
-        print(f"Error loading highlights: {e}")
+        print(f"Error loding highlights: {e}")
     
     return list(books.values())
 
@@ -84,23 +80,15 @@ async def search_notes(
     """
     books = await load_kindle_highlights()
     results = []
-    
     for book in books:
         matching_highlights = []
-        
-        # Apply filters
         title_match = True if not title else title.lower() in book.title.lower()
-        
         if title_match:
             for highlight in book.highlights:
                 content_match = True if not query else query.lower() in highlight.text.lower()
-                
                 if content_match:
                     matching_highlights.append(highlight)
-        
-        # If we have matching highlights, include this book in results
         if matching_highlights:
-            # Create a copy of the book with only matching highlights
             filtered_book = KindleBook(
                 title=book.title,
                 highlights=matching_highlights,
@@ -108,7 +96,6 @@ async def search_notes(
                 id=book.id
             )
             results.append(filtered_book)
-    
     return SearchResponse(results=results, count=len(results))
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import time
 import hashlib
 import json
 import os
+import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -15,13 +16,13 @@ def generate_id(book_title):
     seed = f"{book_title}"
     return hashlib.md5(seed.encode('utf-8')).hexdigest()[:12]
 
-def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
+def scrape_kindle_highlights(output_file='./kindle_highlights_04062025.jsonl'):
     """Scrape Kindle highlights from read.amazon.com
     """
     chrome_options = Options()
     chrome_options.add_argument("--window-size=1920,1080")
     driver = None
-    books_to_parse = 4
+    books_to_parse = 5
     try:
         assert os.path.exists('./chromedriver'), "chromedriver not found"
 
@@ -64,15 +65,29 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
                 EC.presence_of_element_located((By.ID, "kp-notebook-annotations"))
             )
             time.sleep(7)
-            highlight_elements = driver.find_elements(By.CSS_SELECTOR, ".kp-notebook-highlight")
+            highlight_elements = driver.find_elements(By.CSS_SELECTOR, ".kp-notebook-row-separator")
             for highlight_element in highlight_elements:
                 text_highlight = highlight_element.find_elements(By.CSS_SELECTOR, "#highlight")
                 highlight_text = text_highlight[0].text.strip() if text_highlight else ""
                 text_note = highlight_element.find_elements(By.CSS_SELECTOR, "#note")
                 note_text = text_note[0].text.strip() if text_note else ""
+                location_element = highlight_element.find_elements(By.CSS_SELECTOR, "#annotationHighlightHeader")
+                location_text = location_element[0].text.strip() if location_element else ""
+                location = None
+                page = None
+                if "Location:" in location_text:
+                    location_str = location_text.split("Location:")[1].strip()
+                    location_str = location_str.replace(',', '')
+                    location = int(location_str)
+                elif "Page:" in location_text:
+                    page_str = location_text.split("Page:")[1].strip()
+                    page_str = page_str.replace(',', '')
+                    page = int(page_str)
                 highlight_entry = {
                     "text": highlight_text,
                     "note": note_text,
+                    "location": location,
+                    "page": page
                 }
                 books_data[book_id]["highlights"].append(highlight_entry)
 
