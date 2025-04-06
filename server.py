@@ -4,8 +4,19 @@ from typing import List, Optional
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import json
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+import openai
+import os
+from dotenv import load_dotenv
+from fastapi.responses import StreamingResponse
 
+load_dotenv()
+
+try:
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    assert openai.api_key is not None, "OpenAI API key is not set"
+except Exception as e:
+    print(f"Error loading OpenAI API key: {e}")
 
 app = FastAPI(
     title="Reading Notes API",
@@ -116,20 +127,49 @@ async def get_book(book_id: str):
             return book
     raise HTTPException(status_code=404, detail="Book not found")
 
-@app.post("/explain", response_model=ExplainResponse)
-async def explain_highlight(request: ExplainRequest):
+@app.get("/explain")
+async def explain_highlight(
+    bookId: str = Query(..., description="Book ID"),
+    highlightIndex: int = Query(..., description="Highlight index"),
+    text: str = Query(..., description="Text to explain")
+):
     """
-    Generate an explanation for a highlight
+    Generate a streaming explanation for a highlight
     """
     books = await load_kindle_highlights()
-    book = next((b for b in books if b.id == request.bookId), None)
-    if not book or request.highlightIndex >= len(book.highlights):
+    book = next((b for b in books if b.id == bookId), None)
+
+    if not book or highlightIndex >= len(book.highlights):
         raise HTTPException(status_code=404, detail="Book or highlight not found")
-    text = request.text
-    explanation = f"This highlight discusses {text.split()[0:3]} and appears to be about " \
-                 f"{text.split()[0:5]}. This is a placeholder explanation that would be " \
-                 f"replaced with a more sophisticated analysis in production."
-    return ExplainResponse(explanation=explanation)
+    
+    async def generate_stream():
+        try:
+            client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            stream = await client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that explains reading highlights clearly and concisely."},
+                    {"role": "user", "content": f"Please explain this highlight from '{book.title}': \"{text}\""}
+                ],
+                max_tokens=300,
+                temperature=0.7,
+                stream=True
+            )
+            
+            async for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield f"data: {json.dumps({'content': chunk.choices[0].delta.content})}\n\n"
+            
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            
+        except Exception as e:
+            print(f"Error calling OpenAI API: {e}")
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+    
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream"
+    )
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)

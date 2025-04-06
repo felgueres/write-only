@@ -89,13 +89,12 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_04062025.jsonl'):
                     "location": location,
                     "page": page
                 }
-                books_data[book_id]["highlights"].append(highlight_entry)
+
+                if highlight_entry["text"]:
+                    books_data[book_id]["highlights"].append(highlight_entry)
 
             with open(output_file, 'a', encoding='utf-8') as f:
                 f.write(json.dumps(books_data[book_id], ensure_ascii=False) + '\n')
-            
-            if i >= books_to_parse:
-                break
                 
         return books_data
         
