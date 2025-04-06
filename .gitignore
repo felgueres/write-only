@@ -6,3 +6,4 @@ __pycache__/
 mcp-client/
 mcp-server/
 kindle-notes-client/
+node_modules
