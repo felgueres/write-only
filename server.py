@@ -1,6 +1,6 @@
 import uvicorn
-from fastapi import FastAPI, Query
-from typing import List, Dict, Any, Optional
+from fastapi import FastAPI, Query, HTTPException
+from typing import List, Optional
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import json
@@ -37,10 +37,17 @@ class SearchResponse(BaseModel):
     results: List[KindleBook]
     count: int
 
+class ExplainRequest(BaseModel):
+    bookId: str
+    highlightIndex: int
+    text: str
+
+class ExplainResponse(BaseModel):
+    explanation: str
+
 async def load_kindle_highlights(file_path="kindle_highlights_04062025.jsonl"):
     await asyncio.sleep(0.1)
     books = {}
-    
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -97,6 +104,32 @@ async def search_notes(
             )
             results.append(filtered_book)
     return SearchResponse(results=results, count=len(results))
+
+@app.get("/books/{book_id}", response_model=KindleBook)
+async def get_book(book_id: str):
+    """
+    Get a single book by ID with all its highlights
+    """
+    books = await load_kindle_highlights()
+    for book in books:
+        if book.id == book_id:
+            return book
+    raise HTTPException(status_code=404, detail="Book not found")
+
+@app.post("/explain", response_model=ExplainResponse)
+async def explain_highlight(request: ExplainRequest):
+    """
+    Generate an explanation for a highlight
+    """
+    books = await load_kindle_highlights()
+    book = next((b for b in books if b.id == request.bookId), None)
+    if not book or request.highlightIndex >= len(book.highlights):
+        raise HTTPException(status_code=404, detail="Book or highlight not found")
+    text = request.text
+    explanation = f"This highlight discusses {text.split()[0:3]} and appears to be about " \
+                 f"{text.split()[0:5]}. This is a placeholder explanation that would be " \
+                 f"replaced with a more sophisticated analysis in production."
+    return ExplainResponse(explanation=explanation)
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
