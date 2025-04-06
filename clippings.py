@@ -21,6 +21,7 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
     chrome_options = Options()
     chrome_options.add_argument("--window-size=1920,1080")
     driver = None
+    books_to_parse = 10
     try:
         assert os.path.exists('./chromedriver'), "chromedriver not found"
 
@@ -69,6 +70,9 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_02032025.jsonl'):
 
             with open(output_file, 'a', encoding='utf-8') as f:
                 f.write(json.dumps(books_data[book_id], ensure_ascii=False) + '\n')
+            
+            if i >= books_to_parse:
+                break
                 
         return books_data
         

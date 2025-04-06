@@ -66,6 +66,8 @@ def post_tweet(file_path: str, access_token: str, access_token_secret: str, imag
 if __name__ == "__main__":
     """usage for file
     python serve.py --file firsttweet.txt
+    usage for images
+    python serve.py --file firsttweet.txt --images image1.jpg image2.jpg image3.jpg image4.jpg
     """
     parser = argparse.ArgumentParser(description="Post tweets from text files")
     parser.add_argument("--should_auth", required=False, action="store_true", help="Authenticate new account")
