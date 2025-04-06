@@ -4,6 +4,8 @@ from typing import List, Dict, Any, Optional
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import json
+from pydantic import BaseModel, Field
+
 
 app = FastAPI(
     title="Reading Notes API",
@@ -20,6 +22,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Pydantic models for Kindle highlights data
+class KindleHighlight(BaseModel):
+    text: str
+    note: Optional[str] = ""
+
+class KindleBook(BaseModel):
+    title: str
+    highlights: List[KindleHighlight]
+    id: Optional[str] = None
+
+class Highlight(BaseModel):
+    id: int
+    title: str
+    content: str
+    location: str = Field(default="No location")
+
+class SearchResponse(BaseModel):
+    results: List[Highlight]
+    count: int
+
 async def load_kindle_highlights(file_path="kindle_highlights_02032025.jsonl"):
     await asyncio.sleep(0.1)
     highlights = []
@@ -29,20 +51,22 @@ async def load_kindle_highlights(file_path="kindle_highlights_02032025.jsonl"):
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
                 try:
-                    book_data = json.loads(line.strip())
-                    title = book_data.get("title", "Unknown Book")
+                    book_data_dict = json.loads(line.strip())
+                    # Validate with Pydantic model
+                    book_data = KindleBook(**book_data_dict)
                     
-                    for highlight in book_data.get("highlights", []):
+                    for highlight in book_data.highlights:
                         highlights.append({
                             "id": id_counter,
-                            "title": title,
-                            "content": highlight.get("text", ""),
-                            "location": highlight.get("note", "") or "No location"
+                            "title": book_data.title,
+                            "content": highlight.text,
+                            "location": highlight.note or "No location"
                         })
                         id_counter += 1
                 except json.JSONDecodeError:
-                    # Skip malformed lines
                     continue
+                except Exception as e:
+                    print(f"Error processing highlight: {e}")
     except Exception as e:
         print(f"Error loading highlights: {e}")
     
