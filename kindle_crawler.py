@@ -21,7 +21,6 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_04062025.jsonl'):
     chrome_options = Options()
     chrome_options.add_argument("--window-size=1920,1080")
     driver = None
-    books_to_parse = 5
     try:
         assert os.path.exists('./chromedriver'), "chromedriver not found"
 

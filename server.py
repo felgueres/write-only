@@ -147,7 +147,7 @@ async def explain_highlight(
         try:
             client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
             stream = await client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant that explains reading highlights clearly and concisely."},
                     {"role": "user", "content": f"Please explain this highlight from '{book.title}': \"{text}\""}
