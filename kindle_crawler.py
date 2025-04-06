@@ -1,9 +1,8 @@
-from datetime import datetime
+import uuid
 import time
 import hashlib
 import json
 import os
-import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -83,11 +82,13 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_04062025.jsonl'):
                     page_str = location_text.split("Page:")[1].strip()
                     page_str = page_str.replace(',', '')
                     page = int(page_str)
+                highlight_id = str(uuid.uuid4())[:8]
                 highlight_entry = {
                     "text": highlight_text,
                     "note": note_text,
                     "location": location,
-                    "page": page
+                    "page": page,
+                    "id": highlight_id
                 }
 
                 if highlight_entry["text"]:

@@ -33,6 +33,7 @@ app.add_middleware(
 )
 
 class KindleHighlight(BaseModel):
+    id: str
     text: str
     note: Optional[str] = ""
     location: Optional[int] = None
