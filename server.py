@@ -248,30 +248,15 @@ class AnswerResponse(BaseModel):
     answer: str
     sources: List[dict]
 
-@app.get("/answer", response_model=AnswerResponse)
-async def answer_question(
+@app.get("/answer")
+async def answer_question_stream(
     question: str = Query(..., description="Question to answer")
 ):
     """
-    Answer a question based on the reading notes
+    Stream an answer to a question based on the reading notes
     """
     # Get relevant highlights using the retrieve function
     relevant_results = await retrieve_relevant_highlights(question, use_semantic=True, similarity_threshold=0.3)
-    
-    if not relevant_results:
-        return AnswerResponse(
-            answer="I couldn't find any relevant information in your reading notes to answer this question.",
-            sources=[]
-        )
-    
-    # Take top results to use as context
-    top_results = relevant_results[:5]
-    
-    # Format context from highlights
-    context = "\n\n".join([
-        f"From '{book.title}':\n\"{highlight.text}\""
-        for book, highlight, _ in top_results
-    ])
     
     # Format sources for citation
     sources = [
@@ -281,33 +266,54 @@ async def answer_question(
             "highlight_text": highlight.text,
             "relevance": float(score)
         }
-        for book, highlight, score in top_results
+        for book, highlight, score in relevant_results[:5]  # Take top 5 results
     ]
     
-    try:
-        client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        response = await client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that answers questions based on the user's reading notes. Use only the provided context to answer questions."},
-                {"role": "user", "content": f"Context from my reading notes:\n{context}\n\nBased only on this context, please answer my question: {question}"}
-            ],
-            max_tokens=500,
-            temperature=0.7
+    if not relevant_results:
+        return StreamingResponse(
+            iter([f"data: {json.dumps({'content': 'I couldn find any relevant information in your reading notes to answer this question.'})}\n\n",
+                  f"data: {json.dumps({'done': True, 'sources': []})}\n\n"]),
+            media_type="text/event-stream"
         )
-        
-        answer = response.choices[0].message.content
-        
-        return AnswerResponse(
-            answer=answer,
-            sources=sources
-        )
-    except Exception as e:
-        print(f"Error calling OpenAI API: {e}")
-        return AnswerResponse(
-            answer=f"Error generating answer: {str(e)}",
-            sources=sources
-        )
+    
+    # Format context from highlights with citation markers
+    context_with_citations = []
+    for i, (book, highlight, _) in enumerate(relevant_results[:5]):
+        citation_marker = f"[{i+1}]"
+        context_with_citations.append(f"From '{book.title}' {citation_marker}:\n\"{highlight.text}\"")
+    
+    context = "\n\n".join(context_with_citations)
+    
+    async def generate_stream():
+        try:
+            client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            stream = await client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that answers questions based on the user's reading notes. Use only the provided context to answer questions. When you reference information from the context, include the citation number in square brackets [1], [2], etc. that corresponds to the source."},
+                    {"role": "user", "content": f"Context from my reading notes:\n{context}\n\nBased only on this context, please answer my question and include citation numbers [1], [2], etc. when referencing specific sources: {question}"}
+                ],
+                max_tokens=500,
+                temperature=0.7,
+                stream=True
+            )
+            
+            async for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield f"data: {json.dumps({'content': chunk.choices[0].delta.content})}\n\n"
+            
+            # Send sources at the end
+            yield f"data: {json.dumps({'done': True, 'sources': sources})}\n\n"
+            
+        except Exception as e:
+            print(f"Error calling OpenAI API: {e}")
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+    
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream"
+    )
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
