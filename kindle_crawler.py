@@ -9,6 +9,13 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
+import openai 
+from dotenv import load_dotenv
+import time
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 def generate_id(book_title):
     """Generate a deterministic ID based on book title, text content, and location."""
@@ -102,5 +109,52 @@ def scrape_kindle_highlights(output_file='./kindle_highlights_04062025.jsonl'):
         if driver:
             driver.quit()
 
+
+def add_embeddings(input_file='./kindle_highlights_04062025.jsonl', output_file='./kindle_highlights_with_embeddings.jsonl'):
+    """Add OpenAI embeddings to the highlights in the input file and save to output file."""
+    try:
+        books = []
+        with open(input_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    books.append(json.loads(line))
+        
+        print(f"Processing embeddings for {len(books)} books...")
+        
+        for book_idx, book in enumerate(books):
+            print(f"Adding embeddings for book {book_idx+1}/{len(books)}: {book['title']}")
+            highlights = book.get('highlights', [])
+            texts = [h['text'] for h in highlights if h.get('text')]
+            
+            if texts:
+                batch_size = 20
+                
+                for i in range(0, len(texts), batch_size):
+                    batch_texts = texts[i:i+batch_size]
+                    print(f"Processing batch {i//batch_size + 1}/{(len(texts) + batch_size - 1)//batch_size}")
+                    
+                    try:
+                        response = openai.embeddings.create(
+                            model="text-embedding-3-small",
+                            input=batch_texts
+                        )
+                        for j, embedding_data in enumerate(response.data):
+                            if i + j < len(highlights):
+                                highlights[i + j]['embedding'] = embedding_data.embedding
+                        if i + batch_size < len(texts):
+                            time.sleep(0.5)
+                            
+                    except Exception as e:
+                        print(f"  Error generating embeddings for batch: {e}")
+
+            with open(output_file, 'a', encoding='utf-8') as f:
+                f.write(json.dumps(book, ensure_ascii=False) + '\n')
+        
+        print(f"Embeddings added successfully. Output saved to {output_file}")
+        
+    except Exception as e:
+        print(f"Error adding embeddings: {e}")
+
+
 if __name__ == "__main__":
-    scrape_kindle_highlights()
+    add_embeddings()

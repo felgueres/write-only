@@ -1,7 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, Query, HTTPException
 from typing import List, Optional
-import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from pydantic import BaseModel
@@ -9,6 +8,7 @@ import openai
 import os
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
+import numpy as np
 
 load_dotenv()
 
@@ -38,6 +38,7 @@ class KindleHighlight(BaseModel):
     note: Optional[str] = ""
     location: Optional[int] = None
     page: Optional[int] = None
+    embedding: Optional[List[float]] = None
 
 class KindleBook(BaseModel):
     title: str
@@ -57,9 +58,24 @@ class ExplainRequest(BaseModel):
 class ExplainResponse(BaseModel):
     explanation: str
 
-async def load_kindle_highlights(file_path="kindle_highlights_04062025.jsonl"):
-    await asyncio.sleep(0.1)
+def cosine_similarity(a, b):
+    """
+    Calculate cosine similarity between two vectors.
+    
+    Args:
+        a: First vector
+        b: Second vector
+        
+    Returns:
+        Cosine similarity score between 0 and 1
+    """
+    a = np.array(a)
+    b = np.array(b)
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embeddings.jsonl"):
     books = {}
+    i = 0 
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -69,6 +85,9 @@ async def load_kindle_highlights(file_path="kindle_highlights_04062025.jsonl"):
                     if book_data.id is None:
                         book_data.id = str(hash(book_data.title))
                     books[book_data.id] = book_data
+                    i += 1
+                    if i >= 5:
+                        break
                 except json.JSONDecodeError:
                     continue
                 except Exception as e:
@@ -86,10 +105,55 @@ async def get_books():
     books = await load_kindle_highlights()
     return books
 
+async def retrieve_relevant_highlights(query: str, use_semantic: bool = True, similarity_threshold: float = 0.35):
+    """
+    Retrieve highlights relevant to a query using either semantic or keyword search
+    
+    Args:
+        query: The search query
+        use_semantic: Whether to use semantic search with embeddings
+        similarity_threshold: Threshold for semantic similarity (0-1)
+        
+    Returns:
+        List of (book, highlight, similarity_score) tuples sorted by relevance
+    """
+    books = await load_kindle_highlights()
+    results = []
+    query_embedding = None
+    
+    if use_semantic and query:
+        try:
+            client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            response = await client.embeddings.create(
+                model="text-embedding-3-small",
+                input=query
+            )
+            query_embedding = response.data[0].embedding
+        except Exception as e:
+            print(f"Error generating embedding for query: {e}")
+    
+    for book in books:
+        for highlight in book.highlights:
+            similarity = 0.0
+            
+            if use_semantic and query and query_embedding and highlight.embedding:
+                similarity = cosine_similarity(query_embedding, highlight.embedding)
+                if similarity > similarity_threshold:
+                    results.append((book, highlight, similarity))
+            elif not use_semantic or not query_embedding:
+                if not query or query.lower() in highlight.text.lower():
+                    # For keyword search, use a simple match score
+                    similarity = 1.0 if query and query.lower() in highlight.text.lower() else 0.5
+                    results.append((book, highlight, similarity))
+    
+    # Sort results by similarity score in descending order
+    results.sort(key=lambda x: x[2], reverse=True)
+    return results
+
 @app.get("/search", response_model=SearchResponse)
 async def search_notes(
     query: Optional[str] = Query(None, description="Search term"),
-    title: Optional[str] = Query(None, description="Filter by book title")
+    use_semantic: bool = Query(True, description="Use semantic search")
 ):
     """
     Search the reading notes with optional filters:
@@ -97,24 +161,31 @@ async def search_notes(
     - Title filter for specific books
     Returns results in KindleBook format
     """
-    books = await load_kindle_highlights()
-    results = []
-    for book in books:
-        matching_highlights = []
-        title_match = True if not title else title.lower() in book.title.lower()
-        if title_match:
-            for highlight in book.highlights:
-                content_match = True if not query else query.lower() in highlight.text.lower()
-                if content_match:
-                    matching_highlights.append(highlight)
-        if matching_highlights:
-            filtered_book = KindleBook(
-                title=book.title,
-                highlights=matching_highlights,
-                cover_url=book.cover_url,
-                id=book.id
-            )
-            results.append(filtered_book)
+    results_tuples = await retrieve_relevant_highlights(query, use_semantic)
+    
+    # Group results by book
+    book_highlights = {}
+    for book, highlight, _ in results_tuples:
+        if book.id not in book_highlights:
+            book_highlights[book.id] = {
+                "title": book.title,
+                "cover_url": book.cover_url,
+                "id": book.id,
+                "highlights": []
+            }
+        book_highlights[book.id]["highlights"].append(highlight)
+    
+    # Convert to KindleBook objects
+    results = [
+        KindleBook(
+            title=book_data["title"],
+            highlights=book_data["highlights"],
+            cover_url=book_data["cover_url"],
+            id=book_data["id"]
+        )
+        for book_data in book_highlights.values()
+    ]
+    
     return SearchResponse(results=results, count=len(results))
 
 @app.get("/books/{book_id}", response_model=KindleBook)
@@ -127,6 +198,7 @@ async def get_book(book_id: str):
         if book.id == book_id:
             return book
     raise HTTPException(status_code=404, detail="Book not found")
+
 
 @app.get("/explain")
 async def explain_highlight(
@@ -171,6 +243,71 @@ async def explain_highlight(
         generate_stream(),
         media_type="text/event-stream"
     )
+
+class AnswerResponse(BaseModel):
+    answer: str
+    sources: List[dict]
+
+@app.get("/answer", response_model=AnswerResponse)
+async def answer_question(
+    question: str = Query(..., description="Question to answer")
+):
+    """
+    Answer a question based on the reading notes
+    """
+    # Get relevant highlights using the retrieve function
+    relevant_results = await retrieve_relevant_highlights(question, use_semantic=True, similarity_threshold=0.3)
+    
+    if not relevant_results:
+        return AnswerResponse(
+            answer="I couldn't find any relevant information in your reading notes to answer this question.",
+            sources=[]
+        )
+    
+    # Take top results to use as context
+    top_results = relevant_results[:5]
+    
+    # Format context from highlights
+    context = "\n\n".join([
+        f"From '{book.title}':\n\"{highlight.text}\""
+        for book, highlight, _ in top_results
+    ])
+    
+    # Format sources for citation
+    sources = [
+        {
+            "book_title": book.title,
+            "book_id": book.id,
+            "highlight_text": highlight.text,
+            "relevance": float(score)
+        }
+        for book, highlight, score in top_results
+    ]
+    
+    try:
+        client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that answers questions based on the user's reading notes. Use only the provided context to answer questions."},
+                {"role": "user", "content": f"Context from my reading notes:\n{context}\n\nBased only on this context, please answer my question: {question}"}
+            ],
+            max_tokens=500,
+            temperature=0.7
+        )
+        
+        answer = response.choices[0].message.content
+        
+        return AnswerResponse(
+            answer=answer,
+            sources=sources
+        )
+    except Exception as e:
+        print(f"Error calling OpenAI API: {e}")
+        return AnswerResponse(
+            answer=f"Error generating answer: {str(e)}",
+            sources=sources
+        )
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
