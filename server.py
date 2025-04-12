@@ -75,7 +75,6 @@ def cosine_similarity(a, b):
 
 async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embeddings.jsonl"):
     books = {}
-    i = 0 
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -85,9 +84,6 @@ async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embe
                     if book_data.id is None:
                         book_data.id = str(hash(book_data.title))
                     books[book_data.id] = book_data
-                    i += 1
-                    if i >= 5:
-                        break
                 except json.JSONDecodeError:
                     continue
                 except Exception as e:
@@ -105,7 +101,7 @@ async def get_books():
     books = await load_kindle_highlights()
     return books
 
-async def retrieve_relevant_highlights(query: str, use_semantic: bool = True, similarity_threshold: float = 0.35):
+async def retrieve_relevant_highlights(query: str, use_semantic: bool = True, similarity_threshold: float = 0.2):
     """
     Retrieve highlights relevant to a query using either semantic or keyword search
     
@@ -257,6 +253,7 @@ async def answer_question_stream(
     """
     # Get relevant highlights using the retrieve function
     relevant_results = await retrieve_relevant_highlights(question, use_semantic=True, similarity_threshold=0.3)
+    top_k = 5
     
     # Format sources for citation
     sources = [
@@ -266,7 +263,7 @@ async def answer_question_stream(
             "highlight_text": highlight.text,
             "relevance": float(score)
         }
-        for book, highlight, score in relevant_results[:5]  # Take top 5 results
+        for book, highlight, score in relevant_results[:top_k]
     ]
     
     if not relevant_results:
@@ -278,7 +275,7 @@ async def answer_question_stream(
     
     # Format context from highlights with citation markers
     context_with_citations = []
-    for i, (book, highlight, _) in enumerate(relevant_results[:5]):
+    for i, (book, highlight, _) in enumerate(relevant_results[:top_k]):
         citation_marker = f"[{i+1}]"
         context_with_citations.append(f"From '{book.title}' {citation_marker}:\n\"{highlight.text}\"")
     
@@ -288,7 +285,7 @@ async def answer_question_stream(
         try:
             client = openai.AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
             stream = await client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant that answers questions based on the user's reading notes. Use only the provided context to answer questions. When you reference information from the context, include the citation number in square brackets [1], [2], etc. that corresponds to the source."},
                     {"role": "user", "content": f"Context from my reading notes:\n{context}\n\nBased only on this context, please answer my question and include citation numbers [1], [2], etc. when referencing specific sources: {question}"}
