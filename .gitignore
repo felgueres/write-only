@@ -8,3 +8,4 @@ mcp-server/
 kindle-notes-client/
 node_modules
 *.jsonl
+.env*

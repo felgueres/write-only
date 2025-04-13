@@ -32,6 +32,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Internal model with embeddings
 class KindleHighlight(BaseModel):
     id: str
     text: str
@@ -39,6 +40,14 @@ class KindleHighlight(BaseModel):
     location: Optional[int] = None
     page: Optional[int] = None
     embedding: Optional[List[float]] = None
+
+# Response model without embeddings
+class KindleHighlightResponse(BaseModel):
+    id: str
+    text: str
+    note: Optional[str] = ""
+    location: Optional[int] = None
+    page: Optional[int] = None
 
 class KindleBook(BaseModel):
     title: str
@@ -57,6 +66,12 @@ class ExplainRequest(BaseModel):
 
 class ExplainResponse(BaseModel):
     explanation: str
+
+class KindleBookResponse(BaseModel):
+    title: str
+    highlights: List[KindleHighlightResponse]
+    cover_url: Optional[str] = None
+    id: str
 
 def cosine_similarity(a, b):
     """
@@ -93,12 +108,13 @@ async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embe
     
     return list(books.values())
 
-@app.get("/books", response_model=List[KindleBook])
+@app.get("/books", response_model=List[KindleBookResponse])
 async def get_books():
     """
     Get all books and stats 
     """
     books = await load_kindle_highlights()
+    # FastAPI will automatically convert to response model, excluding embeddings
     return books
 
 async def retrieve_relevant_highlights(query: str, use_semantic: bool = True, similarity_threshold: float = 0.2):
