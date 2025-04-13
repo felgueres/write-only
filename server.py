@@ -88,13 +88,24 @@ def cosine_similarity(a, b):
     b = np.array(b)
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embeddings.jsonl"):
+async def load_kindle_highlights(load_embeddings: bool = False):
+    """
+    Load highlights with optional embedding loading
+    
+    Args:
+        load_embeddings: Whether to load the embedding vectors
+    """
     books = {}
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
                 try:
                     book_data_dict = json.loads(line.strip())
+                    if not load_embeddings:
+                        # Skip loading embeddings for each highlight
+                        for highlight in book_data_dict['highlights']:
+                            highlight.pop('embedding', None)
+                    
                     book_data = KindleBook(**book_data_dict)
                     if book_data.id is None:
                         book_data.id = str(hash(book_data.title))
@@ -104,17 +115,14 @@ async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embe
                 except Exception as e:
                     print(f"Error processing book: {e}")
     except Exception as e:
-        print(f"Error loding highlights: {e}")
+        print(f"Error loading highlights: {e}")
     
     return list(books.values())
 
-@app.get("/books", response_model=List[KindleBookResponse])
+@app.get("/books")
 async def get_books():
-    """
-    Get all books and stats 
-    """
-    books = await load_kindle_highlights()
-    # FastAPI will automatically convert to response model, excluding embeddings
+    """Get all books and stats"""
+    books = await load_kindle_highlights(load_embeddings=False)
     return books
 
 async def retrieve_relevant_highlights(query: str, use_semantic: bool = True, similarity_threshold: float = 0.2):
@@ -129,7 +137,9 @@ async def retrieve_relevant_highlights(query: str, use_semantic: bool = True, si
     Returns:
         List of (book, highlight, similarity_score) tuples sorted by relevance
     """
-    books = await load_kindle_highlights()
+    # Only load embeddings when doing semantic search
+    books = await load_kindle_highlights(load_embeddings=use_semantic)
+    
     results = []
     query_embedding = None
     
