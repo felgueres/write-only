@@ -88,7 +88,7 @@ def cosine_similarity(a, b):
     b = np.array(b)
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-async def load_kindle_highlights(load_embeddings: bool = False):
+async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embeddings.jsonl", load_embeddings: bool = False):
     """
     Load highlights with optional embedding loading
     
