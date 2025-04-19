@@ -120,6 +120,10 @@ async def load_kindle_highlights(file_path="kindle_highlights_04062025_with_embe
     
     return list(books.values())
 
+@app.get("/")
+async def get_home():
+    return {"status": "ok", "message": "hello world"}
+
 @app.get("/books")
 async def get_books():
     """Get all books with summary statistics (no highlights)"""
