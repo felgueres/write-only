@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.service import Service
 import openai 
 from dotenv import load_dotenv
 import time
+from typing import List
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -154,6 +155,27 @@ def add_embeddings(input_file='./kindle_highlights_04062025.jsonl', output_file=
         
     except Exception as e:
         print(f"Error adding embeddings: {e}")
+
+
+def extract_topics_for_highlight(highlight_text: str) -> List[str]:
+    """Extract key topics from a highlight using GPT-4"""
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Extract 1-2 main topics from this highlight. Return as comma-separated list. Be concise and consistent."},
+                {"role": "user", "content": highlight_text}
+            ],
+            temperature=0.3,
+            max_tokens=50
+        )
+        topics = response.choices[0].message.content.split(',')
+        return [t.strip() for t in topics]
+    except Exception as e:
+        print(f"Error extracting topics: {e}")
+        return []
+
+
 
 
 if __name__ == "__main__":
