@@ -1,0 +1,17 @@
+{
+  "@version": 1.1,
+  "@vocab": "https://your.name/kg/",
+  "schema": "http://schema.org/",
+  "kg": "https://your.name/kg/",
+  "id": "@id",
+  "type": "@type",
+
+  "name": "schema:name",
+  "image": "schema:image",
+
+  "Book": "https://your.name/kg/Book",
+  "Highlight": "https://your.name/kg/Highlight",
+  "highlightText": "https://your.name/kg/highlightText",
+
+  "inBook": { "@id": "https://your.name/kg/inBook", "@type": "@id" }
+}

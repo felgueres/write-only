@@ -307,15 +307,11 @@ class AnswerResponse(BaseModel):
 async def answer_question_stream(
     question: str = Query(..., description="Question to answer")
 ):
-    """
-    Stream an answer to a question based on the reading notes
-    """
-    # Get relevant highlights using the retrieve function
     relevant_results = await retrieve_relevant_highlights(question, use_semantic=True, similarity_threshold=0.3)
     
     if not relevant_results:
         return StreamingResponse(
-            iter([f"data: {json.dumps({'content': 'I couldn find any relevant information in your reading notes to answer this question.'})}\n\n",
+            iter([f"data: {json.dumps({'content': 'No.'})}\n\n",
                   f"data: {json.dumps({'done': True, 'sources': []})}\n\n"]),
             media_type="text/event-stream"
         )

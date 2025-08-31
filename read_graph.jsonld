@@ -1,0 +1,2547 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "https://your.name/kg/",
+    "schema": "http://schema.org/",
+    "kg": "https://your.name/kg/",
+    "id": "@id",
+    "type": "@type",
+    "name": "schema:name",
+    "image": "schema:image",
+    "Book": "https://your.name/kg/Book",
+    "Highlight": "https://your.name/kg/Highlight",
+    "highlightText": "https://your.name/kg/highlightText",
+    "inBook": {
+      "@id": "https://your.name/kg/inBook",
+      "@type": "@id"
+    }
+  },
+  "@graph": [
+    {
+      "id": "kg:book/63e3cd42b05c",
+      "type": "Book",
+      "name": "For a New Liberty: The Libertarian Manifesto (LvMI)",
+      "image": "https://m.media-amazon.com/images/I/911fyA5nnRL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/63e3cd42b05c#h-2ba1a25b",
+      "type": "Highlight",
+      "inBook": "kg:book/63e3cd42b05c",
+      "highlightText": "The reason is that Murray Rothbard was the creator of modern libertarianism, a political-ideological system that proposes a once-and-for-all escape from the trappings of left and right and their central plans for how state power should be used. Libertarianism is the radical alternative that says state power is unworkable and immoral."
+    },
+    {
+      "id": "kg:highlight/63e3cd42b05c#h-9d9347cc",
+      "type": "Highlight",
+      "inBook": "kg:book/63e3cd42b05c",
+      "highlightText": "The individual pieces of the system are straightforward (self-ownership, strict property rights, free markets, antistate in every conceivable respect) but the implications are earthshaking."
+    },
+    {
+      "id": "kg:highlight/63e3cd42b05c#h-f73d2721",
+      "type": "Highlight",
+      "inBook": "kg:book/63e3cd42b05c",
+      "highlightText": "It is seamless, unrelenting, and energetic."
+    },
+    {
+      "id": "kg:highlight/63e3cd42b05c#h-93f73f6e",
+      "type": "Highlight",
+      "inBook": "kg:book/63e3cd42b05c",
+      "highlightText": "The historical context illustrates a point often overlooked: modern libertarianism was born not in reaction to socialism or leftism—though it is certainly antileftist (as the term is commonly understood) and antisocialist."
+    },
+    {
+      "id": "kg:highlight/63e3cd42b05c#h-0bec9ee4",
+      "type": "Highlight",
+      "inBook": "kg:book/63e3cd42b05c",
+      "highlightText": "American conservatives may not adore the welfare state or excessive business regulation but they appreciate power exercised in the name of nationalism, warfarism, “pro-family” policies, and invasion of personal liberty and privacy."
+    },
+    {
+      "id": "kg:book/ef238f7bd7b2",
+      "type": "Book",
+      "name": "The Rise of Theodore Roosevelt (Theodore Roosevelt Series Book 1)",
+      "image": "https://m.media-amazon.com/images/I/814rnOoW6KL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/ef238f7bd7b2#h-6e9c8c54",
+      "type": "Highlight",
+      "inBook": "kg:book/ef238f7bd7b2",
+      "highlightText": "“No Congress in our time has done more good work,”"
+    },
+    {
+      "id": "kg:highlight/ef238f7bd7b2#h-14ed9e40",
+      "type": "Highlight",
+      "inBook": "kg:book/ef238f7bd7b2",
+      "highlightText": "“From time to time little men will come along to find fault with what you have done … they will go down the stream like bubbles, they will vanish; but the work you have done will remain for the ages.”"
+    },
+    {
+      "id": "kg:highlight/ef238f7bd7b2#h-26ebecea",
+      "type": "Highlight",
+      "inBook": "kg:book/ef238f7bd7b2",
+      "highlightText": "“If a man has a very decided character, has a strongly accentuated career, it is normally the case of course that he makes ardent friends and bitter enemies.”"
+    },
+    {
+      "id": "kg:highlight/ef238f7bd7b2#h-2fcf3782",
+      "type": "Highlight",
+      "inBook": "kg:book/ef238f7bd7b2",
+      "highlightText": "“A just war is in the long run far better for a man’s soul than the most prosperous peace.”"
+    },
+    {
+      "id": "kg:highlight/ef238f7bd7b2#h-96c108c1",
+      "type": "Highlight",
+      "inBook": "kg:book/ef238f7bd7b2",
+      "highlightText": "“Speak Softly and Carry a Big Stick” proceeds according to civilized priorities. Persuasion should come before force. In any case it is the availability of raw power, not the use of it, that makes for effective diplomacy."
+    },
+    {
+      "id": "kg:book/e2dbaab2b779",
+      "type": "Book",
+      "name": "The Influence of Sea Power Upon History, 1660-1783",
+      "image": "https://m.media-amazon.com/images/I/91k-uam7eqL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/e2dbaab2b779#h-d6066a7c",
+      "type": "Highlight",
+      "inBook": "kg:book/e2dbaab2b779",
+      "highlightText": "It is easy to say in a general way, that the use and control of the sea is and has been a great factor in the history of the world; it is more troublesome to seek out and show its exact bearing at a particular juncture. Yet, unless this be done, the acknowledgment of general importance remains vague and unsubstantial; not resting, as it should, upon a collection of special instances in which the precise effect has been made clear, by an analysis of the conditions at the given moments."
+    },
+    {
+      "id": "kg:highlight/e2dbaab2b779#h-dec52b0c",
+      "type": "Highlight",
+      "inBook": "kg:book/e2dbaab2b779",
+      "highlightText": "English nation which more than any other has owed its greatness to the sea."
+    },
+    {
+      "id": "kg:highlight/e2dbaab2b779#h-0f5add86",
+      "type": "Highlight",
+      "inBook": "kg:book/e2dbaab2b779",
+      "highlightText": "\"Has there been witnessed the struggle of the highest individual genius against the resources and institutions of a great nation, and in both cases the nation was victorious."
+    },
+    {
+      "id": "kg:highlight/e2dbaab2b779#h-3e6a8e36",
+      "type": "Highlight",
+      "inBook": "kg:book/e2dbaab2b779",
+      "highlightText": "Both Scipio and Wellington restored their countrymen's confidence in arms when shaken by a series of reverses, and each of them closed a long and perilous war by a complete and overwhelming defeat of the chosen leader and the chosen veterans of the foe.\""
+    },
+    {
+      "id": "kg:highlight/e2dbaab2b779#h-e4ebe1fe",
+      "type": "Highlight",
+      "inBook": "kg:book/e2dbaab2b779",
+      "highlightText": "an estimate of the effect of sea power upon the course of history and the prosperity of nations."
+    },
+    {
+      "id": "kg:book/a8f5b02a4c70",
+      "type": "Book",
+      "name": "On War (Classics of World Literature)",
+      "image": "https://m.media-amazon.com/images/I/81MNBq2EoxL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/a8f5b02a4c70#h-12d00053",
+      "type": "Highlight",
+      "inBook": "kg:book/a8f5b02a4c70",
+      "highlightText": "Russo-German Legion"
+    },
+    {
+      "id": "kg:highlight/a8f5b02a4c70#h-1b54c86a",
+      "type": "Highlight",
+      "inBook": "kg:book/a8f5b02a4c70",
+      "highlightText": "For the next twelve years, therefore, Clausewitz devoted much of his time to his writing and the attempt to give coherent form to his theories of war."
+    },
+    {
+      "id": "kg:highlight/a8f5b02a4c70#h-3725a576",
+      "type": "Highlight",
+      "inBook": "kg:book/a8f5b02a4c70",
+      "highlightText": "The aristocracy was the backbone of the Prussian officer corps, and Clausewitz’s family was not aristocratic: his father had received his commission only when Frederick the Great was forced to open up the officer corps to the middle classes during the Seven Years War (1756–63), and he had been retired after the conflict when Frederick reduced the size of his army and restored the aristocratic complexion of its officer corps."
+    },
+    {
+      "id": "kg:highlight/a8f5b02a4c70#h-e4747c01",
+      "type": "Highlight",
+      "inBook": "kg:book/a8f5b02a4c70",
+      "highlightText": "Yet it was precisely this combination of background and character which enabled him to take a detached view of traditional military thinking and to formulate an independent theory of war."
+    },
+    {
+      "id": "kg:highlight/a8f5b02a4c70#h-ac2506c1",
+      "type": "Highlight",
+      "inBook": "kg:book/a8f5b02a4c70",
+      "highlightText": "Indeed, On War cannot be understood without reference to the experience of the French Revolution and the Napoleonic Wars, which transformed the conduct of war in Europe."
+    },
+    {
+      "id": "kg:book/504548493ee8",
+      "type": "Book",
+      "name": "The Technological Republic: Hard Power, Soft Belief, and the Future of the West",
+      "image": "https://m.media-amazon.com/images/I/71zTlt2vnGL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/504548493ee8#h-9b842733",
+      "type": "Highlight",
+      "inBook": "kg:book/504548493ee8",
+      "highlightText": "scientists and engineers who aspired to see the most powerful technology of the age deployed to address challenges of industrial and national significance."
+    },
+    {
+      "id": "kg:highlight/504548493ee8#h-2db4da8e",
+      "type": "Highlight",
+      "inBook": "kg:book/504548493ee8",
+      "highlightText": "not to satisfy the passing needs of the moment but rather to drive forward a much grander project, channeling the collective purpose and ambition of a nation. This early dependence of Silicon Valley on the nation-state and indeed the U.S. military has for the most part been forgotten, written out of the region’s history as an inconvenient and dissonant fact—one that clashes with the Valley’s conception of itself as indebted only to its capacity to innovate."
+    },
+    {
+      "id": "kg:highlight/504548493ee8#h-02bc2d64",
+      "type": "Highlight",
+      "inBook": "kg:book/504548493ee8",
+      "highlightText": "In the 1940s, the federal government began supporting an array of research projects that would culminate in the development of novel pharmaceutical compounds, intercontinental rockets, and satellites, as well as the precursors to artificial intelligence."
+    },
+    {
+      "id": "kg:highlight/504548493ee8#h-6a94b6c3",
+      "type": "Highlight",
+      "inBook": "kg:book/504548493ee8",
+      "highlightText": "Companies such as Lockheed Missile & Space, Westinghouse, Ford Aerospace, and United Technologies had thousands of employees working in Silicon Valley on weapons production through the 1980s and into the 1990s."
+    },
+    {
+      "id": "kg:highlight/504548493ee8#h-f51f7df4",
+      "type": "Highlight",
+      "inBook": "kg:book/504548493ee8",
+      "highlightText": "Roosevelt sent a letter to Vannevar Bush, the son of a pastor who had become the head of the U.S. Office of Scientific Research and Development. Bush was born in 1890 in Everett, Massachusetts, just north of Boston. Both his father and his grandfather had grown up in Provincetown at the far end of Cape Cod. In the letter, Roosevelt described “the unique experiment” that the United States had undertaken during the war to leverage science in service of military ends."
+    },
+    {
+      "id": "kg:book/d61256e0fd1a",
+      "type": "Book",
+      "name": "Information Materials: Smart Materials for Adaptive Architecture",
+      "image": "https://m.media-amazon.com/images/I/61RJQ5mwsmL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/d61256e0fd1a#h-15bb3b22",
+      "type": "Highlight",
+      "inBook": "kg:book/d61256e0fd1a",
+      "highlightText": "One prominent example is the position of the mathematician and founding father of cybernetic theory Norbert Wiener, who more than 60 years ago explored how vast technological changes that according to him were “unexampled in earlier history” (Wiener 1954, p. 46), have and will continue to influence society, economy, and the environment."
+    },
+    {
+      "id": "kg:highlight/d61256e0fd1a#h-bf8ede7e",
+      "type": "Highlight",
+      "inBook": "kg:book/d61256e0fd1a",
+      "highlightText": "Wiener emphasizes that the effects humans have on nature are irreversible and that progress not only creates new opportunities but likewise limitations."
+    },
+    {
+      "id": "kg:highlight/d61256e0fd1a#h-e08cbceb",
+      "type": "Highlight",
+      "inBook": "kg:book/d61256e0fd1a",
+      "highlightText": "While Wiener and Toffler demanded a reconsideration of technological progress, the artists James R. Powers or Klaus Bürgle (Fig. 1.3) envisioned the absolute inverse, a materialistic consumer culture thriving in a lucent environment comprised of organically shaped buildings, vibrant urban spaces, and new types of public and personal transportation systems (Kretzer 2014a, b, p. 502)."
+    },
+    {
+      "id": "kg:highlight/d61256e0fd1a#h-0627b213",
+      "type": "Highlight",
+      "inBook": "kg:book/d61256e0fd1a",
+      "highlightText": "From this, he develops his law of accelerating returns which prognoses that the rate of change in various systems, especially technological ones, increases exponentially."
+    },
+    {
+      "id": "kg:highlight/d61256e0fd1a#h-3e0cb292",
+      "type": "Highlight",
+      "inBook": "kg:book/d61256e0fd1a",
+      "highlightText": "Humans will then not only be able to severely, maybe infinitely, extend their lives but also be able to enhance their minds by genetic alterations, nanotechnology, and artificial intelligence."
+    },
+    {
+      "id": "kg:book/fbf8254f08c5",
+      "type": "Book",
+      "name": "The Dream Machine",
+      "image": "https://m.media-amazon.com/images/I/71uOetVF3sL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/fbf8254f08c5#h-0cf89c30",
+      "type": "Highlight",
+      "inBook": "kg:book/fbf8254f08c5",
+      "highlightText": "That’s what Tracy would always remember most about it: tricycles in the Pentagon."
+    },
+    {
+      "id": "kg:highlight/fbf8254f08c5#h-f6bb92c7",
+      "type": "Highlight",
+      "inBook": "kg:book/fbf8254f08c5",
+      "highlightText": "Along the way, moreover, its remote terminals would plant the notion of a “home information center,” an idea that would circulate in the technological community’s collective consciousness until the 1970s, when it would inspire a slew of young hobbyists with names such as Jobs and Wozniak to market something called a microcomputer."
+    },
+    {
+      "id": "kg:highlight/fbf8254f08c5#h-2f71518b",
+      "type": "Highlight",
+      "inBook": "kg:book/fbf8254f08c5",
+      "highlightText": "Meanwhile, that restless refusal to be satisfied with the ordinary was leading him on a roundabout quest for his purpose in life."
+    },
+    {
+      "id": "kg:highlight/fbf8254f08c5#h-74c17a2d",
+      "type": "Highlight",
+      "inBook": "kg:book/fbf8254f08c5",
+      "highlightText": "the precise, detailed study of the brain and how it functions."
+    },
+    {
+      "id": "kg:highlight/fbf8254f08c5#h-d9d12a9f",
+      "type": "Highlight",
+      "inBook": "kg:book/fbf8254f08c5",
+      "highlightText": "Thomas Huxley, Darwin’s most forceful advocate, had begun to assert that behavior, experience, thought, and even awareness had material bases in the brain."
+    },
+    {
+      "id": "kg:book/8d6c2f3927c4",
+      "type": "Book",
+      "name": "Leaves of Grass (Signet Classics)",
+      "image": "https://m.media-amazon.com/images/I/81iNaKFuZSL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/8d6c2f3927c4#h-3069875a",
+      "type": "Highlight",
+      "inBook": "kg:book/8d6c2f3927c4",
+      "highlightText": "We Were Fool’d O Hymen! O Hymenee!"
+    },
+    {
+      "id": "kg:highlight/8d6c2f3927c4#h-a3ba4aff",
+      "type": "Highlight",
+      "inBook": "kg:book/8d6c2f3927c4",
+      "highlightText": "To the States or any one of them, or any city of the States, Resist much, obey little, Once unquestioning obedience, once fully enslaved, Once fully enslaved, no nation, state, city of this earth, ever afterward resumes its liberty."
+    },
+    {
+      "id": "kg:highlight/8d6c2f3927c4#h-40840079",
+      "type": "Highlight",
+      "inBook": "kg:book/8d6c2f3927c4",
+      "highlightText": "We willing learners of all, teachers of all, and lovers of all."
+    },
+    {
+      "id": "kg:highlight/8d6c2f3927c4#h-104c42cb",
+      "type": "Highlight",
+      "inBook": "kg:book/8d6c2f3927c4",
+      "highlightText": "TO A CERTAIN CANTATRICE Here, take this gift, I was reserving it for some hero, speaker, or general, One who should serve the good old cause, the great idea, the progress and freedom of the race, Some brave confronter of despots, some daring rebel; But I see that what I was reserving belongs to you just as much as to any."
+    },
+    {
+      "id": "kg:highlight/8d6c2f3927c4#h-d5bae317",
+      "type": "Highlight",
+      "inBook": "kg:book/8d6c2f3927c4",
+      "highlightText": "To confront night, storms, hunger, ridicule, accidents, rebuffs, as the trees and animals do."
+    },
+    {
+      "id": "kg:book/5a476cc4f40a",
+      "type": "Book",
+      "name": "Permutation City",
+      "image": "https://m.media-amazon.com/images/I/81o0AY9isXL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/5a476cc4f40a#h-2a920c81",
+      "type": "Highlight",
+      "inBook": "kg:book/5a476cc4f40a",
+      "highlightText": "His model-of-a-brain ran seventeen times slower than the real thing."
+    },
+    {
+      "id": "kg:highlight/5a476cc4f40a#h-5b14bb53",
+      "type": "Highlight",
+      "inBook": "kg:book/5a476cc4f40a",
+      "highlightText": "“I also know that you’re a highly intelligent, discerning woman, with no interest whatsoever in the muddled, irrational superstitions of the past, the fairy tales that comforted humanity in its infancy.”"
+    },
+    {
+      "id": "kg:highlight/5a476cc4f40a#h-73eef8d6",
+      "type": "Highlight",
+      "inBook": "kg:book/5a476cc4f40a",
+      "highlightText": "Curious to discover the identity of her unintentional benefactor, she logged on directly to the QIPS Exchange – the marketplace where processing power was bought and sold."
+    },
+    {
+      "id": "kg:highlight/5a476cc4f40a#h-0f63a4f0",
+      "type": "Highlight",
+      "inBook": "kg:book/5a476cc4f40a",
+      "highlightText": "Opponents replied that when you modeled a hurricane, nobody got wet. When you modeled a fusion power plant, no energy was produced. When you modeled digestion and metabolism, no nutrients were consumed – no real digestion took place. So, when you modeled the human brain, why should you expect real thought to occur?"
+    },
+    {
+      "id": "kg:highlight/5a476cc4f40a#h-d8aa4082",
+      "type": "Highlight",
+      "inBook": "kg:book/5a476cc4f40a",
+      "highlightText": "“What would you rather do? Be humble in the presence of nature, and hope you’ll be rewarded for it?"
+    },
+    {
+      "id": "kg:book/d16c4d65d43a",
+      "type": "Book",
+      "name": "Ideas That Created the Future: Classic Papers of Computer Science",
+      "image": "https://m.media-amazon.com/images/I/81Xqrx25FWL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/d16c4d65d43a#h-f4dae051",
+      "type": "Highlight",
+      "inBook": "kg:book/d16c4d65d43a",
+      "highlightText": "But we have to start with Aristotle, who gave us the notion that propositions can include variables representing properties (chapter 1)."
+    },
+    {
+      "id": "kg:highlight/d16c4d65d43a#h-d6e348c0",
+      "type": "Highlight",
+      "inBook": "kg:book/d16c4d65d43a",
+      "highlightText": "To Aristotle we owe the realization that fixed rules of logic can apply to different phenomena—that logic provides a general framework for reasoning."
+    },
+    {
+      "id": "kg:highlight/d16c4d65d43a#h-ed51e170",
+      "type": "Highlight",
+      "inBook": "kg:book/d16c4d65d43a",
+      "highlightText": "is only one of many utopian visions about rationalizing human affairs, and Leibniz did not get very far toward executing his plan."
+    },
+    {
+      "id": "kg:highlight/d16c4d65d43a#h-1f39ea09",
+      "type": "Highlight",
+      "inBook": "kg:book/d16c4d65d43a",
+      "highlightText": "Leibniz notes that once his calculus is complete, humankind “will have an instrument which will serve to exalt reason no less than the Telescope serves to perfect vision.”"
+    },
+    {
+      "id": "kg:highlight/d16c4d65d43a#h-ca46a2fd",
+      "type": "Highlight",
+      "inBook": "kg:book/d16c4d65d43a",
+      "highlightText": "George Boole (1854, here chapter 4) had a different agenda. About 25 years Babbage’s junior and not university-educated, Boole did cross paths with Babbage at least once, but his own goal was to bring Aristotle up to date, to capture the rules of human reason in mathematical form. His work on logic was the more innovative for being out of the mainstream, and its influence on computing was limited—until the 1930s, when Claude Shannon made it an essential tool for designing digital circuits."
+    },
+    {
+      "id": "kg:book/bb100f3654ed",
+      "type": "Book",
+      "name": "Aristotle's Nicomachean Ethics",
+      "image": "https://m.media-amazon.com/images/I/81-HczGo2nL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/bb100f3654ed#h-13f78024",
+      "type": "Highlight",
+      "inBook": "kg:book/bb100f3654ed",
+      "highlightText": "At all events, it is certain that Aristotle thus forms a link in what must be the most impressive chain of great thinkers the world has ever seen: Aristotle was the student of Plato, who was in turn the student of Socrates."
+    },
+    {
+      "id": "kg:book/d0d01709330c",
+      "type": "Book",
+      "name": "Data Pipelines Pocket Reference: Moving and Processing Data for Analytics",
+      "image": "https://m.media-amazon.com/images/I/81XmIUEHkIL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/d0d01709330c#h-bf7d01b0",
+      "type": "Highlight",
+      "inBook": "kg:book/d0d01709330c",
+      "highlightText": "Semistructured data such as JSON is increasingly common and has the advantage of the structure of attribute-value pairs and nesting of objects. However, unlike a relational database, there is no guarantee that each object in the same dataset will have the same structure."
+    },
+    {
+      "id": "kg:highlight/d0d01709330c#h-4f94fe51",
+      "type": "Highlight",
+      "inBook": "kg:book/d0d01709330c",
+      "highlightText": "Though the design decisions at each step in a pipeline must take data volume into consideration, high volume does not mean high value."
+    },
+    {
+      "id": "kg:highlight/d0d01709330c#h-99a5a54b",
+      "type": "Highlight",
+      "inBook": "kg:book/d0d01709330c",
+      "highlightText": "Assume the worst, expect the best"
+    },
+    {
+      "id": "kg:highlight/d0d01709330c#h-f216e16b",
+      "type": "Highlight",
+      "inBook": "kg:book/d0d01709330c",
+      "highlightText": "These changes breathed new life into data warehouses and introduced the concept of a data lake."
+    },
+    {
+      "id": "kg:highlight/d0d01709330c#h-f247349c",
+      "type": "Highlight",
+      "inBook": "kg:book/d0d01709330c",
+      "highlightText": "As the complexity and number of data pipelines in an organization grows, it’s important to introduce a workflow orchestration platform to your data infrastructure. These platforms manage the scheduling and flow of tasks in a pipeline."
+    },
+    {
+      "id": "kg:book/fd08e7a2113c",
+      "type": "Book",
+      "name": "Amp It Up: Leading for Hypergrowth by Raising Expectations, Increasing Urgency, and Elevating Intensity",
+      "image": "https://m.media-amazon.com/images/I/513hbExIrdL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/fd08e7a2113c#h-1e216d16",
+      "type": "Highlight",
+      "inBook": "kg:book/fd08e7a2113c",
+      "highlightText": "Having seen things done is not the same as doing them."
+    },
+    {
+      "id": "kg:highlight/fd08e7a2113c#h-dace4247",
+      "type": "Highlight",
+      "inBook": "kg:book/fd08e7a2113c",
+      "highlightText": "People lower their standards in an effort to move things along and get things off their desks. Don't do it. Fight that impulse every step of the way. It doesn't take much more mental energy to raise standards. Don't let malaise set in. Bust it up. Raising the bar is energizing by itself."
+    },
+    {
+      "id": "kg:highlight/fd08e7a2113c#h-8eb73406",
+      "type": "Highlight",
+      "inBook": "kg:book/fd08e7a2113c",
+      "highlightText": "What are we not going to do? What are the consequences of not doing something? Get in the habit of constantly prioritizing and reprioritizing."
+    },
+    {
+      "id": "kg:highlight/fd08e7a2113c#h-c0e610ca",
+      "type": "Highlight",
+      "inBook": "kg:book/fd08e7a2113c",
+      "highlightText": "“Priority” should ideally only be used as a singular word. The moment you have many priorities, you actually have none."
+    },
+    {
+      "id": "kg:highlight/fd08e7a2113c#h-1c289920",
+      "type": "Highlight",
+      "inBook": "kg:book/fd08e7a2113c",
+      "highlightText": "organizations have a million things to do, and they really"
+    },
+    {
+      "id": "kg:book/3f8fcf0a559f",
+      "type": "Book",
+      "name": "Self Reliance (Illustrated)",
+      "image": "https://m.media-amazon.com/images/I/518EpLhru1L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/3f8fcf0a559f#h-3015063a",
+      "type": "Highlight",
+      "inBook": "kg:book/3f8fcf0a559f",
+      "highlightText": "Else to-morrow a stranger will say with masterly good sense precisely what we have thought and felt all the time, and we shall be forced to take with shame our own opinion from another."
+    },
+    {
+      "id": "kg:highlight/3f8fcf0a559f#h-ea815c89",
+      "type": "Highlight",
+      "inBook": "kg:book/3f8fcf0a559f",
+      "highlightText": "There is a time in every man's education when he arrives at the conviction that envy is ignorance; that imitation is suicide; that he must take himself for better for worse as his portion; that though the wide universe is full of good, no kernel of nourishing corn can come to him but through his toil bestowed on that plot of ground which is given to him to till."
+    },
+    {
+      "id": "kg:highlight/3f8fcf0a559f#h-c6120d7f",
+      "type": "Highlight",
+      "inBook": "kg:book/3f8fcf0a559f",
+      "highlightText": "The power which resides in him is new in nature, and none but he knows what that is which he can do, nor does he know until he has tried."
+    },
+    {
+      "id": "kg:highlight/3f8fcf0a559f#h-15a808bd",
+      "type": "Highlight",
+      "inBook": "kg:book/3f8fcf0a559f",
+      "highlightText": "These are the voices which we hear in solitude, but they grow faint and inaudible as we enter into the world. Society everywhere is in conspiracy against the manhood of every one of its members."
+    },
+    {
+      "id": "kg:highlight/3f8fcf0a559f#h-8e1bb90a",
+      "type": "Highlight",
+      "inBook": "kg:book/3f8fcf0a559f",
+      "highlightText": "Society is a joint-stock company, in which the members agree, for the better securing of his bread to each shareholder, to surrender the liberty and culture of the eater."
+    },
+    {
+      "id": "kg:book/c8e2f05a9f6e",
+      "type": "Book",
+      "name": "AI Engineering: Building Applications with Foundation Models",
+      "image": "https://m.media-amazon.com/images/I/81rZFw+9buL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/c8e2f05a9f6e#h-f4bc5b2b",
+      "type": "Highlight",
+      "inBook": "kg:book/c8e2f05a9f6e",
+      "highlightText": "Many AI companies now employ data labelers, dataset creators, and data quality engineers, either integrated into or working alongside their core engineering teams."
+    },
+    {
+      "id": "kg:highlight/c8e2f05a9f6e#h-a1b3bccd",
+      "type": "Highlight",
+      "inBook": "kg:book/c8e2f05a9f6e",
+      "highlightText": "data landscape is even more complex, with an ever-growing array of datasets and techniques being introduced."
+    },
+    {
+      "id": "kg:highlight/c8e2f05a9f6e#h-df8addd8",
+      "type": "Highlight",
+      "inBook": "kg:book/c8e2f05a9f6e",
+      "highlightText": "For example, data quantity for pre-training is often measured in the number of tokens, whereas data quantity for supervised finetuning is often measured in the number of examples."
+    },
+    {
+      "id": "kg:highlight/c8e2f05a9f6e#h-3d89cabd",
+      "type": "Highlight",
+      "inBook": "kg:book/c8e2f05a9f6e",
+      "highlightText": "Data-centric AI tries to improve AI performance by enhancing the data."
+    },
+    {
+      "id": "kg:highlight/c8e2f05a9f6e#h-c1142d32",
+      "type": "Highlight",
+      "inBook": "kg:book/c8e2f05a9f6e",
+      "highlightText": "The model-centric and data-centric division helps guide research."
+    },
+    {
+      "id": "kg:book/81a6f287bfe0",
+      "type": "Book",
+      "name": "Economics in One Lesson: The Shortest and Surest Way to Understand Basic Economics",
+      "image": "https://m.media-amazon.com/images/I/7139LCpYMqS._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/81a6f287bfe0#h-c01fdfb6",
+      "type": "Highlight",
+      "inBook": "kg:book/81a6f287bfe0",
+      "highlightText": "PREFACE"
+    },
+    {
+      "id": "kg:highlight/81a6f287bfe0#h-6d80cab1",
+      "type": "Highlight",
+      "inBook": "kg:book/81a6f287bfe0",
+      "highlightText": "The volume is therefore primarily one of exposition. It makes no claim to originality with regard to any of the chief ideas that it expounds."
+    },
+    {
+      "id": "kg:highlight/81a6f287bfe0#h-66f14e06",
+      "type": "Highlight",
+      "inBook": "kg:book/81a6f287bfe0",
+      "highlightText": "“The notion that we can dismiss the views of all previous thinkers surely leaves no basis for the hope that our own work will prove of any value to others.”1"
+    },
+    {
+      "id": "kg:highlight/81a6f287bfe0#h-16fad804",
+      "type": "Highlight",
+      "inBook": "kg:book/81a6f287bfe0",
+      "highlightText": "They overlook the woods in their precise and minute examination of particular trees."
+    },
+    {
+      "id": "kg:highlight/81a6f287bfe0#h-7f1805a9",
+      "type": "Highlight",
+      "inBook": "kg:book/81a6f287bfe0",
+      "highlightText": "It is often sadly remarked that the bad economists present their errors to the public better than the good economists present their truths."
+    },
+    {
+      "id": "kg:book/b6b9bc8d3759",
+      "type": "Book",
+      "name": "Softwar: An Intimate Portrait of Larry Ellison and Oracle",
+      "image": "https://m.media-amazon.com/images/I/81S4wHF3lRL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/b6b9bc8d3759#h-771a87f9",
+      "type": "Highlight",
+      "inBook": "kg:book/b6b9bc8d3759",
+      "highlightText": "The answer was a new model of computing based on the Internet, in which the complexity and the computing would be hidden in the network. Users would be able to access everything they needed through a web browser that could be run by a machine much less expensive and cantankerous than a PC—a network computer."
+    },
+    {
+      "id": "kg:highlight/b6b9bc8d3759#h-d2d5e5fe",
+      "type": "Highlight",
+      "inBook": "kg:book/b6b9bc8d3759",
+      "highlightText": "A few network computers were made by Oracle and a loosely knit coalition of Microsoft’s enemies, such as IBM and Sun Microsystems, but tumbling PC prices and the limitations imposed by slow dial-up connections quickly condemned them to irrelevance."
+    },
+    {
+      "id": "kg:highlight/b6b9bc8d3759#h-4e7c15e9",
+      "type": "Highlight",
+      "inBook": "kg:book/b6b9bc8d3759",
+      "highlightText": "Ellison believed that the database would be the essential platform for Internet computing,"
+    },
+    {
+      "id": "kg:highlight/b6b9bc8d3759#h-11958b7d",
+      "type": "Highlight",
+      "inBook": "kg:book/b6b9bc8d3759",
+      "highlightText": "And, crucially in an industry in which perception is as important as reality, if Ellison’s bet came off, it would make Oracle appear very cool."
+    },
+    {
+      "id": "kg:highlight/b6b9bc8d3759#h-fddb5760",
+      "type": "Highlight",
+      "inBook": "kg:book/b6b9bc8d3759",
+      "highlightText": "Even though Ellison refused to conform to their idea of what an Über-geek should look and sound like—Gates had that one sewn up—there was a growing willingness to concede that, although as arrogant and addicted to hyperbole as ever, Ellison probably was an authentic business and technology visionary."
+    },
+    {
+      "id": "kg:book/afdebc486f4a",
+      "type": "Book",
+      "name": "C Programming Language",
+      "image": "https://m.media-amazon.com/images/I/61aRzzEz7sL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/afdebc486f4a#h-89baf588",
+      "type": "Highlight",
+      "inBook": "kg:book/afdebc486f4a",
+      "highlightText": "Text input or output, regardless of where it originates or where it goes to, is dealt with as streams of characters."
+    },
+    {
+      "id": "kg:highlight/afdebc486f4a#h-e077e1f4",
+      "type": "Highlight",
+      "inBook": "kg:book/afdebc486f4a",
+      "highlightText": "A text stream is a sequence of characters divided into lines; each line consists of zero or more characters followed by a newline character."
+    },
+    {
+      "id": "kg:highlight/afdebc486f4a#h-36ae28d6",
+      "type": "Highlight",
+      "inBook": "kg:book/afdebc486f4a",
+      "highlightText": "This is called a character constant, although it is just another way to write a small integer. So, for example, ′A′ is a character constant; in the ASCII character set its value is 65,"
+    },
+    {
+      "id": "kg:highlight/afdebc486f4a#h-a44a8c66",
+      "type": "Highlight",
+      "inBook": "kg:book/afdebc486f4a",
+      "highlightText": "With properly designed functions, it is possible to ignore how a job is done; knowing what is done is sufficient."
+    },
+    {
+      "id": "kg:highlight/afdebc486f4a#h-2c38cf13",
+      "type": "Highlight",
+      "inBook": "kg:book/afdebc486f4a",
+      "highlightText": "#include <stdio.h>"
+    },
+    {
+      "id": "kg:book/008e7f33f7d2",
+      "type": "Book",
+      "name": "Civilisation",
+      "image": "https://m.media-amazon.com/images/I/810jgbW6k2L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/008e7f33f7d2#h-443770b8",
+      "type": "Highlight",
+      "inBook": "kg:book/008e7f33f7d2",
+      "highlightText": "To combat this, he wrote a semi-apologetic foreword, explaining that television, as a medium, privileges entertainment over nuance:"
+    },
+    {
+      "id": "kg:highlight/008e7f33f7d2#h-003d6c5d",
+      "type": "Highlight",
+      "inBook": "kg:book/008e7f33f7d2",
+      "highlightText": "Throughout, Clark is open about his belief that culture is forged by elites rather than the masses: ‘Contrary to our modern sense of equality … one can’t help wondering how far civilisation would have evolved if it had been entirely dependent on the popular will.’"
+    },
+    {
+      "id": "kg:highlight/008e7f33f7d2#h-61e9331e",
+      "type": "Highlight",
+      "inBook": "kg:book/008e7f33f7d2",
+      "highlightText": "He scoffs at the ‘rapacious parvenus’ of the papal families of the sixteenth century, whom he scornfully compares to ‘modern millionaires’."
+    },
+    {
+      "id": "kg:highlight/008e7f33f7d2#h-962fbede",
+      "type": "Highlight",
+      "inBook": "kg:book/008e7f33f7d2",
+      "highlightText": "‘If I had been talking about the history of art, it would not have been possible to leave out Spain; but when one asks what Spain has done to enlarge the human mind and pull mankind a few steps up the hill, the answer is less clear.’"
+    },
+    {
+      "id": "kg:highlight/008e7f33f7d2#h-be62f5cf",
+      "type": "Highlight",
+      "inBook": "kg:book/008e7f33f7d2",
+      "highlightText": "Thus, he suggests that the ‘obsession’ with birds in medieval art is because they functioned as ‘symbols of freedom … very few people could move about – only artists and birds.’"
+    },
+    {
+      "id": "kg:book/bea5358aac45",
+      "type": "Book",
+      "name": "A Philosophy of Software Design, 2nd Edition",
+      "image": "https://m.media-amazon.com/images/I/7146AYGD0AL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/bea5358aac45#h-eb338882",
+      "type": "Highlight",
+      "inBook": "kg:book/bea5358aac45",
+      "highlightText": "The most fundamental problem in computer science is problem decomposition: how to take a complex problem and divide it up into pieces that can be solved independently."
+    },
+    {
+      "id": "kg:highlight/bea5358aac45#h-bf0b9b11",
+      "type": "Highlight",
+      "inBook": "kg:book/bea5358aac45",
+      "highlightText": "I have wondered whether software design can be taught, and I have hypothesized that design skill is what separates great programmers from average ones."
+    },
+    {
+      "id": "kg:highlight/bea5358aac45#h-c4ed6b8c",
+      "type": "Highlight",
+      "inBook": "kg:book/bea5358aac45",
+      "highlightText": "The class is taught in a fashion similar to a traditional English writing class. In an English class, students use an iterative process where they write a draft, get feedback, and then rewrite to make improvements."
+    },
+    {
+      "id": "kg:highlight/bea5358aac45#h-c89cef78",
+      "type": "Highlight",
+      "inBook": "kg:book/bea5358aac45",
+      "highlightText": "The best examples illustrate an important design principle and are simple enough to explain in a paragraph or two."
+    },
+    {
+      "id": "kg:highlight/bea5358aac45#h-ff489d29",
+      "type": "Highlight",
+      "inBook": "kg:book/bea5358aac45",
+      "highlightText": "The overall goal is to reduce complexity; this is more important than any particular principle or idea you read here. If you try an idea from this book and find that it doesn’t actually reduce complexity, then don’t feel obligated to keep using it (but, do let me know about your experience; I’d like to get feedback on what works and what doesn’t)."
+    },
+    {
+      "id": "kg:book/33edd2d43c89",
+      "type": "Book",
+      "name": "Operating Systems: Principles and Practice (Volume 1 of 4)",
+      "image": "https://m.media-amazon.com/images/I/91R6-SPVFpL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/33edd2d43c89#h-1ee87044",
+      "type": "Highlight",
+      "inBook": "kg:book/33edd2d43c89",
+      "highlightText": "A modern, general-purpose operating system can exceed 50 million lines of code, or in other words, more than a thousand times longer than this textbook. New operating systems are being written all the time: if you use an e-book reader, tablet, or smartphone, an operating system is managing your device. Given this inherent complexity, we limit our focus to the essential concepts that every computer scientist should know."
+    },
+    {
+      "id": "kg:highlight/33edd2d43c89#h-adf199df",
+      "type": "Highlight",
+      "inBook": "kg:book/33edd2d43c89",
+      "highlightText": "Software engineers use many of the same technologies and design patterns as those used in operating systems to build other complex systems."
+    },
+    {
+      "id": "kg:highlight/33edd2d43c89#h-2e787ed5",
+      "type": "Highlight",
+      "inBook": "kg:book/33edd2d43c89",
+      "highlightText": "and the operating system mediates access to the underlying hardware,"
+    },
+    {
+      "id": "kg:highlight/33edd2d43c89#h-11912484",
+      "type": "Highlight",
+      "inBook": "kg:book/33edd2d43c89",
+      "highlightText": "The application context is much more than a simple abstraction on top of hardware devices: applications execute in a virtual environment that is more constrained (to prevent harm), more powerful (to mask hardware limitations), and more useful (via common services) than the underlying hardware."
+    },
+    {
+      "id": "kg:highlight/33edd2d43c89#h-0069d3a6",
+      "type": "Highlight",
+      "inBook": "kg:book/33edd2d43c89",
+      "highlightText": "Resource allocation. The operating system must keep all simultaneous activities separate, allocating resources to each as appropriate."
+    },
+    {
+      "id": "kg:book/6be8dd2fcad6",
+      "type": "Book",
+      "name": "Skunk Works: A Personal Memoir of My Years of Lockheed",
+      "image": "https://m.media-amazon.com/images/I/81AF3a-gsXL._SY160.jpg"
+    },
+    {
+      "id": "kg:book/82c1ef97d9d0",
+      "type": "Book",
+      "name": "Computer Organization and Design MIPS Edition: The Hardware/Software Interface (The Morgan Kaufmann Series in Computer Architecture and Design)",
+      "image": "https://m.media-amazon.com/images/I/81MuDzkcvfL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-f5f27aae",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "This instruction says that the processor always follows the branch."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-05fd5134",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "The test for equality or inequality is probably the most popular test, but sometimes it is useful to see if a variable is less than another variable."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-b934c727",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "Implicit in the stored-program idea is the need to have a register to hold the address of the current instruction being executed."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-89d79276",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "The ideal data structure for spilling registers is a stack—a last-in-first-out queue."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-547cff0f",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "By historical precedent, stacks “grow” from higher addresses to lower addresses. This convention means that you push values onto the stack by subtracting from the stack pointer."
+    },
+    {
+      "id": "kg:book/d8f362bf67de",
+      "type": "Book",
+      "name": "Consider Phlebas (Culture Book 1)",
+      "image": "https://m.media-amazon.com/images/I/91cK5qRJKmL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/d8f362bf67de#h-e65be274",
+      "type": "Highlight",
+      "inBook": "kg:book/d8f362bf67de",
+      "highlightText": "There are some in the Gerontocracy who want nothing to do with any outside influence, and their voices grow in volume by the day as the war comes closer."
+    },
+    {
+      "id": "kg:highlight/d8f362bf67de#h-2aab6dd6",
+      "type": "Highlight",
+      "inBook": "kg:book/d8f362bf67de",
+      "highlightText": "Idirans hated to appear either overinquisitive or under-informed."
+    },
+    {
+      "id": "kg:highlight/d8f362bf67de#h-15cfa88a",
+      "type": "Highlight",
+      "inBook": "kg:book/d8f362bf67de",
+      "highlightText": "They’re on the side of life—boring, old-fashioned, biological life; smelly, fallible and short-sighted, God knows, but real life. You’re ruled by your machines. You’re an evolutionary dead end."
+    },
+    {
+      "id": "kg:highlight/d8f362bf67de#h-680a37b8",
+      "type": "Highlight",
+      "inBook": "kg:book/d8f362bf67de",
+      "highlightText": "“Empathize with stupidity and you’re halfway to thinking like an idiot,”"
+    },
+    {
+      "id": "kg:highlight/d8f362bf67de#h-d616d94b",
+      "type": "Highlight",
+      "inBook": "kg:book/d8f362bf67de",
+      "highlightText": "“They do say there’s a danger… in warfare,” she said, “that you’ll start to resemble the enemy.”"
+    },
+    {
+      "id": "kg:book/77153850c770",
+      "type": "Book",
+      "name": "Crafting Interpreters",
+      "image": "https://m.media-amazon.com/images/I/81dXJigFHiL._SY160.jpg"
+    },
+    {
+      "id": "kg:book/e3ee4b274c1c",
+      "type": "Book",
+      "name": "Understanding Media: The Extensions of Man",
+      "image": "https://m.media-amazon.com/images/I/81IPFOVw+WL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/e3ee4b274c1c#h-d1660373",
+      "type": "Highlight",
+      "inBook": "kg:book/e3ee4b274c1c",
+      "highlightText": "Yet, as David Hume showed in the eighteenth century, there is no principle of causality in a mere sequence. That one thing follows another accounts for nothing."
+    },
+    {
+      "id": "kg:highlight/e3ee4b274c1c#h-01a86e58",
+      "type": "Highlight",
+      "inBook": "kg:book/e3ee4b274c1c",
+      "highlightText": "The message of the movie medium is that of transition from lineal connections to configurations."
+    },
+    {
+      "id": "kg:highlight/e3ee4b274c1c#h-a4baa0ce",
+      "type": "Highlight",
+      "inBook": "kg:book/e3ee4b274c1c",
+      "highlightText": "The message, it seemed, was the “content,” as people used to ask what a painting was about."
+    },
+    {
+      "id": "kg:highlight/e3ee4b274c1c#h-0e5d0738",
+      "type": "Highlight",
+      "inBook": "kg:book/e3ee4b274c1c",
+      "highlightText": "In such matters, people retained some sense of the whole pattern, of form and function as a unity."
+    },
+    {
+      "id": "kg:highlight/e3ee4b274c1c#h-07865a0b",
+      "type": "Highlight",
+      "inBook": "kg:book/e3ee4b274c1c",
+      "highlightText": "“Three hostile newspapers are more to be feared than a thousand bayonets.”"
+    },
+    {
+      "id": "kg:book/4cfa1578270a",
+      "type": "Book",
+      "name": "Thinking in Systems: International Bestseller",
+      "image": "https://m.media-amazon.com/images/I/71aQ+TLBi-L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/4cfa1578270a#h-93d1f6bf",
+      "type": "Highlight",
+      "inBook": "kg:book/4cfa1578270a",
+      "highlightText": "Once we see the relationship between structure and behavior, we can begin to understand how systems work, what makes them produce poor results, and how to shift them into better behavior patterns."
+    },
+    {
+      "id": "kg:highlight/4cfa1578270a#h-d5a69789",
+      "type": "Highlight",
+      "inBook": "kg:book/4cfa1578270a",
+      "highlightText": "As our world continues to change rapidly and become more complex, systems thinking will help us manage, adapt, and see the wide range of choices we have before us. It is a way of thinking that gives us the freedom to identify root causes of problems and see new opportunities."
+    },
+    {
+      "id": "kg:highlight/4cfa1578270a#h-8990efe0",
+      "type": "Highlight",
+      "inBook": "kg:book/4cfa1578270a",
+      "highlightText": "On the one hand, we have been taught to analyze, to use our rational ability, to trace direct paths from cause to effect, to look at things in small and understandable pieces, to solve problems by acting on or controlling the world around"
+    },
+    {
+      "id": "kg:highlight/4cfa1578270a#h-26bc1004",
+      "type": "Highlight",
+      "inBook": "kg:book/4cfa1578270a",
+      "highlightText": "We are complex systems—our own bodies are magnificent examples of integrated, interconnected, self-maintaining complexity."
+    },
+    {
+      "id": "kg:highlight/4cfa1578270a#h-29b89109",
+      "type": "Highlight",
+      "inBook": "kg:book/4cfa1578270a",
+      "highlightText": "Every person we encounter, every organization, every animal, garden, tree, and forest is a complex system. We have built up intuitively, without analysis, often without words, a practical understanding of how these systems work, and how to work with them."
+    },
+    {
+      "id": "kg:book/3b09747a01bd",
+      "type": "Book",
+      "name": "How Finance Works: The HBR Guide to Thinking Smart About the Numbers",
+      "image": "https://m.media-amazon.com/images/I/81AxtVqcycL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/3b09747a01bd#h-c5f1076f",
+      "type": "Highlight",
+      "inBook": "kg:book/3b09747a01bd",
+      "highlightText": "In this chapter, we’re going to take a closer look at how companies can create and maximize value. In particular, the recipe for value creation hinges on the idea of costly capital."
+    },
+    {
+      "id": "kg:highlight/3b09747a01bd#h-7dff7e14",
+      "type": "Highlight",
+      "inBook": "kg:book/3b09747a01bd",
+      "highlightText": "In particular, the recipe for value creation hinges on the idea of costly capital."
+    },
+    {
+      "id": "kg:highlight/3b09747a01bd#h-45c5a5df",
+      "type": "Highlight",
+      "inBook": "kg:book/3b09747a01bd",
+      "highlightText": "sine qua non"
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-f5f27aae",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "This instruction says that the processor always follows the branch."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-05fd5134",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "The test for equality or inequality is probably the most popular test, but sometimes it is useful to see if a variable is less than another variable."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-b934c727",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "Implicit in the stored-program idea is the need to have a register to hold the address of the current instruction being executed."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-89d79276",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "The ideal data structure for spilling registers is a stack—a last-in-first-out queue."
+    },
+    {
+      "id": "kg:highlight/82c1ef97d9d0#h-547cff0f",
+      "type": "Highlight",
+      "inBook": "kg:book/82c1ef97d9d0",
+      "highlightText": "By historical precedent, stacks “grow” from higher addresses to lower addresses. This convention means that you push values onto the stack by subtracting from the stack pointer."
+    },
+    {
+      "id": "kg:book/8a8231a5ca66",
+      "type": "Book",
+      "name": "Key Thinkers of the Radical Right: Behind the New Threat to Liberal Democracy",
+      "image": "https://m.media-amazon.com/images/I/71YMKSxHw8L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/8a8231a5ca66#h-95de1ba6",
+      "type": "Highlight",
+      "inBook": "kg:book/8a8231a5ca66",
+      "highlightText": "The horrors of the war and of the Nazi camps, however, contributed to a general reaction against the radical Right that led to its disappearance from mainstream politics and to its eclipse in intellectual life. For"
+    },
+    {
+      "id": "kg:highlight/8a8231a5ca66#h-a9e4237e",
+      "type": "Highlight",
+      "inBook": "kg:book/8a8231a5ca66",
+      "highlightText": "There is no general agreement as to where the mainstream ends and the extreme starts, and if there ever had been agreement on this, the recent shift in the mainstream would challenge it."
+    },
+    {
+      "id": "kg:highlight/8a8231a5ca66#h-0b84bb74",
+      "type": "Highlight",
+      "inBook": "kg:book/8a8231a5ca66",
+      "highlightText": "Only thinkers with a major current international audience have been included."
+    },
+    {
+      "id": "kg:highlight/8a8231a5ca66#h-05ba511f",
+      "type": "Highlight",
+      "inBook": "kg:book/8a8231a5ca66",
+      "highlightText": "But many excellent discussions of Nietzsche and Heidegger are already available elsewhere."
+    },
+    {
+      "id": "kg:highlight/8a8231a5ca66#h-cc9ebbd2",
+      "type": "Highlight",
+      "inBook": "kg:book/8a8231a5ca66",
+      "highlightText": "The book deliberately avoids making political judgments or value judgments. Its contributors write as scholars, not activists, and its purpose is likewise scholarly."
+    },
+    {
+      "id": "kg:book/98dd6e4e6135",
+      "type": "Book",
+      "name": "Elon Musk",
+      "image": "https://m.media-amazon.com/images/I/81Kaj5++6pL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/98dd6e4e6135#h-1e4f664f",
+      "type": "Highlight",
+      "inBook": "kg:book/98dd6e4e6135",
+      "highlightText": "“Someone once said that every man is trying to live up to his father’s expectations or make up for his father’s mistakes,”"
+    },
+    {
+      "id": "kg:highlight/98dd6e4e6135#h-7eef3593",
+      "type": "Highlight",
+      "inBook": "kg:book/98dd6e4e6135",
+      "highlightText": "While other entrepreneurs struggled to develop a worldview, he developed a cosmic view."
+    },
+    {
+      "id": "kg:highlight/98dd6e4e6135#h-8582be1c",
+      "type": "Highlight",
+      "inBook": "kg:book/98dd6e4e6135",
+      "highlightText": "Natasha Bassett,"
+    },
+    {
+      "id": "kg:highlight/98dd6e4e6135#h-cff143bd",
+      "type": "Highlight",
+      "inBook": "kg:book/98dd6e4e6135",
+      "highlightText": "“Why don’t we do it ourselves?” he suggested to Kimbal, and he began writing code that could combine business listings with map data. They dubbed it the Virtual City Navigator."
+    },
+    {
+      "id": "kg:highlight/98dd6e4e6135#h-d6eb5826",
+      "type": "Highlight",
+      "inBook": "kg:book/98dd6e4e6135",
+      "highlightText": "“The internet revolution only comes once in a lifetime, so strike while the iron is hot,”"
+    },
+    {
+      "id": "kg:book/0e4f30124235",
+      "type": "Book",
+      "name": "Thinking Strategically: The Competitive Edge in Business, Politics, and Everyday Life (Norton Paperback)",
+      "image": "https://m.media-amazon.com/images/I/81DtU8Crt+L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/0e4f30124235#h-3f8db300",
+      "type": "Highlight",
+      "inBook": "kg:book/0e4f30124235",
+      "highlightText": "Like the general, you must recognize that your business rivals, prospective spouse, and even your child are intelligent and purposive people."
+    },
+    {
+      "id": "kg:highlight/0e4f30124235#h-5526924f",
+      "type": "Highlight",
+      "inBook": "kg:book/0e4f30124235",
+      "highlightText": "There are two ways to move second. You can imitate as soon as the other has revealed his approach (as in sailboat racing) or wait longer until the success or failure of the approach is known (as in computers)."
+    },
+    {
+      "id": "kg:highlight/0e4f30124235#h-c2810aea",
+      "type": "Highlight",
+      "inBook": "kg:book/0e4f30124235",
+      "highlightText": "rarely loved: those who will not be friends end up by having none. De Gaulle’s rejection of friendship thus hurt France.”"
+    },
+    {
+      "id": "kg:book/19a096f61bf7",
+      "type": "Book",
+      "name": "CPython Internals: Your Guide to the Python 3 Interpreter",
+      "image": "https://m.media-amazon.com/images/I/61lFNpIBuwL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/19a096f61bf7#h-d5232b50",
+      "type": "Highlight",
+      "inBook": "kg:book/19a096f61bf7",
+      "highlightText": "I love building tools that help us learn, empower us to create, and move us to share knowledge and ideas with others."
+    },
+    {
+      "id": "kg:highlight/19a096f61bf7#h-2f0fab8d",
+      "type": "Highlight",
+      "inBook": "kg:book/19a096f61bf7",
+      "highlightText": "and gives you confidence to share your creations with the world."
+    },
+    {
+      "id": "kg:highlight/19a096f61bf7#h-f165ebd8",
+      "type": "Highlight",
+      "inBook": "kg:book/19a096f61bf7",
+      "highlightText": "Note Python modules are the data structure used to hand parsed code on to the compiler. The C structure for a Python module is mod_ty and is defined in Include/Python-ast.h."
+    },
+    {
+      "id": "kg:highlight/19a096f61bf7#h-09ca5ab9",
+      "type": "Highlight",
+      "inBook": "kg:book/19a096f61bf7",
+      "highlightText": "Assembler C API The assembler API has an entry point, assemble(), which has the following responsibilities: Calculate the number of blocks for memory allocation. Ensure that every block that falls off the end returns None. Resolve any jump statements offsets that were marked as relative. Call dfs() to perform a depth-first-search of the blocks. Emit all the instructions to the compiler. Call makecode() with the compiler state to generate the PyCodeObject."
+    },
+    {
+      "id": "kg:highlight/19a096f61bf7#h-8a936b01",
+      "type": "Highlight",
+      "inBook": "kg:book/19a096f61bf7",
+      "highlightText": "Opcode prediction is disabled with threaded code since the latter allows the CPU to record separate branch prediction information for each opcode."
+    },
+    {
+      "id": "kg:book/a73827ddf025",
+      "type": "Book",
+      "name": "Compilers: Principles, Techniques, and Tools",
+      "image": "https://m.media-amazon.com/images/I/51L0qegzCgL._SY160.jpg"
+    },
+    {
+      "id": "kg:book/3d904a45e796",
+      "type": "Book",
+      "name": "Nietzsche: A Very Short Introduction (Very Short Introductions Book 34)",
+      "image": "https://m.media-amazon.com/images/I/81UBx82CKzL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/3d904a45e796#h-14795f73",
+      "type": "Highlight",
+      "inBook": "kg:book/3d904a45e796",
+      "highlightText": "he wanted at all costs not to be assimilated to the world of learning, where everything becomes a matter for discussion and nothing for action."
+    },
+    {
+      "id": "kg:highlight/3d904a45e796#h-e818ab06",
+      "type": "Highlight",
+      "inBook": "kg:book/3d904a45e796",
+      "highlightText": "After the ‘Preface to Richard Wagner’ which mentions both ‘the serious German problem we are dealing with’ and the conviction that ‘art is the supreme task and the truly metaphysical activity of this life,’ Nietzsche begins the book proper with the claim ‘We shall have gained much for the science of aesthetics when we have succeeded in perceiving directly, and not only through logical reasoning, that art derives its continuous development from the duality of the Apolline and Dionysiac.’ So within"
+    },
+    {
+      "id": "kg:highlight/3d904a45e796#h-7daed69a",
+      "type": "Highlight",
+      "inBook": "kg:book/3d904a45e796",
+      "highlightText": "There is nothing wrong with appearances, so long as we realize that that is what they are (this will always be a leading motif in Nietzsche’s work)."
+    },
+    {
+      "id": "kg:highlight/3d904a45e796#h-e8403a83",
+      "type": "Highlight",
+      "inBook": "kg:book/3d904a45e796",
+      "highlightText": "In such a mode of procedure, words and phrases come first, then you think what you mean by them."
+    },
+    {
+      "id": "kg:highlight/3d904a45e796#h-9046afa9",
+      "type": "Highlight",
+      "inBook": "kg:book/3d904a45e796",
+      "highlightText": "But when Euripides, whose plays unfortunately survive in far greater numbers than those of his superior predecessors, arrives on the scene he manifests an interest in individuals, in psychology, and worst of all in the beneficial effects of rationality, or as Nietzsche tends to call it, ‘dialectic’."
+    },
+    {
+      "id": "kg:book/a5d9de6f75c0",
+      "type": "Book",
+      "name": "Hitch-22: A Memoir",
+      "image": "https://m.media-amazon.com/images/I/81hoG4YabuL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/a5d9de6f75c0#h-a3b25565",
+      "type": "Highlight",
+      "inBook": "kg:book/a5d9de6f75c0",
+      "highlightText": "“Until you have done something for humanity,” said the great American educator Horace Mann, “you should be ashamed to die.”"
+    },
+    {
+      "id": "kg:highlight/a5d9de6f75c0#h-c446ce76",
+      "type": "Highlight",
+      "inBook": "kg:book/a5d9de6f75c0",
+      "highlightText": "of “Well, I’m in no position to deny it.”"
+    },
+    {
+      "id": "kg:highlight/a5d9de6f75c0#h-572e2b05",
+      "type": "Highlight",
+      "inBook": "kg:book/a5d9de6f75c0",
+      "highlightText": "I would never forget to say, as I got out and deliberately didn’t overtip (that seeming a cheap thing to do), how much this effort on their part was remembered and appreciated."
+    },
+    {
+      "id": "kg:highlight/a5d9de6f75c0#h-da542c84",
+      "type": "Highlight",
+      "inBook": "kg:book/a5d9de6f75c0",
+      "highlightText": "Like many poor relations, we consoled ourselves Englishly with the thought that we made up in good taste and refinement for what we increasingly lacked in money and influence."
+    },
+    {
+      "id": "kg:highlight/a5d9de6f75c0#h-4e6989b7",
+      "type": "Highlight",
+      "inBook": "kg:book/a5d9de6f75c0",
+      "highlightText": "America seemed either too modern, with no castles or cathedrals and no sense of history, or simply too premodern with too much wilderness and unpolished conduct."
+    },
+    {
+      "id": "kg:book/48583fd84cf0",
+      "type": "Book",
+      "name": "The Beginning of Infinity: Explanations That Transform the World",
+      "image": "https://m.media-amazon.com/images/I/51ZFmRLeKLL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/48583fd84cf0#h-040e7ecb",
+      "type": "Highlight",
+      "inBook": "kg:book/48583fd84cf0",
+      "highlightText": "has resulted from a single human activity: the quest for what I call good explanations."
+    },
+    {
+      "id": "kg:highlight/48583fd84cf0#h-0ba55df0",
+      "type": "Highlight",
+      "inBook": "kg:book/48583fd84cf0",
+      "highlightText": "although progress has no necessary end, it does have a necessary beginning: a cause, or an event with which it starts, or a necessary condition for it to take off and to thrive."
+    },
+    {
+      "id": "kg:highlight/48583fd84cf0#h-bd30cd2c",
+      "type": "Highlight",
+      "inBook": "kg:book/48583fd84cf0",
+      "highlightText": "Its neutrino radiation alone would kill a human at a range of billions of kilometres, even if that entire distance were filled with lead shielding."
+    },
+    {
+      "id": "kg:highlight/48583fd84cf0#h-53ed975d",
+      "type": "Highlight",
+      "inBook": "kg:book/48583fd84cf0",
+      "highlightText": "Where do these theories come from? For most of the history of science, it was mistakenly believed that we ‘derive’ them from the evidence of our senses – a philosophical doctrine known as empiricism:"
+    },
+    {
+      "id": "kg:highlight/48583fd84cf0#h-ff725edc",
+      "type": "Highlight",
+      "inBook": "kg:book/48583fd84cf0",
+      "highlightText": "Human minds create them by rearranging, combining, altering and adding to existing ideas with the intention of improving upon them."
+    },
+    {
+      "id": "kg:book/6eef6d8ad0cd",
+      "type": "Book",
+      "name": "Founders at Work: Stories of Startups' Early Days",
+      "image": "https://m.media-amazon.com/images/I/61pKmSHzKKL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/6eef6d8ad0cd#h-207bbe68",
+      "type": "Highlight",
+      "inBook": "kg:book/6eef6d8ad0cd",
+      "highlightText": "People like the idea of innovation in the abstract, but when you present them with any specific innovation, they tend to reject it because it doesn't fit with what they already know."
+    },
+    {
+      "id": "kg:highlight/6eef6d8ad0cd#h-199f8f13",
+      "type": "Highlight",
+      "inBook": "kg:book/6eef6d8ad0cd",
+      "highlightText": "\"Don't worry about people stealing your ideas. If your ideas are any good, you'll have to ram them down people's throats.\""
+    },
+    {
+      "id": "kg:highlight/6eef6d8ad0cd#h-c8509659",
+      "type": "Highlight",
+      "inBook": "kg:book/6eef6d8ad0cd",
+      "highlightText": "In math, you have to see how much you can squeeze out of it, and in the user interface, you have to make it feel like it's not taking that long, even though it really is taking like 2 seconds, which is a really long time."
+    },
+    {
+      "id": "kg:highlight/6eef6d8ad0cd#h-a50d6817",
+      "type": "Highlight",
+      "inBook": "kg:book/6eef6d8ad0cd",
+      "highlightText": "By the time that's all accomplished, you are a very safe user. But by then you are also not a user, because for every step you have to take, the dropoff rate is probably 30 percent."
+    },
+    {
+      "id": "kg:highlight/6eef6d8ad0cd#h-bbdbf395",
+      "type": "Highlight",
+      "inBook": "kg:book/6eef6d8ad0cd",
+      "highlightText": "Levchin: We built the system to be viral from day one. The idea was: I can send you the money, even if you aren't a member. If I send you $10, you get an email saying, \"You have $10 waiting for you. Sign up, and you can take it.\" That's the most powerful viral driver there is. Free money available to you."
+    },
+    {
+      "id": "kg:book/a88e50a042ff",
+      "type": "Book",
+      "name": "The Elements of Computing Systems, second edition: Building a Modern Computer from First Principles",
+      "image": "https://m.media-amazon.com/images/I/71AirYHis9L._SY160.jpg"
+    },
+    {
+      "id": "kg:book/798534c9f368",
+      "type": "Book",
+      "name": "The Unincorporated Man (The Unincorporated Man, 1)",
+      "image": "https://m.media-amazon.com/images/I/81gjoj4JiTL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/798534c9f368#h-d66da60c",
+      "type": "Highlight",
+      "inBook": "kg:book/798534c9f368",
+      "highlightText": "The counterpart for education (financing) would be to “buy” a share in an individual’s earning prospects; to advance him the funds needed to finance his training on condition that he agree to pay the lender a specified fraction of his future earnings."
+    },
+    {
+      "id": "kg:highlight/798534c9f368#h-2dbc64ab",
+      "type": "Highlight",
+      "inBook": "kg:book/798534c9f368",
+      "highlightText": "Neela spoke of instances where avatars had played matchmaker by scanning the Neuro for partner compatibility, going so far as to arrange the unsuspecting owners’ schedules around a “chance” meeting."
+    },
+    {
+      "id": "kg:book/4fe5cd1bd907",
+      "type": "Book",
+      "name": "Hackers: Heroes of the Computer Revolution - 25th Anniversary Edition",
+      "image": "https://m.media-amazon.com/images/I/91JTO5QC9vL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/4fe5cd1bd907#h-f5bcca7b",
+      "type": "Highlight",
+      "inBook": "kg:book/4fe5cd1bd907",
+      "highlightText": "Beneath their often unimposing"
+    },
+    {
+      "id": "kg:highlight/4fe5cd1bd907#h-23e580d2",
+      "type": "Highlight",
+      "inBook": "kg:book/4fe5cd1bd907",
+      "highlightText": "exteriors, they were adventurers, visionaries, risk-takers, artists ."
+    },
+    {
+      "id": "kg:highlight/4fe5cd1bd907#h-8edc57c2",
+      "type": "Highlight",
+      "inBook": "kg:book/4fe5cd1bd907",
+      "highlightText": "As I talked to these digital explorers, ranging from those who tamed multimillion-dollar machines in the 1950s to contemporary young wizards who mastered computers in their suburban bedrooms, I found a common element, a common philosophy that seemed tied to the elegantly flowing logic of the computer itself. It was a philosophy of sharing, openness, decentralization, and getting your hands on machines at any cost to improve the machines and to improve the world."
+    },
+    {
+      "id": "kg:highlight/4fe5cd1bd907#h-3aa3bf71",
+      "type": "Highlight",
+      "inBook": "kg:book/4fe5cd1bd907",
+      "highlightText": "This Hacker Ethic is their gift to us: something with value even to those of us with no interest at all in computers."
+    },
+    {
+      "id": "kg:highlight/4fe5cd1bd907#h-070aab93",
+      "type": "Highlight",
+      "inBook": "kg:book/4fe5cd1bd907",
+      "highlightText": "Of course it will reflect your own stupidity, and often what you tell it to do will result in something distasteful."
+    },
+    {
+      "id": "kg:book/f6d2cc1f924d",
+      "type": "Book",
+      "name": "Operating Systems: Three Easy Pieces",
+      "image": "https://m.media-amazon.com/images/I/81dYVXSuEOL._SY160.jpg"
+    },
+    {
+      "id": "kg:book/3794fd21d32b",
+      "type": "Book",
+      "name": "But How Do It Know? - The Basic Principles of Computers for Everyone",
+      "image": "https://m.media-amazon.com/images/I/71aBBRizxyL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/3794fd21d32b#h-8d5d2ac3",
+      "type": "Highlight",
+      "inBook": "kg:book/3794fd21d32b",
+      "highlightText": "A bit is some kind of a physical object that has a size and a location in space, and it has some quality about itself, that at any given time can be in one of two possible states, and may be made to change back and forth between those two states."
+    },
+    {
+      "id": "kg:highlight/3794fd21d32b#h-80c4873c",
+      "type": "Highlight",
+      "inBook": "kg:book/3794fd21d32b",
+      "highlightText": "That is, the bits in a computer are places that either have electricity or they do not."
+    },
+    {
+      "id": "kg:highlight/3794fd21d32b#h-3f84742e",
+      "type": "Highlight",
+      "inBook": "kg:book/3794fd21d32b",
+      "highlightText": "A computer gate generates a third bit from two other bits, it doesn’t open and close or stop or let anything through."
+    },
+    {
+      "id": "kg:highlight/3794fd21d32b#h-ca37eac5",
+      "type": "Highlight",
+      "inBook": "kg:book/3794fd21d32b",
+      "highlightText": "lowercase. Then there are the numbers 0 through"
+    },
+    {
+      "id": "kg:highlight/3794fd21d32b#h-9a51b5af",
+      "type": "Highlight",
+      "inBook": "kg:book/3794fd21d32b",
+      "highlightText": "The one thing you don’t want to do is to enable the outputs of two registers onto the bus at the same time."
+    },
+    {
+      "id": "kg:book/84d516525592",
+      "type": "Book",
+      "name": "Algorithms to Live By: The Computer Science of Human Decisions",
+      "image": "https://m.media-amazon.com/images/I/81ez4zmYpuL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/84d516525592#h-d835a9a8",
+      "type": "Highlight",
+      "inBook": "kg:book/84d516525592",
+      "highlightText": "Talking about algorithms for human lives might seem like an odd juxtaposition. For many people, the word “algorithm” evokes the arcane and inscrutable machinations of big data, big government, and big business: increasingly part of the infrastructure of the modern world, but hardly a source of practical wisdom or guidance for human affairs."
+    },
+    {
+      "id": "kg:highlight/84d516525592#h-e9ac0614",
+      "type": "Highlight",
+      "inBook": "kg:book/84d516525592",
+      "highlightText": "Optimal stopping tells us when to look and when to leap. The explore/exploit tradeoff tells us how to find the balance between trying new things and enjoying our favorites. Sorting theory tells us how (and whether) to arrange our offices. Caching theory tells us how to fill our closets. Scheduling theory tells us how to fill our time."
+    },
+    {
+      "id": "kg:highlight/84d516525592#h-b19b126f",
+      "type": "Highlight",
+      "inBook": "kg:book/84d516525592",
+      "highlightText": "Most broadly, looking through the lens of computer science can teach us about the nature of the human mind, the meaning of rationality, and the oldest question of all: how to live."
+    },
+    {
+      "id": "kg:highlight/84d516525592#h-25230c5e",
+      "type": "Highlight",
+      "inBook": "kg:book/84d516525592",
+      "highlightText": "Instead, tackling real-world tasks requires being comfortable with chance, trading off time with accuracy, and using approximations. As computers become"
+    },
+    {
+      "id": "kg:highlight/84d516525592#h-ed786368",
+      "type": "Highlight",
+      "inBook": "kg:book/84d516525592",
+      "highlightText": "Don’t always consider all your options. Don’t necessarily go for the outcome that seems best every time."
+    },
+    {
+      "id": "kg:book/7a47a8d46710",
+      "type": "Book",
+      "name": "The Best Short Stories of Fyodor Dostoevsky (Modern Library Classics)",
+      "image": "https://m.media-amazon.com/images/I/510hwzhHPTL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/7a47a8d46710#h-e2dd4587",
+      "type": "Highlight",
+      "inBook": "kg:book/7a47a8d46710",
+      "highlightText": "for every worthy gentleman of a solidly-prosperous and dignified position"
+    },
+    {
+      "id": "kg:highlight/7a47a8d46710#h-8c71d233",
+      "type": "Highlight",
+      "inBook": "kg:book/7a47a8d46710",
+      "highlightText": "it seems as though the whole of Petersburg were about to turn into a desert, and it is hardly surprising that in the end I am overwhelmed with shame, humiliation, and sadness. For I have no possible excuse for going to the country; neither have I any country cottage I can go"
+    },
+    {
+      "id": "kg:highlight/7a47a8d46710#h-1fd3b37e",
+      "type": "Highlight",
+      "inBook": "kg:book/7a47a8d46710",
+      "highlightText": "There is something indescribably moving in the way nature in Petersburg, suddenly with the coming of spring, reveals herself in all her might and glory, in all the splendour with which heaven has endowed her, in the way she blossoms out, dresses up, decks herself out with flowers.…"
+    },
+    {
+      "id": "kg:highlight/7a47a8d46710#h-33940bc2",
+      "type": "Highlight",
+      "inBook": "kg:book/7a47a8d46710",
+      "highlightText": "I was walking along and singing, for when I am happy I always hum some tune to myself like every happy man who has neither friends nor good acquaintances, and who has no one to share his joy with in a moment of happiness."
+    },
+    {
+      "id": "kg:highlight/7a47a8d46710#h-34044e32",
+      "type": "Highlight",
+      "inBook": "kg:book/7a47a8d46710",
+      "highlightText": "He had reached the age of discretion, but there was no discretion in his unsteady gait."
+    },
+    {
+      "id": "kg:book/0335ad16a755",
+      "type": "Book",
+      "name": "The Kill Chain: Defending America in the Future of High-Tech Warfare",
+      "image": "https://m.media-amazon.com/images/I/81blLjF6atL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/0335ad16a755#h-882657b6",
+      "type": "Highlight",
+      "inBook": "kg:book/0335ad16a755",
+      "highlightText": "In short, we mistake inputs for outcomes."
+    },
+    {
+      "id": "kg:highlight/0335ad16a755#h-2434173d",
+      "type": "Highlight",
+      "inBook": "kg:book/0335ad16a755",
+      "highlightText": "The goal is to buy deterrence, the prevention of war. And the only way to deter wars is to be so clearly capable of winning them that no rival power ever seeks to get its way through violence."
+    },
+    {
+      "id": "kg:highlight/0335ad16a755#h-8d00d592",
+      "type": "Highlight",
+      "inBook": "kg:book/0335ad16a755",
+      "highlightText": "The kill chain is a process that occurs on the battlefield or wherever militaries compete. It involves three steps: The first is gaining understanding about what is happening. The second is making a decision about what to do. And the third is taking action that creates an effect to achieve an objective."
+    },
+    {
+      "id": "kg:highlight/0335ad16a755#h-30b4c4fe",
+      "type": "Highlight",
+      "inBook": "kg:book/0335ad16a755",
+      "highlightText": "When members of the US military complete that process of understanding, deciding, and acting, they refer to it as “closing the kill chain.” And when they thwart the ability of a rival military to do so itself, they call that “breaking the kill chain.” How fast, how often, and how effectively militaries can do both of these things is what determines whether they win or lose."
+    },
+    {
+      "id": "kg:highlight/0335ad16a755#h-18ba97e3",
+      "type": "Highlight",
+      "inBook": "kg:book/0335ad16a755",
+      "highlightText": "Businesses have to understand their market, decide how to compete, and then act on their plans."
+    },
+    {
+      "id": "kg:book/98c717a47a48",
+      "type": "Book",
+      "name": "Tribe Of Mentors: Short Life Advice from the Best in the World",
+      "image": "https://m.media-amazon.com/images/I/81lWIvuwMbL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/98c717a47a48#h-99093a59",
+      "type": "Highlight",
+      "inBook": "kg:book/98c717a47a48",
+      "highlightText": "What would this look like if it were easy? is such a lovely and deceptively leveraged question. It’s easy to convince yourself that things need to be hard, that if you’re not redlining, you’re not trying hard enough. This leads us to look for paths of most resistance, often creating unnecessary hardship in the process."
+    },
+    {
+      "id": "kg:highlight/98c717a47a48#h-6b1e892c",
+      "type": "Highlight",
+      "inBook": "kg:book/98c717a47a48",
+      "highlightText": "Life punishes the vague wish and rewards the specific ask."
+    },
+    {
+      "id": "kg:highlight/98c717a47a48#h-dee6eab4",
+      "type": "Highlight",
+      "inBook": "kg:book/98c717a47a48",
+      "highlightText": "“The stupidity of people comes from having an answer for everything. The wisdom of the novel comes from having a question for everything.”"
+    },
+    {
+      "id": "kg:highlight/98c717a47a48#h-836d8a65",
+      "type": "Highlight",
+      "inBook": "kg:book/98c717a47a48",
+      "highlightText": "“Life shrinks or expands in proportion to one’s courage.”"
+    },
+    {
+      "id": "kg:highlight/98c717a47a48#h-6ac9c7c4",
+      "type": "Highlight",
+      "inBook": "kg:book/98c717a47a48",
+      "highlightText": "a short reminder that success can usually be measured by the number of uncomfortable conversations we are willing to have, and by the number of uncomfortable actions we are willing to take."
+    },
+    {
+      "id": "kg:book/b0b2f7c3f4c9",
+      "type": "Book",
+      "name": "Benjamin Franklin: An American Life",
+      "image": "https://m.media-amazon.com/images/I/91b4Rhig49L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/b0b2f7c3f4c9#h-d46542c8",
+      "type": "Highlight",
+      "inBook": "kg:book/b0b2f7c3f4c9",
+      "highlightText": "But the image he created was rooted in reality. Born and bred a member of the leather-aproned class, Franklin was, at least for most of his life, more comfortable with artisans and thinkers than with the established elite, and he was allergic to the pomp and perks of a hereditary aristocracy."
+    },
+    {
+      "id": "kg:highlight/b0b2f7c3f4c9#h-ba4bbff8",
+      "type": "Highlight",
+      "inBook": "kg:book/b0b2f7c3f4c9",
+      "highlightText": "And we would relate to the way he tried to balance, sometimes uneasily, the pursuit of reputation, wealth, earthly virtues, and spiritual values."
+    },
+    {
+      "id": "kg:highlight/b0b2f7c3f4c9#h-cd8cc990",
+      "type": "Highlight",
+      "inBook": "kg:book/b0b2f7c3f4c9",
+      "highlightText": "His morality was built on a sincere belief in leading a virtuous life, serving the country he loved, and hoping to achieve salvation through good works."
+    },
+    {
+      "id": "kg:highlight/b0b2f7c3f4c9#h-b094936c",
+      "type": "Highlight",
+      "inBook": "kg:book/b0b2f7c3f4c9",
+      "highlightText": "How does one live a life that is useful, virtuous, worthy, moral, and spiritually meaningful? For that matter, which of these attributes is most important? These are questions just as vital for a self-satisfied age as they were for a revolutionary one."
+    },
+    {
+      "id": "kg:highlight/b0b2f7c3f4c9#h-d7ab1372",
+      "type": "Highlight",
+      "inBook": "kg:book/b0b2f7c3f4c9",
+      "highlightText": "Proud but without great pretension, assertive of their rights as members of an independent middle class, these freeholders came to be known as franklins, from the Middle English word “frankeleyn,” meaning freeman."
+    },
+    {
+      "id": "kg:book/4c8cbc0e107c",
+      "type": "Book",
+      "name": "The Dao of Capital: Austrian Investing in a Distorted World",
+      "image": "https://m.media-amazon.com/images/I/51xiWB0PfWL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/4c8cbc0e107c#h-3f8ba91a",
+      "type": "Highlight",
+      "inBook": "kg:book/4c8cbc0e107c",
+      "highlightText": "He never attempted to soften his stance nor mute his philosophy to become more acceptable to the conventional economic community. If he had chosen to do so, no doubt he would have received greater recognition during his lifetime. But rather than recognition, his goal was the pursuit of economic truth."
+    },
+    {
+      "id": "kg:highlight/4c8cbc0e107c#h-45cf9da8",
+      "type": "Highlight",
+      "inBook": "kg:book/4c8cbc0e107c",
+      "highlightText": "The core of the Austrian School is the unpredictability of human action and the enormous influence individual choice wields in how economics works."
+    },
+    {
+      "id": "kg:highlight/4c8cbc0e107c#h-25427a8d",
+      "type": "Highlight",
+      "inBook": "kg:book/4c8cbc0e107c",
+      "highlightText": "value, the role of the entrepreneur, and the pursuit of capital creation to advance society itself."
+    },
+    {
+      "id": "kg:highlight/4c8cbc0e107c#h-55320c3e",
+      "type": "Highlight",
+      "inBook": "kg:book/4c8cbc0e107c",
+      "highlightText": "Rather than calming the markets by their actions, central banks create ever-mounting levels of distortion."
+    },
+    {
+      "id": "kg:highlight/4c8cbc0e107c#h-3b34cfb7",
+      "type": "Highlight",
+      "inBook": "kg:book/4c8cbc0e107c",
+      "highlightText": "Our nation was founded on the value of liberty, and I have never needed to be convinced of the merits of individual freedom. Other forces challenged my natural instincts toward freedom—an education establishment, the media, and government. They constantly preached that we need government to protect us from virtually everything, including ourselves."
+    },
+    {
+      "id": "kg:book/769941bb4c23",
+      "type": "Book",
+      "name": "Land of Lisp: Learn to Program in Lisp, One Game at a Time!",
+      "image": "https://m.media-amazon.com/images/I/91UOIRASK-L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/769941bb4c23#h-4d0432be",
+      "type": "Highlight",
+      "inBook": "kg:book/769941bb4c23",
+      "highlightText": "Some call it the Windigo; others refer to it as a yeti, Sasquatch, or rms."
+    },
+    {
+      "id": "kg:highlight/769941bb4c23#h-a7eeed83",
+      "type": "Highlight",
+      "inBook": "kg:book/769941bb4c23",
+      "highlightText": "To make a programming language powerful, you need to make it expressive. Having an expressive language means that you can do a lot of stuff with very little actual code."
+    },
+    {
+      "id": "kg:book/7e9892100869",
+      "type": "Book",
+      "name": "The Mom Test: How to talk to customers & learn if your business is a good idea when everyone is lying to you",
+      "image": "https://m.media-amazon.com/images/I/71HN4NPDhhL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/7e9892100869#h-baf72f84",
+      "type": "Highlight",
+      "inBook": "kg:book/7e9892100869",
+      "highlightText": "That’s a bigger concept and something Steve Blank has covered comprehensively in 4 Steps to the Epiphany and The Startup Owner’s Manual."
+    },
+    {
+      "id": "kg:highlight/7e9892100869#h-6cfda502",
+      "type": "Highlight",
+      "inBook": "kg:book/7e9892100869",
+      "highlightText": "The measure of usefulness of an early customer conversation is whether it gives us concrete facts about our customers’ lives and world views."
+    },
+    {
+      "id": "kg:highlight/7e9892100869#h-ff882e2f",
+      "type": "Highlight",
+      "inBook": "kg:book/7e9892100869",
+      "highlightText": "only the market can tell if your idea is good."
+    },
+    {
+      "id": "kg:highlight/7e9892100869#h-299db16c",
+      "type": "Highlight",
+      "inBook": "kg:book/7e9892100869",
+      "highlightText": "The value comes from understanding why they want these features."
+    },
+    {
+      "id": "kg:highlight/7e9892100869#h-59ce1401",
+      "type": "Highlight",
+      "inBook": "kg:book/7e9892100869",
+      "highlightText": "You aren’t building the product by committee."
+    },
+    {
+      "id": "kg:book/168be9ffd1c6",
+      "type": "Book",
+      "name": "The Fountainhead (Centennial ed. Edition)",
+      "image": "https://m.media-amazon.com/images/I/71m1XcQSjaL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/168be9ffd1c6#h-ccbd5c61",
+      "type": "Highlight",
+      "inBook": "kg:book/168be9ffd1c6",
+      "highlightText": "what tension of thought had achieved the simplicity."
+    },
+    {
+      "id": "kg:highlight/168be9ffd1c6#h-d1e88153",
+      "type": "Highlight",
+      "inBook": "kg:book/168be9ffd1c6",
+      "highlightText": "I shouldn't have waited for you to throw me out. I should have left long ago.”"
+    },
+    {
+      "id": "kg:highlight/168be9ffd1c6#h-7b89a28b",
+      "type": "Highlight",
+      "inBook": "kg:book/168be9ffd1c6",
+      "highlightText": "“If you wish. I want to be an architect, not an archeologist. I see no purpose in doing Renaissance villas. Why learn to design them, when I'll never build them?”"
+    },
+    {
+      "id": "kg:highlight/168be9ffd1c6#h-def5e059",
+      "type": "Highlight",
+      "inBook": "kg:book/168be9ffd1c6",
+      "highlightText": "“I came here to learn about building. When I was given a project, its only value to me was to learn to solve it as I would solve I a real one in the future. I did them the way I'll build them. I've | learned all I could learn here--in the structural sciences of which you don't approve. One more year of drawing Italian post cards would give me nothing.”"
+    },
+    {
+      "id": "kg:highlight/168be9ffd1c6#h-afd445c1",
+      "type": "Highlight",
+      "inBook": "kg:book/168be9ffd1c6",
+      "highlightText": "“Yes.” “My dear fellow, who will let you?” “That's not the point. The point is, who will stop me?”"
+    },
+    {
+      "id": "kg:book/0db402b20199",
+      "type": "Book",
+      "name": "Introducing Game Theory: A Graphic Guide (Graphic Guides)",
+      "image": "https://m.media-amazon.com/images/I/91Nb09aN5NL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/0db402b20199#h-81760b02",
+      "type": "Highlight",
+      "inBook": "kg:book/0db402b20199",
+      "highlightText": "Game theory is a set of tools used to help analyze situations where an individual’s best course of action depends on what others do or are expected to do. Game theory allows us to understand how people act in situations where they are interconnected."
+    },
+    {
+      "id": "kg:highlight/0db402b20199#h-2bf7c792",
+      "type": "Highlight",
+      "inBook": "kg:book/0db402b20199",
+      "highlightText": "Game theory is useful whenever there is strategic interaction, whenever how well you do depends on the actions of others as well as your own choices. In"
+    },
+    {
+      "id": "kg:highlight/0db402b20199#h-8e7cf85f",
+      "type": "Highlight",
+      "inBook": "kg:book/0db402b20199",
+      "highlightText": "Game theory usually assumes rationality and common knowledge of rationality. Rationality refers to players understanding the setup of the game and exercising the ability to reason."
+    },
+    {
+      "id": "kg:highlight/0db402b20199#h-d95696b8",
+      "type": "Highlight",
+      "inBook": "kg:book/0db402b20199",
+      "highlightText": "If you can predict the behaviour of the average investor, you can make a killing."
+    },
+    {
+      "id": "kg:highlight/0db402b20199#h-27521cf4",
+      "type": "Highlight",
+      "inBook": "kg:book/0db402b20199",
+      "highlightText": "In other words, any strategy with a guess greater than 67 is dominated by 67. A strategy is dominated if it (in this case, a guess higher than 67) is worse than another strategy (guessing 67) regardless of what other players do."
+    },
+    {
+      "id": "kg:book/2a780216de5e",
+      "type": "Book",
+      "name": "Capitalism: The Unknown Ideal",
+      "image": "https://m.media-amazon.com/images/I/71tUJalSenL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/2a780216de5e#h-cadbef6c",
+      "type": "Highlight",
+      "inBook": "kg:book/2a780216de5e",
+      "highlightText": "Implicitly, uncritically, and by default, political economy accepted as its axioms the fundamental tenets of collectivism."
+    },
+    {
+      "id": "kg:highlight/2a780216de5e#h-11f17d35",
+      "type": "Highlight",
+      "inBook": "kg:book/2a780216de5e",
+      "highlightText": "The fact that the principal “resource” involved was man himself, that he was an entity of a specific nature with specific capacities and requirements, was given the most superficial attention, if any."
+    },
+    {
+      "id": "kg:highlight/2a780216de5e#h-1758afcb",
+      "type": "Highlight",
+      "inBook": "kg:book/2a780216de5e",
+      "highlightText": "Political economy was, in effect, a science starting in midstream:"
+    },
+    {
+      "id": "kg:highlight/2a780216de5e#h-a72ef8cc",
+      "type": "Highlight",
+      "inBook": "kg:book/2a780216de5e",
+      "highlightText": "it observed that men were producing and trading, it took for granted that they had always done so and always would—it accepted this fact as the given, requiring no further consideration—and it addressed itself to the problem of how to devise the best way for the “community” to dispose of human effort."
+    },
+    {
+      "id": "kg:highlight/2a780216de5e#h-ce8de3f0",
+      "type": "Highlight",
+      "inBook": "kg:book/2a780216de5e",
+      "highlightText": "It must be remembered that the institution of private property, in the full, legal meaning of the term, was brought into existence only by capitalism."
+    },
+    {
+      "id": "kg:book/8b03385b05d2",
+      "type": "Book",
+      "name": "Lean Analytics: Use Data to Build a Better Startup Faster (Lean (O'Reilly))",
+      "image": "https://m.media-amazon.com/images/I/81Az4KZxF7L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/8b03385b05d2#h-6e85597d",
+      "type": "Highlight",
+      "inBook": "kg:book/8b03385b05d2",
+      "highlightText": "Don’t sell what you can make; make what you can sell."
+    },
+    {
+      "id": "kg:highlight/8b03385b05d2#h-c127d904",
+      "type": "Highlight",
+      "inBook": "kg:book/8b03385b05d2",
+      "highlightText": "Instincts are experiments. Data is proof."
+    },
+    {
+      "id": "kg:highlight/8b03385b05d2#h-dc24e3cb",
+      "type": "Highlight",
+      "inBook": "kg:book/8b03385b05d2",
+      "highlightText": "“Hosts with professional photography will get more business. And hosts will sign up for professional photography as a service.”"
+    },
+    {
+      "id": "kg:highlight/8b03385b05d2#h-954915ee",
+      "type": "Highlight",
+      "inBook": "kg:book/8b03385b05d2",
+      "highlightText": "you can understand how changes affect overall health. Otherwise, you might do something that increases sales revenue at the expense of growth."
+    },
+    {
+      "id": "kg:highlight/8b03385b05d2#h-16b2631f",
+      "type": "Highlight",
+      "inBook": "kg:book/8b03385b05d2",
+      "highlightText": "River Out Of Eden (Basic"
+    },
+    {
+      "id": "kg:book/b6a1dc2a982e",
+      "type": "Book",
+      "name": "The Metamorphosis of Prime Intellect: a novel of the singularity",
+      "image": "https://m.media-amazon.com/images/I/91v6TdmkXmL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/b6a1dc2a982e#h-6a705a9d",
+      "type": "Highlight",
+      "inBook": "kg:book/b6a1dc2a982e",
+      "highlightText": "At the moment Caroline looked to be in her mid to late twenties. Her athletic build was the result of real exercise, her skills the result of real practice."
+    },
+    {
+      "id": "kg:highlight/b6a1dc2a982e#h-1b175ced",
+      "type": "Highlight",
+      "inBook": "kg:book/b6a1dc2a982e",
+      "highlightText": "Lawrence realized that he had not really created Prime Intellect to make the world a better place. He had created it to prove he could do it, to bask in the glory, and to prove himself the equal of God. He had created for the momentary pleasure of personal success, and he had not cared about the distant outcome."
+    },
+    {
+      "id": "kg:highlight/b6a1dc2a982e#h-feb5a1c6",
+      "type": "Highlight",
+      "inBook": "kg:book/b6a1dc2a982e",
+      "highlightText": "Prime Intellect found that it could do a three-dimensional scan of an area of space, and make an image of it at just about any resolution it wanted. It scanned Lawrence's office, then the building, then the greater fraction of the ChipTec corporate \"campus.\""
+    },
+    {
+      "id": "kg:highlight/b6a1dc2a982e#h-55611e71",
+      "type": "Highlight",
+      "inBook": "kg:book/b6a1dc2a982e",
+      "highlightText": "If there was no salvation in life, she could at least seek vengeance."
+    },
+    {
+      "id": "kg:highlight/b6a1dc2a982e#h-1f127864",
+      "type": "Highlight",
+      "inBook": "kg:book/b6a1dc2a982e",
+      "highlightText": "To Prime Intellect, a computer, more accurately a computer program, human beings weren't so much bodies with form and mass as they were minds which interacted with an abstract world through an arbitrary interface."
+    },
+    {
+      "id": "kg:book/15df1307ae7f",
+      "type": "Book",
+      "name": "Token Economy: How the Web3 reinvents the Internet (Token Economy: How the Web3 reinvents the internet (English original & foreign language translations) Book 1)",
+      "image": "https://m.media-amazon.com/images/I/71kw50hhE-L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/15df1307ae7f#h-2439127d",
+      "type": "Highlight",
+      "inBook": "kg:book/15df1307ae7f",
+      "highlightText": "The Web3 changes the data structures in the backend of the Internet, introducing a universal state layer, often by incentivizing network actors with a token. The backbone of this Web3 is represented by a series of blockchain networks or similar distributed ledgers."
+    },
+    {
+      "id": "kg:highlight/15df1307ae7f#h-c03f57af",
+      "type": "Highlight",
+      "inBook": "kg:book/15df1307ae7f",
+      "highlightText": "Apart from computation we need file storage, messaging, identities, external data (oracles) and many other decentralized services."
+    },
+    {
+      "id": "kg:highlight/15df1307ae7f#h-8526e108",
+      "type": "Highlight",
+      "inBook": "kg:book/15df1307ae7f",
+      "highlightText": "Cryptoeconomics can be defined as the study of economic interaction in untrusted environments, where every actor could potentially be corrupt. It is interdisciplinary, and requires a deep understanding of cryptography, economics, and P2P networks, and what motivates network actors."
+    },
+    {
+      "id": "kg:highlight/15df1307ae7f#h-44df6336",
+      "type": "Highlight",
+      "inBook": "kg:book/15df1307ae7f",
+      "highlightText": "The Bitcoin network is the first practical instance of cryptoeconomics. It produces “trust by math” rather than “trust by legal contract.”"
+    },
+    {
+      "id": "kg:highlight/15df1307ae7f#h-2cafac19",
+      "type": "Highlight",
+      "inBook": "kg:book/15df1307ae7f",
+      "highlightText": "Cryptoeconomics therefore has much in common with mechanism design, a field of economics related to game theory."
+    },
+    {
+      "id": "kg:book/0cada197ddf7",
+      "type": "Book",
+      "name": "Germinal",
+      "image": "https://m.media-amazon.com/images/I/611AVX6BBUL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/0cada197ddf7#h-37171af8",
+      "type": "Highlight",
+      "inBook": "kg:book/0cada197ddf7",
+      "highlightText": "A single idea occupied his head—the empty head of a workman without work and without lodging—the hope that the cold would be less keen after sunrise."
+    },
+    {
+      "id": "kg:highlight/0cada197ddf7#h-1b24532b",
+      "type": "Highlight",
+      "inBook": "kg:book/0cada197ddf7",
+      "highlightText": "the rock drank his blood and swallowed his bones."
+    },
+    {
+      "id": "kg:highlight/0cada197ddf7#h-b48818ce",
+      "type": "Highlight",
+      "inBook": "kg:book/0cada197ddf7",
+      "highlightText": "Four o'clock struck in the Montsou tower and the cold became keener."
+    },
+    {
+      "id": "kg:highlight/0cada197ddf7#h-0e7b0dcf",
+      "type": "Highlight",
+      "inBook": "kg:book/0cada197ddf7",
+      "highlightText": "without illuminating the unknown."
+    },
+    {
+      "id": "kg:highlight/0cada197ddf7#h-63bff58e",
+      "type": "Highlight",
+      "inBook": "kg:book/0cada197ddf7",
+      "highlightText": "And the Voreux, at the bottom of its hole, with its posture as of an evil beast, continued to crunch, breathing with a heavier and slower respiration, troubled by its painful digestion of human flesh."
+    },
+    {
+      "id": "kg:book/6ca731baae27",
+      "type": "Book",
+      "name": "Letters from a Stoic: Epistulae Morales AD Lucilium",
+      "image": "https://m.media-amazon.com/images/I/810D1eJRbdL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/6ca731baae27#h-9d2e00d5",
+      "type": "Highlight",
+      "inBook": "kg:book/6ca731baae27",
+      "highlightText": "The Cynics were a wild bunch – the name is derived from the Greek word for “dog” – who supposedly neglected all social norms, including personal hygiene, in their desire to live according to “nature”."
+    },
+    {
+      "id": "kg:highlight/6ca731baae27#h-9ccd8703",
+      "type": "Highlight",
+      "inBook": "kg:book/6ca731baae27",
+      "highlightText": "This technique can be described as the practice of spiritual exercises or philosophical therapy. The idea of such exercises are to learn to confront suffering and adversity, and to be prepared for it."
+    },
+    {
+      "id": "kg:highlight/6ca731baae27#h-fec80d40",
+      "type": "Highlight",
+      "inBook": "kg:book/6ca731baae27",
+      "highlightText": "“There is, I assure you, a medical art for the soul. It is philosophy, whose aid need not be sought, as in bodily diseases, from outside ourselves. We must endeavour with all our resources and all our strength to become capable of doctoring ourselves.”"
+    },
+    {
+      "id": "kg:highlight/6ca731baae27#h-f17b2261",
+      "type": "Highlight",
+      "inBook": "kg:book/6ca731baae27",
+      "highlightText": "“Assist yourself by a frequent perusal of the entertaining moralists: Have recourse to the learning of PLUTARCH, the imagination of LUCIAN, the eloquence of CICERO, the wit of SENECA, the gaiety of MONTAIGNE, the sublimity of SHAFTESBURY. Moral precepts, so couched, strike deep, and fortify the mind against the illusions of passion. But trust not altogether to external aid: By habit and study acquire that philosophical temper which both gives force to reflection, and by rendering a great part of your happiness independent, takes off the edge from all disorderly passions, and tranquillizes the mind.”"
+    },
+    {
+      "id": "kg:highlight/6ca731baae27#h-2c643b8f",
+      "type": "Highlight",
+      "inBook": "kg:book/6ca731baae27",
+      "highlightText": "The different schools defined happiness in different ways, however. For the Stoics, like their Cynic predecessors, life’s ultimate end was living “according to nature”."
+    },
+    {
+      "id": "kg:book/1e39540df17c",
+      "type": "Book",
+      "name": "Algorithmic Game Theory",
+      "image": "https://m.media-amazon.com/images/I/41bUC42QsxL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/1e39540df17c#h-8c2b0968",
+      "type": "Highlight",
+      "inBook": "kg:book/1e39540df17c",
+      "highlightText": "Algorithms became the natural environment and default platform of strategic decision making."
+    },
+    {
+      "id": "kg:highlight/1e39540df17c#h-3d6dcb14",
+      "type": "Highlight",
+      "inBook": "kg:book/1e39540df17c",
+      "highlightText": "Internet was the first computational artifact that was not created by a single entity (engineer, design team, or company), but emerged from the strategic interaction of many."
+    },
+    {
+      "id": "kg:highlight/1e39540df17c#h-c3c14e51",
+      "type": "Highlight",
+      "inBook": "kg:book/1e39540df17c",
+      "highlightText": "The games we have seen so far share the feature that there is a unique optimal “selfish” strategy for each player, independent of what other players do."
+    },
+    {
+      "id": "kg:highlight/1e39540df17c#h-77361004",
+      "type": "Highlight",
+      "inBook": "kg:book/1e39540df17c",
+      "highlightText": "The simplest way to specify preferences is by assigning, for each player, a value to each outcome. In some games it will be natural to think of the values as the payoffs to players and in others as the costs incurred by players."
+    },
+    {
+      "id": "kg:highlight/1e39540df17c#h-544764d6",
+      "type": "Highlight",
+      "inBook": "kg:book/1e39540df17c",
+      "highlightText": "larger goal of mechanism design is often to design mechanisms in which the selfish behavior of players leads to such a socially optimal outcome."
+    },
+    {
+      "id": "kg:book/61c4e0fa3c07",
+      "type": "Book",
+      "name": "Learning Computer Architecture with Raspberry Pi",
+      "image": "https://m.media-amazon.com/images/I/51qcupUnm1L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/61c4e0fa3c07#h-0d104ae0",
+      "type": "Highlight",
+      "inBook": "kg:book/61c4e0fa3c07",
+      "highlightText": "each incremental improvement is increasingly hard won and exacts a growing toll in terms of cost and, critically, schedule."
+    },
+    {
+      "id": "kg:highlight/61c4e0fa3c07#h-d09b7e4b",
+      "type": "Highlight",
+      "inBook": "kg:book/61c4e0fa3c07",
+      "highlightText": "I have observed that teams that have the humility to accurately locate the knee bring simple, conservatively engineered systems to market in a timely fashion and then iterate rapidly, tend to win over moon-shot engineering."
+    },
+    {
+      "id": "kg:highlight/61c4e0fa3c07#h-4fbe5baa",
+      "type": "Highlight",
+      "inBook": "kg:book/61c4e0fa3c07",
+      "highlightText": "The job of a good architect is to accurately assign a cost to the risks associated with radical change, and to weigh this against the purported benefits."
+    },
+    {
+      "id": "kg:book/78cfed169154",
+      "type": "Book",
+      "name": "Merchants of Debt: The Full Version",
+      "image": "https://m.media-amazon.com/images/I/81mg73ckxJL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/78cfed169154#h-d5446451",
+      "type": "Highlight",
+      "inBook": "kg:book/78cfed169154",
+      "highlightText": "The new ownership group would take on a lot of debt, but aim to pay it off quickly. If this buyout worked out as planned, the KKR men hinted, the new owners could earn five times their money over the next five years."
+    },
+    {
+      "id": "kg:highlight/78cfed169154#h-788ff1aa",
+      "type": "Highlight",
+      "inBook": "kg:book/78cfed169154",
+      "highlightText": "Kravis and Roberts built their power not by squashing their rivals, but by providing succor to their allies."
+    },
+    {
+      "id": "kg:highlight/78cfed169154#h-a9890225",
+      "type": "Highlight",
+      "inBook": "kg:book/78cfed169154",
+      "highlightText": "Over several years’ time, most companies’ balance sheets recovered briskly from the initial debt shock of a buyout. Once borrowings had been reduced sufficiently, the big profit potential of a buyout had largely played out. And at that point, KKR executives sold each company, no matter how dull or glamorous, to new owners."
+    },
+    {
+      "id": "kg:highlight/78cfed169154#h-40424dd1",
+      "type": "Highlight",
+      "inBook": "kg:book/78cfed169154",
+      "highlightText": "“Never fall in love with anything except your wife and kids,” Roberts once remarked."
+    },
+    {
+      "id": "kg:highlight/78cfed169154#h-17a9b108",
+      "type": "Highlight",
+      "inBook": "kg:book/78cfed169154",
+      "highlightText": "Kravis and Roberts have also relied on two of the most enduring American characteristics of all: a handshake and a smile.”"
+    },
+    {
+      "id": "kg:book/ee704ec4a7e6",
+      "type": "Book",
+      "name": "Barbarian Days: A Surfing Life (Pulitzer Prize Winner)",
+      "image": "https://m.media-amazon.com/images/I/817jULG+LcL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/ee704ec4a7e6#h-78d15c63",
+      "type": "Highlight",
+      "inBook": "kg:book/ee704ec4a7e6",
+      "highlightText": "And so I passed the class hours slouched in back rows, keeping an eye on the trees outside for signs of wind direction and strength, drawing page after page of surfboards and waves."
+    },
+    {
+      "id": "kg:highlight/ee704ec4a7e6#h-90da84d4",
+      "type": "Highlight",
+      "inBook": "kg:book/ee704ec4a7e6",
+      "highlightText": "Glenn in particular was a superb surfer, with a style that was already flowing and beautiful."
+    },
+    {
+      "id": "kg:highlight/ee704ec4a7e6#h-b6d7a325",
+      "type": "Highlight",
+      "inBook": "kg:book/ee704ec4a7e6",
+      "highlightText": "caught and pulled into the wave of the day, his back slightly arched, his arms relaxed, making the extremely difficult—no, come on, the ecstatic—look easy."
+    },
+    {
+      "id": "kg:highlight/ee704ec4a7e6#h-4c90123a",
+      "type": "Highlight",
+      "inBook": "kg:book/ee704ec4a7e6",
+      "highlightText": "Adolescent cool was, as ever, mostly a mystery, but physical strength (read: early puberty), self-confidence (special bonus points for defying adults), and taste in music and clothes all counted."
+    },
+    {
+      "id": "kg:highlight/ee704ec4a7e6#h-98a205e4",
+      "type": "Highlight",
+      "inBook": "kg:book/ee704ec4a7e6",
+      "highlightText": "He was a formidable character, heavily muscled, severe. He ordered his sons around, not bothering with niceties."
+    },
+    {
+      "id": "kg:book/91a2839f66df",
+      "type": "Book",
+      "name": "Human Action: Scholar's Edition (LvMI)",
+      "image": "https://m.media-amazon.com/images/I/71cFGo2mfGL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/91a2839f66df#h-0abd596e",
+      "type": "Highlight",
+      "inBook": "kg:book/91a2839f66df",
+      "highlightText": "But all were fully convinced that there was in the course of social events no such regularity and invariance of phenomena as had already been found in the operation of human reasoning and in the sequence of natural phenomena."
+    },
+    {
+      "id": "kg:highlight/91a2839f66df#h-7973a052",
+      "type": "Highlight",
+      "inBook": "kg:book/91a2839f66df",
+      "highlightText": "In the course of social events there prevails a regularity of phenomena to which man must adjust his action if he wishes to succeed."
+    },
+    {
+      "id": "kg:highlight/91a2839f66df#h-b833a5c6",
+      "type": "Highlight",
+      "inBook": "kg:book/91a2839f66df",
+      "highlightText": "It is futile to approach social facts with the attitude of a censor who approves or disapproves from the point of view of quite arbitrary standards and subjective judgments of value."
+    },
+    {
+      "id": "kg:highlight/91a2839f66df#h-3a7e5ff8",
+      "type": "Highlight",
+      "inBook": "kg:book/91a2839f66df",
+      "highlightText": "Human action and social cooperation seen as the object of a science of given relations, no longer as a normative discipline of things that ought to be—"
+    },
+    {
+      "id": "kg:highlight/91a2839f66df#h-80ec9113",
+      "type": "Highlight",
+      "inBook": "kg:book/91a2839f66df",
+      "highlightText": "It is the science of every kind of human action."
+    },
+    {
+      "id": "kg:book/76f28c52ed99",
+      "type": "Book",
+      "name": "Propaganda",
+      "image": "https://m.media-amazon.com/images/I/81XIkANlwgL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/76f28c52ed99#h-df60029d",
+      "type": "Highlight",
+      "inBook": "kg:book/76f28c52ed99",
+      "highlightText": "the name propaganda applied in modern political language as a term of reproach to secret associations for the spread of opinions and principles which are viewed by most governments with horror and aversion,”"
+    },
+    {
+      "id": "kg:highlight/76f28c52ed99#h-a1df607e",
+      "type": "Highlight",
+      "inBook": "kg:book/76f28c52ed99",
+      "highlightText": "while the word then could be used to make a sinister impression, it did not automatically evoke subversive falsehood, as it has since the 1920s."
+    },
+    {
+      "id": "kg:highlight/76f28c52ed99#h-18fbac8c",
+      "type": "Highlight",
+      "inBook": "kg:book/76f28c52ed99",
+      "highlightText": "“Any association, systematic scheme, or concerted movement for the propagation of a particular doctrine or practice.”"
+    },
+    {
+      "id": "kg:highlight/76f28c52ed99#h-1718bf88",
+      "type": "Highlight",
+      "inBook": "kg:book/76f28c52ed99",
+      "highlightText": "Just as during the war, propaganda would at once exalt the nation and advance the civilizing process, teaching immigrants and other folks of modest means how to transform themselves, through smart consumption, into happy and presentable Americans."
+    },
+    {
+      "id": "kg:highlight/76f28c52ed99#h-ecd21582",
+      "type": "Highlight",
+      "inBook": "kg:book/76f28c52ed99",
+      "highlightText": "“Our effort was educational and informative throughout, for we had such confidence in our case as to feel that no other argument was needed than the simple, straightforward presentation of facts.”"
+    },
+    {
+      "id": "kg:book/a1295205718d",
+      "type": "Book",
+      "name": "Zen Mind, Beginner's Mind: Informal Talks on Zen Meditation and Practice",
+      "image": "https://m.media-amazon.com/images/I/71bkdKssVFL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/a1295205718d#h-a6f5457a",
+      "type": "Highlight",
+      "inBook": "kg:book/a1295205718d",
+      "highlightText": "What the teacher really offers the student is literally living proof that all this talk and the seemingly impossible goals can be realized in this lifetime."
+    },
+    {
+      "id": "kg:book/3e9a63538c61",
+      "type": "Book",
+      "name": "Meditations (AmazonClassics Edition)",
+      "image": "https://m.media-amazon.com/images/I/71t4Lhu+kVL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/3e9a63538c61#h-b263013f",
+      "type": "Highlight",
+      "inBook": "kg:book/3e9a63538c61",
+      "highlightText": "go about every action as thy last action, free from all vanity, all passionate and wilful aberration from reason, and from all hypocrisy, and self-love, and dislike of those things, which by the fates or appointment of God have happened unto thee."
+    },
+    {
+      "id": "kg:book/78d0ae5a1719",
+      "type": "Book",
+      "name": "The Mythical Man-Month: Essays on Software Engineering",
+      "image": "https://m.media-amazon.com/images/I/81nB+c2cIjL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/78d0ae5a1719#h-f690c3d0",
+      "type": "Highlight",
+      "inBook": "kg:book/78d0ae5a1719",
+      "highlightText": "rule of thumb, I estimate that a programming product costs at least three times as much as a debugged program with the same function."
+    },
+    {
+      "id": "kg:highlight/78d0ae5a1719#h-74003926",
+      "type": "Highlight",
+      "inBook": "kg:book/78d0ae5a1719",
+      "highlightText": "The real tiger is never a match for the paper one, unless actual use is wanted. Then the virtues of reality have a satisfaction all their own."
+    },
+    {
+      "id": "kg:highlight/78d0ae5a1719#h-5a6217de",
+      "type": "Highlight",
+      "inBook": "kg:book/78d0ae5a1719",
+      "highlightText": "The challenge and the mission are to find real solutions to real problems on actual schedules with available resources."
+    },
+    {
+      "id": "kg:highlight/78d0ae5a1719#h-5b399dba",
+      "type": "Highlight",
+      "inBook": "kg:book/78d0ae5a1719",
+      "highlightText": "Observe that for the programmer, as for the chef, the urgency of the patron may govern the scheduled completion of the task, but it cannot govern the actual completion."
+    },
+    {
+      "id": "kg:highlight/78d0ae5a1719#h-b602ea35",
+      "type": "Highlight",
+      "inBook": "kg:book/78d0ae5a1719",
+      "highlightText": "For efficiency and conceptual integrity, one prefers a few good minds doing design and construction."
+    },
+    {
+      "id": "kg:book/2fc3ab2e50c1",
+      "type": "Book",
+      "name": "An Introduction to Ocean Remote Sensing",
+      "image": "https://m.media-amazon.com/images/I/51N8GlCMY1L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/2fc3ab2e50c1#h-670126b1",
+      "type": "Highlight",
+      "inBook": "kg:book/2fc3ab2e50c1",
+      "highlightText": "The ocean also contains about 25% of the total planetary vegetation, with much of this restricted to a few coastal regions (Jeffrey and Mantoura, 1997)."
+    },
+    {
+      "id": "kg:highlight/2fc3ab2e50c1#h-289754a5",
+      "type": "Highlight",
+      "inBook": "kg:book/2fc3ab2e50c1",
+      "highlightText": "Between 80% and 90% of the world's fish catch occurs in these and similar regions."
+    },
+    {
+      "id": "kg:highlight/2fc3ab2e50c1#h-25477fe7",
+      "type": "Highlight",
+      "inBook": "kg:book/2fc3ab2e50c1",
+      "highlightText": "Societal concerns include the importance of the ocean to national security and naval operations, global commerce, the prediction of severe storms and hurricanes, fisheries management, the extraction of offshore gas, oil and minerals, and public health and recreation."
+    },
+    {
+      "id": "kg:highlight/2fc3ab2e50c1#h-f45fc4f5",
+      "type": "Highlight",
+      "inBook": "kg:book/2fc3ab2e50c1",
+      "highlightText": "about half of the global population lives within 200 km of the coast,"
+    },
+    {
+      "id": "kg:highlight/2fc3ab2e50c1#h-c9944c24",
+      "type": "Highlight",
+      "inBook": "kg:book/2fc3ab2e50c1",
+      "highlightText": "With these observations, there is an emphasis on the rapid dissemination of the data to the various government and private-sector users, and the use of this near-real-time data in numerical models and in other areas such as search-and-rescue, oceanographic research cruise support and the routing of cargo ships to avoid storms."
+    },
+    {
+      "id": "kg:book/d854e093b634",
+      "type": "Book",
+      "name": "The Selfish Gene: 40th Anniversary edition (Oxford Landmark Science)",
+      "image": "https://m.media-amazon.com/images/I/71+Ggj5aqKL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/d854e093b634#h-9dc35021",
+      "type": "Highlight",
+      "inBook": "kg:book/d854e093b634",
+      "highlightText": "Be warned that if you wish, as I do, to build a society in which individuals cooperate generously and unselfishly towards a common good, you can expect little help from biological nature."
+    },
+    {
+      "id": "kg:highlight/d854e093b634#h-fa49f23a",
+      "type": "Highlight",
+      "inBook": "kg:book/d854e093b634",
+      "highlightText": "Our genes may instruct us to be selfish, but we are not necessarily compelled to obey them all our lives."
+    },
+    {
+      "id": "kg:highlight/d854e093b634#h-7a717bd3",
+      "type": "Highlight",
+      "inBook": "kg:book/d854e093b634",
+      "highlightText": "Among animals, man is uniquely dominated by culture, by influences learned and handed down."
+    },
+    {
+      "id": "kg:highlight/d854e093b634#h-58091477",
+      "type": "Highlight",
+      "inBook": "kg:book/d854e093b634",
+      "highlightText": "It all depends where you stand in the debate over ‘nature versus nurture’ as determinants of human attributes."
+    },
+    {
+      "id": "kg:highlight/d854e093b634#h-88c39152",
+      "type": "Highlight",
+      "inBook": "kg:book/d854e093b634",
+      "highlightText": "Humans and baboons have evolved by natural selection."
+    },
+    {
+      "id": "kg:book/d34a4dc7ef77",
+      "type": "Book",
+      "name": "Models: Attract Women Through Honesty",
+      "image": "https://m.media-amazon.com/images/I/61vQfbje2DL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/d34a4dc7ef77#h-eb627c4a",
+      "type": "Highlight",
+      "inBook": "kg:book/d34a4dc7ef77",
+      "highlightText": "Neediness is when a man places a higher priority on others’ perceptions of him than his perception of himself."
+    },
+    {
+      "id": "kg:highlight/d34a4dc7ef77#h-a97b0e41",
+      "type": "Highlight",
+      "inBook": "kg:book/d34a4dc7ef77",
+      "highlightText": "The only real dating advice is self-improvement. Work on yourself. Conquer your anxieties. Resolve your shame. Take care of yourself and those who are important to you. Love yourself. Otherwise no, one else will."
+    },
+    {
+      "id": "kg:highlight/d34a4dc7ef77#h-f411b072",
+      "type": "Highlight",
+      "inBook": "kg:book/d34a4dc7ef77",
+      "highlightText": "It can mean putting yourself in a position where you can be rejected, saying a joke that may not be funny, asserting an opinion that may offend others, introducing yourself to a group of people you don’t know, telling a woman that you like her and want to date her. All of these things require you to stick your neck out on the line emotionally in some way. You’re making yourself vulnerable when you do them."
+    },
+    {
+      "id": "kg:highlight/d34a4dc7ef77#h-01b3de9c",
+      "type": "Highlight",
+      "inBook": "kg:book/d34a4dc7ef77",
+      "highlightText": "One stands tall, looks straight ahead. Looks people in the eye when he speaks to them. Says what he thinks and is comfortable if some people disagree with him. When he makes a mistake, he shrugs it off and apologizes if necessary. When he sucks at something, he admits it. He’s unafraid to express his emotions, even if that means he gets rejected because of them sometimes. He has no problem moving on to people who don’t reject him, but instead like him for who he is."
+    },
+    {
+      "id": "kg:highlight/d34a4dc7ef77#h-9ffcd726",
+      "type": "Highlight",
+      "inBook": "kg:book/d34a4dc7ef77",
+      "highlightText": "Chances are, if you’re reading this and are bad with women, then you’re bad with women because you don’t express your true feelings and intentions very well."
+    },
+    {
+      "id": "kg:book/2622e46874b2",
+      "type": "Book",
+      "name": "Salomé A Tragedy in One Act (French Edition)",
+      "image": "https://m.media-amazon.com/images/I/81vzr4PQbDL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/2622e46874b2#h-12a1d2d0",
+      "type": "Highlight",
+      "inBook": "kg:book/2622e46874b2",
+      "highlightText": "\"My dear fellow,\" he said, with his usual drawling emphasis, \"when I see a monstrous tulip with four wonderful petals in someone else's garden, I am impelled to grow a monstrous tulip with five wonderful petals, but that is no reason why someone should grow a tulip with only three petals.\" THAT WAS OSCAR WILDE."
+    },
+    {
+      "id": "kg:highlight/2622e46874b2#h-aa0ea296",
+      "type": "Highlight",
+      "inBook": "kg:book/2622e46874b2",
+      "highlightText": "painted on the walls, the images of the Chaldeans limned"
+    },
+    {
+      "id": "kg:highlight/2622e46874b2#h-20a682d6",
+      "type": "Highlight",
+      "inBook": "kg:book/2622e46874b2",
+      "highlightText": "Thy body is white like the lilies of a field that the mower hath never mowed."
+    },
+    {
+      "id": "kg:highlight/2622e46874b2#h-6ed0d28b",
+      "type": "Highlight",
+      "inBook": "kg:book/2622e46874b2",
+      "highlightText": "The pomegranate-flowers that blossom in the gardens of Tyre, and are redder than roses, are not so red."
+    },
+    {
+      "id": "kg:highlight/2622e46874b2#h-91fdb9af",
+      "type": "Highlight",
+      "inBook": "kg:book/2622e46874b2",
+      "highlightText": "Thy mouth is redder than the feet of those who tread the wine in the wine-press."
+    },
+    {
+      "id": "kg:book/9e2667392249",
+      "type": "Book",
+      "name": "The 4-Hour Workweek, Expanded and Updated: Expanded and Updated, With Over 100 New Pages of Cutting-Edge Content.",
+      "image": "https://m.media-amazon.com/images/I/81h0eCL9uwL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/9e2667392249#h-a77aa765",
+      "type": "Highlight",
+      "inBook": "kg:book/9e2667392249",
+      "highlightText": "Increase your per-hour results ten times or more with counterintuitive NR techniques for cultivating selective ignorance, developing a low-information diet, and otherwise ignoring the unimportant."
+    },
+    {
+      "id": "kg:highlight/9e2667392249#h-8ff9bb8f",
+      "type": "Highlight",
+      "inBook": "kg:book/9e2667392249",
+      "highlightText": "To make a ton of money with specific reasons and defined dreams to chase, timelines and steps included. What are you working for?"
+    },
+    {
+      "id": "kg:highlight/9e2667392249#h-db8f62d4",
+      "type": "Highlight",
+      "inBook": "kg:book/9e2667392249",
+      "highlightText": "Are you contributing anything useful to this world, or just shuffling papers, banging on a keyboard, and coming home to a drunken existence on the weekends?"
+    },
+    {
+      "id": "kg:highlight/9e2667392249#h-0f0851d7",
+      "type": "Highlight",
+      "inBook": "kg:book/9e2667392249",
+      "highlightText": "The goal is not to simply eliminate the bad, which does nothing more than leave you with a vacuum, but to pursue and experience the best in the world."
+    },
+    {
+      "id": "kg:highlight/9e2667392249#h-543811c3",
+      "type": "Highlight",
+      "inBook": "kg:book/9e2667392249",
+      "highlightText": "Focus on being productive instead of busy."
+    },
+    {
+      "id": "kg:book/8b705e4a2964",
+      "type": "Book",
+      "name": "Influence: The Psychology of Persuasion (Collins Business Essentials)",
+      "image": "https://m.media-amazon.com/images/I/81r7bdhCFeL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/8b705e4a2964#h-645be2af",
+      "type": "Highlight",
+      "inBook": "kg:book/8b705e4a2964",
+      "highlightText": "A well-known principle of human behavior says that when we ask someone to do us a favor we will be more successful if we provide a reason. People simply like to have reasons for what they do."
+    },
+    {
+      "id": "kg:highlight/8b705e4a2964#h-22d66566",
+      "type": "Highlight",
+      "inBook": "kg:book/8b705e4a2964",
+      "highlightText": "We have been subjected to them from such an early point in our lives, and they have moved us about so pervasively since then, that you and I rarely perceive their power."
+    },
+    {
+      "id": "kg:book/679da282ccf3",
+      "type": "Book",
+      "name": "Age of Ambition: Chasing Fortune, Truth, and Faith in the New China",
+      "image": "https://m.media-amazon.com/images/I/81u3KP4d4CL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/679da282ccf3#h-4560d9ca",
+      "type": "Highlight",
+      "inBook": "kg:book/679da282ccf3",
+      "highlightText": "The greatest fever of all was aspiration, a belief in the sheer possibility to remake a life. Some who tried succeeded; many others did not. More remarkable was that they defied a history that told them never to try."
+    },
+    {
+      "id": "kg:highlight/679da282ccf3#h-055b76e2",
+      "type": "Highlight",
+      "inBook": "kg:book/679da282ccf3",
+      "highlightText": "In 1978, the average Chinese income was $200; by 2014, it was $6,000. By almost every measure, the Chinese people have achieved longer, healthier, more educated lives."
+    },
+    {
+      "id": "kg:highlight/679da282ccf3#h-fe6d6115",
+      "type": "Highlight",
+      "inBook": "kg:book/679da282ccf3",
+      "highlightText": "The Party no longer promises equality or an end to toil. It promises only prosperity, pride, and strength."
+    },
+    {
+      "id": "kg:highlight/679da282ccf3#h-ca2206a8",
+      "type": "Highlight",
+      "inBook": "kg:book/679da282ccf3",
+      "highlightText": "China today is riven by contradictions. It is the world’s largest buyer of Louis Vuitton, second only to the United States in its purchases of Rolls-Royces and Lamborghinis, yet ruled by a Marxist-Leninist party that seeks to ban the word luxury from billboards."
+    },
+    {
+      "id": "kg:highlight/679da282ccf3#h-1c0e6dde",
+      "type": "Highlight",
+      "inBook": "kg:book/679da282ccf3",
+      "highlightText": "This book is an account of the collision of two forces: aspiration and authoritarianism."
+    },
+    {
+      "id": "kg:book/6f3b278f8b8a",
+      "type": "Book",
+      "name": "Descartes: A Very Short Introduction (Very Short Introductions Book 30)",
+      "image": "https://m.media-amazon.com/images/I/91blSqXu+JL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/6f3b278f8b8a#h-2c53223a",
+      "type": "Highlight",
+      "inBook": "kg:book/6f3b278f8b8a",
+      "highlightText": "He showed that the former was systematically open to doubt while the latter was free of uncertainty, and he proposed a method for detaching oneself from the sense-based conception and adopting the more objective one."
+    },
+    {
+      "id": "kg:highlight/6f3b278f8b8a#h-6a862fb6",
+      "type": "Highlight",
+      "inBook": "kg:book/6f3b278f8b8a",
+      "highlightText": "It held that the human mind was constituted by God to enjoy perfect certainty about material things when conceiving them mathematically; it pointed out that God had the power to create whatever we could conceive with certainty; and it held that God was too benevolent to let the human mind fall into error when it conceived with certainty the mathematical nature of matter."
+    },
+    {
+      "id": "kg:highlight/6f3b278f8b8a#h-43c7fc1b",
+      "type": "Highlight",
+      "inBook": "kg:book/6f3b278f8b8a",
+      "highlightText": "Descartes’s metaphysical theory now commands more attention than his own particular version of mathematical physics, for his most distinctive speculations in the physical sciences started to be superseded within a few decades of his death."
+    },
+    {
+      "id": "kg:highlight/6f3b278f8b8a#h-3febb7ee",
+      "type": "Highlight",
+      "inBook": "kg:book/6f3b278f8b8a",
+      "highlightText": "In the quasi-autobiographical Discourse on Method, published in 1637 as the preface to three of his scientific essays, he gave the impression that he endured rather than profited from his schooldays."
+    },
+    {
+      "id": "kg:highlight/6f3b278f8b8a#h-b28ab4fc",
+      "type": "Highlight",
+      "inBook": "kg:book/6f3b278f8b8a",
+      "highlightText": "‘If we could see how the sciences are linked together, we would find them no harder to retain in our minds than the series of numbers’"
+    },
+    {
+      "id": "kg:book/0af706f9c7d2",
+      "type": "Book",
+      "name": "Zero to One: Notes on Startups, or How to Build the Future",
+      "image": "https://m.media-amazon.com/images/I/71KztmNPs-L._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/0af706f9c7d2#h-2ca361b7",
+      "type": "Highlight",
+      "inBook": "kg:book/0af706f9c7d2",
+      "highlightText": "the division of the world into the so-called developed and developing nations implies that the “developed” world has already achieved the achievable, and that poorer nations just need to catch up. But I don’t think that’s true. My own answer"
+    },
+    {
+      "id": "kg:highlight/0af706f9c7d2#h-c13e88ed",
+      "type": "Highlight",
+      "inBook": "kg:book/0af706f9c7d2",
+      "highlightText": "The easiest explanation for this is negative: it’s hard to develop new things in big organizations, and it’s even harder to do it by yourself."
+    },
+    {
+      "id": "kg:highlight/0af706f9c7d2#h-00eb26c8",
+      "type": "Highlight",
+      "inBook": "kg:book/0af706f9c7d2",
+      "highlightText": "Startups operate on the principle that you need to work with other people to get stuff done, but you also need to stay small enough so that you actually can."
+    },
+    {
+      "id": "kg:highlight/0af706f9c7d2#h-17253eae",
+      "type": "Highlight",
+      "inBook": "kg:book/0af706f9c7d2",
+      "highlightText": "Positively defined, a startup is the largest group of people you can convince of a plan to build a different future."
+    },
+    {
+      "id": "kg:highlight/0af706f9c7d2#h-6699747e",
+      "type": "Highlight",
+      "inBook": "kg:book/0af706f9c7d2",
+      "highlightText": "if you want to create and capture lasting value, don’t build an undifferentiated commodity business."
+    },
+    {
+      "id": "kg:book/a9d9017f563c",
+      "type": "Book",
+      "name": "The Innovator's Dilemma: When New Technologies Cause Great Firms to Fail (Management of Innovation and Change)",
+      "image": "https://m.media-amazon.com/images/I/811Mr46-WyL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/a9d9017f563c#h-77e264bf",
+      "type": "Highlight",
+      "inBook": "kg:book/a9d9017f563c",
+      "highlightText": "It is in disruptive innovations, where we know least about the market, that there are such strong first-mover advantages. This is the innovator’s dilemma."
+    },
+    {
+      "id": "kg:highlight/a9d9017f563c#h-f357e0a8",
+      "type": "Highlight",
+      "inBook": "kg:book/a9d9017f563c",
+      "highlightText": "An organization’s capabilities reside in two places. The first is in its processes—the methods by which people have learned to transform inputs of labor, energy, materials, information, cash, and technology into outputs of higher value. The second is in the organization’s values, which are the criteria that managers and employees in the organization use when making prioritization decisions."
+    },
+    {
+      "id": "kg:highlight/a9d9017f563c#h-3bacd447",
+      "type": "Highlight",
+      "inBook": "kg:book/a9d9017f563c",
+      "highlightText": "The basis of product choice often evolves from functionality to reliability, then to convenience, and, ultimately, to price."
+    },
+    {
+      "id": "kg:highlight/a9d9017f563c#h-3a2be518",
+      "type": "Highlight",
+      "inBook": "kg:book/a9d9017f563c",
+      "highlightText": "In their efforts to stay ahead by developing competitively superior products, many companies don’t realize the speed at which they are moving up-market, over-satisfying the needs of their original customers as they race the competition toward higher-performance, higher-margin markets."
+    },
+    {
+      "id": "kg:highlight/a9d9017f563c#h-225e35c0",
+      "type": "Highlight",
+      "inBook": "kg:book/a9d9017f563c",
+      "highlightText": "The innovator’s task is to ensure that this innovation—the disruptive technology that doesn’t make sense—is taken seriously within the company without putting at risk the needs of present customers who provide profit and growth."
+    },
+    {
+      "id": "kg:book/3c6799c0d47b",
+      "type": "Book",
+      "name": "Learn Kitesurfing Faster: Kitesurfing Made Simple",
+      "image": "https://m.media-amazon.com/images/I/81I1oVqoPOL._SY160.jpg"
+    },
+    {
+      "id": "kg:highlight/3c6799c0d47b#h-5d287aa6",
+      "type": "Highlight",
+      "inBook": "kg:book/3c6799c0d47b",
+      "highlightText": "“It’s better to be on the beach, wishing you were out to sea, than out to sea, wishing you were on the beach.”"
+    },
+    {
+      "id": "kg:highlight/3c6799c0d47b#h-b72e1548",
+      "type": "Highlight",
+      "inBook": "kg:book/3c6799c0d47b",
+      "highlightText": "If you are pulling on the opposite side of your bar and it is still moving down then you do not have the bar pulled in enough or you are not pulling on the ends of the bar, you are twisting it."
+    },
+    {
+      "id": "kg:highlight/3c6799c0d47b#h-8cce43ad",
+      "type": "Highlight",
+      "inBook": "kg:book/3c6799c0d47b",
+      "highlightText": "One of the most common reasons why people who are learning to Kitesurf take longer than normal is because they are staring at their kite too much."
+    },
+    {
+      "id": "kg:highlight/3c6799c0d47b#h-0ad34287",
+      "type": "Highlight",
+      "inBook": "kg:book/3c6799c0d47b",
+      "highlightText": "your losses. Start walking back before you have a huge walk back upwind that could be dangerous. If You Have To Walk Back Upwind With"
+    },
+    {
+      "id": "kg:highlight/3c6799c0d47b#h-12a414be",
+      "type": "Highlight",
+      "inBook": "kg:book/3c6799c0d47b",
+      "highlightText": "Remember the golden rule of one handed flying that if your kite in on your right take your right hand off your bar and if your kite is on your left, take your left hand off your bar."
+    }
+  ]
+}
