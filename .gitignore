@@ -9,3 +9,4 @@ kindle-notes-client/
 node_modules
 *.jsonl
 .env*
+read_graph.jsonld

@@ -1,4 +1,5 @@
 import json, re
+from entities import extract_entities
 
 CONTEXT_PATH = "./context.jsonld"
 BASE = "kg:"
@@ -8,8 +9,13 @@ def book_iri(book_id):             return f"{BASE}book/{book_id}"
 def highlight_iri(book_id, hid):   return f"{BASE}highlight/{book_id}#{HIGHLIGHT_ID_PREFIX}{hid}"
 
 def to_jsonld_graph(books, ctx_obj):
-    graph = []
-    seen = set()
+    graph,seen = [], set()
+
+    def add_entity(eid, label):
+        key = ("Entity", eid)
+        if key in seen: return
+        graph.append({"id": eid, "type": "Entity", "prefLabel": label})
+        seen.add(key)
 
     for b in books:
         bid = b["id"]
@@ -18,7 +24,7 @@ def to_jsonld_graph(books, ctx_obj):
         key = ("Book", bnode["id"])
         if key not in seen: graph.append(bnode); seen.add(key)
 
-        for h in b.get("highlights", [])[:5]:
+        for h in b.get("highlights", []):
             hid = h["id"]
             hnode = {
                 "id": highlight_iri(bid, hid),
@@ -27,6 +33,12 @@ def to_jsonld_graph(books, ctx_obj):
                 "highlightText": h["text"],
             }
             graph.append(hnode)
+            
+            ents = extract_entities(h["text"])
+            if ents:
+                hnode["mentionsEntity"] = [eid for eid, _ in ents]
+                for eid, label in ents:
+                    add_entity(eid, label)
 
     return {"@context": ctx_obj, "@graph": graph}
 

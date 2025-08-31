@@ -10,8 +10,12 @@
   "image": "schema:image",
 
   "Book": "https://your.name/kg/Book",
+  "inBook": { "@id": "https://your.name/kg/inBook", "@type": "@id" },
+
   "Highlight": "https://your.name/kg/Highlight",
   "highlightText": "https://your.name/kg/highlightText",
 
-  "inBook": { "@id": "https://your.name/kg/inBook", "@type": "@id" }
+  "Entity": "https://your.name/kg/Entity",
+  "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+  "mentionsEntity": {"@id": "https://your.name/kg/mentionsEntity", "@type": "@id"}
 }

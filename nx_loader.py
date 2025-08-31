@@ -1,4 +1,5 @@
 from rdflib import Graph as RDFGraph, Namespace, RDF, URIRef, Literal
+from collections import Counter
 import networkx as nx
 
 KG = Namespace("https://your.name/kg/")
@@ -30,9 +31,7 @@ def build_nx(g_rdf: RDFGraph, directed=True) -> nx.MultiDiGraph:
     # choose which predicates become edges
     edge_preds = [
         KG.inBook,          # Highlight -> Book
-        # KG.hasAnnotation,   # Highlight -> Annotation
-        # add more when you model them:
-        # KG.refersToConcept, KG.taggedWith, KG.inSection, KG.hasAuthor, ...
+        KG.mentionsEntity
     ]
 
     for p in edge_preds:
@@ -60,6 +59,19 @@ def neighbors(G: nx.Graph, curie: str):
         for k, data in G.get_edge_data(n, tgt).items():
             out.append((tgt, data.get("predicate")))
     return out
+
+def highlights_for_entity(G, entity_curie):
+    e = node_by_curie(entity_curie)
+    return [(h, G.nodes[h].get("label")) 
+            for h in G.predecessors(e) 
+            if any(t.endswith("/Highlight") for t in G.nodes[h].get("types", []))]
+
+
+def top_entities(G, k=10):
+    ents = [n for n,d in G.nodes(data=True) if any(t.endswith("/Entity") for t in d.get("types", []))]
+    counts = [(e, G.in_degree(e)) for e in ents]   # mentions count
+    counts.sort(key=lambda x: x[1], reverse=True)
+    return [(e, G.nodes[e].get("prefLabel") or G.nodes[e].get("label") or str(e), c) for e,c in counts[:k]]
 
 def highlights_in_book(G: nx.Graph, book_curie: str):
     """Return highlight nodes pointing to a given Book via inBook."""

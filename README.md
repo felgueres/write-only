@@ -22,11 +22,22 @@ Entities
 * Entity (person,org,place)
 * Concept 
 
+Installation
+- pip3 install spacy
+- python3 -m spacy download en_core_web_sm
+
+
 Graph type 
 * JSON-LD (https://www.w3.org/TR/json-ld/)
 
 JSON-LD Quickstart
-* Context header in JSON-LD tells the processor how to expand short tesm into full IRIs and how to interpret them
+* The context in JSON-LD tells the processor how to expand short term into full IRIs and how to interpret them
+
+USAGE
+> python3 ./generator.py
+> python3 ./report.py read_graph.jsonld --plot kg:entity/america
+
+
 
 "Book": "https://your.name/kg/Book", 
 "Highlight": "https://your.name/kg/Highlight",
@@ -36,11 +47,3 @@ Every node with "type": "Book" expands to https://your.name/kg/Book
 "highlightText" is a property, not a class, Highlight use it to attach a string literal
 
 {"id": "kg:highlight/123", "type": "Highlight", "highlightText": "some quote..."}
-
-
-
-
-
-
-
-

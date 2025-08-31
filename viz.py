@@ -23,7 +23,7 @@ def color_by_type(G, n):
     types = G.nodes[n].get("types", set())
     if any(t.endswith("/Book") for t in types): return "tab:blue"
     if any(t.endswith("/Highlight") for t in types): return "tab:orange"
-    if any(t.endswith("/Annotation") for t in types): return "tab:green"
+    if any(t.endswith("/Entity") for t in types): return "tab:green"
     return "tab:gray"
 
 if __name__ == "__main__":
@@ -31,11 +31,8 @@ if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else "all_books.jsonld"
     rdf = load_rdf(path)
     G = build_nx(rdf, directed=True)
-
-    # center = node_by_curie("kg:book/3c6799c0d47b")  # change as needed
-    # H = k_hop_subgraph(G, center, k=2)
-
     pos = nx.spring_layout(G, seed=42)
+
     node_colors = [color_by_type(G, n) for n in G.nodes()]
     labels = {n: G.nodes[n].get("label", str(n)).split("\n")[0][:40] for n in G.nodes()}
 
