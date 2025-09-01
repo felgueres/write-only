@@ -1,5 +1,5 @@
 =====================
-= My knowledge tree = 
+=   knowledge tree  = 
 =====================
 
 Why do it?
@@ -19,7 +19,11 @@ Classes
 * Highlight
 * Entity 
 
-Installation
+Predicates
+* inBook
+* mentionsEntity
+
+Setup
 - pip3 install spacy
 - python3 -m spacy download en_core_web_sm
 

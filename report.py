@@ -43,6 +43,26 @@ def resolve_entity(user_input, entity_label):
 
     return None
 
+def resolve_book(user_input, book_label):
+    s = user_input.strip()
+    if s.startswith("kg:"): return URIRef(str(KG) + s[3:])
+    if s.startswith("http://") or s.startswith("https://"): return URIRef(s)
+
+    # exact label
+    for b, lbl in book_label.items():
+        if str(lbl).lower() == s.lower(): return b
+
+    # suffix on IRI or substring in title
+    s_low = s.lower()
+    cand = []
+    for b, lbl in book_label.items():
+        if str(b).lower().endswith("/" + s_low) or s_low in str(lbl).lower():
+            cand.append(b)
+    if not cand: return None
+    if len(cand) == 1: return cand[0]
+    cand.sort(key=lambda b: len(str(b)), reverse=True)
+    return cand[0]
+
 def build_counts(rdf):
     """Return:
        be[(book, entity)] -> count
@@ -60,9 +80,8 @@ def build_counts(rdf):
     return be, book_label, entity_label
 
 def top_entities_global(be, k=15):
-    # sum over books
     totals = {}
-    for (b, e), c in be.items():
+    for (_, e), c in be.items():
         totals[e] = totals.get(e, 0) + c
     return sorted(totals.items(), key=lambda x: x[1], reverse=True)[:k]
 
@@ -70,48 +89,89 @@ def books_for_entity(be, e):
     rows = [(b, c) for (b, e2), c in be.items() if e2 == e]
     return sorted(rows, key=lambda x: x[1], reverse=True)
 
-def plot_entity(be, book_label, entity_label, user_input):
-    e_key = resolve_entity(user_input, entity_label)
-    if not e_key:
-        print("Could not resolve entity:", user_input)
-        # show some suggestions
-        sugg = [lbl for _, lbl in list(entity_label.items())[:20]]
-        print("Example entities:", ", ".join(map(str, sugg[:10])))
-        return
+def top_entities_for_book(be, b, k=20):
+    rows = [(e, c) for (b2, e), c in be.items() if b2 == b]
+    return sorted(rows, key=lambda x: x[1], reverse=True)[:k]
 
-    rows = books_for_entity(be, e_key)
-    if not rows:
-        print("No mentions for", user_input)
-        return
-
-    labs = [book_label[b] for b, _ in rows][:20][::-1]
-    vals = [c for _, c in rows][:20][::-1]
-
+def plot_barh(labels, values, title):
     import matplotlib.pyplot as plt
-    plt.figure(figsize=(10, 6))
-    plt.barh(labs, vals)
+    plt.figure(figsize=(10, max(4, 0.4*len(labels))))
+    plt.barh(labels[::-1], values[::-1])
+    plt.title(title)
     plt.xlabel("Mentions (highlights)")
-    plt.title(f"Books mentioning {entity_label.get(e_key, str(e_key))}")
     plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("path", nargs="?", default="all_books.jsonld")
-    ap.add_argument("--top", type=int, default=15, help="how many entities to list")
-    ap.add_argument("--plot", type=str, help="plot [48;38;133;646;931ta single entity (CURIE like kg:entity/murray-rothbard)")
+    ap.add_argument("--top", type=int, help="top N entities (global)")
+    ap.add_argument("--list-books", action="store_true", help="list all books")
+    ap.add_argument("--top-in-book", type=str, help="book id/label/slug to list top entities for")
+    ap.add_argument("--books-for-entity", type=str, help="entity id/label/slug to list books mentioning it")
+    ap.add_argument("--plot-entity", type=str, help="plot a single entity across books")
+    ap.add_argument("--plot-book", type=str, help="plot top entities for a single book")
     args = ap.parse_args()
-
     rdf = load_rdf(args.path)
     be, book_label, entity_label = build_counts(rdf)
 
-    # list top entities and their books
-    print(f"Top entities (global, top {args.top}):")
-    for e, total in top_entities_global(be, k=args.top):
-        print(f"\n{total:>4}  {entity_label[e]}")
-        for b, c in books_for_entity(be, e)[:8]:
-            print(f"      - {c:>3} × {book_label[b]}")
+    # 0) list books
+    if args.list_books:
+        print("Books:")
+        for b, lbl in sorted(book_label.items(), key=lambda x: x[1].lower()):
+            print(f"- {lbl} id:{b}")
 
-    if args.plot:
-        plot_entity(be, book_label, entity_label, args.plot)
+    # 1) global top entities
+    if args.top:
+        print(f"\nTop entities (global, top {args.top}):")
+        for e, tot in top_entities_global(be, k=args.top):
+            print(f"{tot:>4}  {entity_label[e]}")
 
+    # 2) top entities in a given book
+    if args.top_in_book:
+        b = resolve_book(args.top_in_book, book_label)
+        if not b:
+            print("\n[!] Could not resolve book:", args.top_in_book)
+        else:
+            print(f"\nTop entities in book: {book_label[b]}")
+            rows = top_entities_for_book(be, b, k=25)
+            for e, c in rows:
+                print(f"{c:>4}  {entity_label[e]}")
+
+    # 3) books for a given entity
+    if args.books_for_entity:
+        e = resolve_entity(args.books_for_entity, entity_label)
+        if not e:
+            print("\n[!] Could not resolve entity:", args.books_for_entity)
+        else:
+            print(f"\nBooks mentioning {entity_label[e]}:")
+            rows = books_for_entity(be, e)
+            for b, c in rows:
+                print(f"{c:>4}  {book_label[b]}")
+
+    # 4) plots
+    if args.plot_entity:
+        e = resolve_entity(args.plot_entity, entity_label)
+        if not e:
+            print("\n[!] Could not resolve entity for plot:", args.plot_entity)
+        else:
+            rows = books_for_entity(be, e)[:20]
+            if not rows:
+                print("\nNo mentions for", args.plot_entity)
+            else:
+                labs = [book_label[b] for b, _ in rows]
+                vals = [c for _, c in rows]
+                plot_barh(labs, vals, f"Books mentioning {entity_label[e]}")
+
+    if args.plot_book:
+        b = resolve_book(args.plot_book, book_label)
+        if not b:
+            print("\n[!] Could not resolve book for plot:", args.plot_book)
+        else:
+            rows = top_entities_for_book(be, b, k=20)
+            if not rows:
+                print("\nNo entities for", args.plot_book)
+            else:
+                labs = [entity_label[e] for e, _ in rows]
+                vals = [c for _, c in rows]
+                plot_barh(labs, vals, f"Top entities in {book_label[b]}")
