@@ -14,36 +14,19 @@ What should it do?
 * Recommend and compare to wikipages
 * LLM legible context for my queries 
 
-Entities
+Classes
 * Book
-* Author
 * Highlight
-* Annotation
-* Entity (person,org,place)
-* Concept 
+* Entity 
 
 Installation
 - pip3 install spacy
 - python3 -m spacy download en_core_web_sm
 
-
-Graph type 
+Graph
 * JSON-LD (https://www.w3.org/TR/json-ld/)
-
-JSON-LD Quickstart
-* The context in JSON-LD tells the processor how to expand short term into full IRIs and how to interpret them
+* Context JSON-LD tells the processor how to expand short term into full IRIs and how to interpret them
 
 USAGE
 > python3 ./generator.py
 > python3 ./report.py read_graph.jsonld --plot kg:entity/america
-
-
-
-"Book": "https://your.name/kg/Book", 
-"Highlight": "https://your.name/kg/Highlight",
-
-Book and Highlight are classes in the ontology
-Every node with "type": "Book" expands to https://your.name/kg/Book
-"highlightText" is a property, not a class, Highlight use it to attach a string literal
-
-{"id": "kg:highlight/123", "type": "Highlight", "highlightText": "some quote..."}
