@@ -126,135 +126,151 @@ def highlights_for_concept(rdf, concept_iri, max_per_book=10, snippet=180):
     for b in out:
         out[b] = out[b][:max_per_book]
     return out
-def concept_to_books_two_pane(rdf, concept_iri, out_html="concept_books.html", max_snippets=50):
-    net = Network(height="100%", width="100%", directed=False)
-    cname = label_concept(rdf, concept_iri)
-    cid = str(concept_iri)
-    net.add_node(cid, label=cname, color="#8e63c7", shape="dot", size=20, title=cname)
 
-    per_book = {}
-    for h in rdf.subjects(KG.refersToConcept, concept_iri):
-        b = next(rdf.objects(h, KG.inBook), None)
-        if not b: continue
-        txt = str(rdf.value(h, KG.highlightText) or "")
-        per_book.setdefault(b, []).append({"text": txt, "id": str(h)})
+def concept_browser_all(rdf, out_html="concept_browser.html",
+                        max_books_per_concept=200, max_highlights_per_book=200):
+    # ---- build index: concept -> {book -> [highlights]} + labels ----
+    from rdflib import Namespace
+    SCHEMA = Namespace("http://schema.org/")
+    SKOS   = Namespace("http://www.w3.org/2004/02/skos/core#")
 
-    for b, hs in per_book.items():
-        bname = label_book(rdf, b)
-        bid = str(b)
-        net.add_node(bid, label=(bname[:60] + ("…" if len(bname)>60 else "")), title=bname,
-                     color="#4e79a7", shape="dot")
-        net.add_edge(cid, bid, value=len(hs))
+    def label_book(b):    return str(rdf.value(b, SCHEMA.name) or b)
+    def label_concept(c): return str(rdf.value(c, SKOS.prefLabel) or rdf.value(c, SCHEMA.name) or c)
 
-    net.barnes_hut(gravity=-22000, central_gravity=0.25, spring_length=140, spring_strength=0.02)
-    html_str = net.generate_html(notebook=False)
+    cbh = {}          # concept -> book -> [highlight_text]
+    for h, b in rdf.subject_objects(KG.inBook):
+        for c in rdf.objects(h, KG.refersToConcept):
+            txt = str(rdf.value(h, KG.highlightText) or "")
+            cbh.setdefault(c, {}).setdefault(b, []).append(txt)
+
+    # serialize to JSON (sorted, capped)
+    concepts = []
+    for c, books in cbh.items():
+        books_rows = sorted(
+            ((b, label_book(b), len(hls), hls[:max_highlights_per_book]) for b, hls in books.items()),
+            key=lambda x: x[2], reverse=True
+        )[:max_books_per_concept]
+        concepts.append({
+            "id": str(c),
+            "label": label_concept(c),
+            "total": sum(n for _,_,n,_ in books_rows),
+            "books": [
+                {"id": str(b), "label": blabel, "count": n, "highlights": hls}
+                for (b, blabel, n, hls) in books_rows
+            ],
+        })
+
+    # order concepts by total mentions desc, then label
+    concepts.sort(key=lambda d: (-d["total"], d["label"].lower()))
 
     import json
-    highlights_json = json.dumps({str(k): v[:max_snippets] for k, v in per_book.items()})
+    DATA = json.dumps(concepts)
 
-    INJECT = f"""
+    # ---- dump minimal HTML (3 columns) ----
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Concept Browser</title>
 <style>
-  html,body {{ height:100%; margin:0; }}
-  #app {{ display:flex; height:100vh; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }}
-  #graph {{ flex: 1 1 60%; min-width:0; height:100vh; }}
-  #graph #mynetwork {{ width:100% !important; height:100% !important; }}
-  #side {{
-    flex: 1 1 40%; max-width: 620px; border-left: 1px solid #e5e7eb; overflow:auto; padding: 12px 14px;
-    background:#fafafa;
-  }}
-  h2 {{ margin:8px 0 12px; font-size:16px; }}
-  table {{ border-collapse: collapse; width: 100%; }}
-  th, td {{ border-bottom: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }}
-  .hid {{ color:#9ca3af; font-size:11px; }}
-  .muted {{ color:#6b7280; }}
+  html,body {{ margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }}
+  #app {{ display:flex; height:100vh; }}
+  .col {{ flex:1; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }}
+  .col:last-child {{ border-right:none; }}
+  h2 {{ margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }}
+  .search {{ width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }}
+  ul {{ list-style:none; margin:0; padding:0; }}
+  li.item {{ padding:6px 8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; gap:8px; }}
+  li.item:hover {{ background:#f3f4f6; }}
+  .badge {{ padding:0 8px; background:#eef2ff; color:#4338ca; border-radius:999px; font-size:12px; }}
+  .muted {{ color:#6b7280; font-size:12px; }}
+  .hl {{ border-bottom:1px solid #e5e7eb; padding:8px 0; font-size:14px; }}
 </style>
+</head>
+<body>
 <div id="app">
-  <div id="graph"></div>
-  <div id="side">
-    <h2 id="side-title">Select a book node to view highlights</h2>
-    <div id="meta" class="muted"></div>
-    <table id="hl-table" style="display:none;">
-      <thead><tr><th style="width:70%;">Highlight</th></tr></thead>
-      <tbody></tbody>
-    </table>
+  <div class="col">
+    <h2>Concepts</h2>
+    <input id="concept-search" class="search" placeholder="Filter concepts…" />
+    <ul id="concepts"></ul>
+  </div>
+  <div class="col">
+    <h2 id="books-title" class="muted">Books</h2>
+    <ul id="books"></ul>
+  </div>
+  <div class="col">
+    <h2 id="highlights-title" class="muted">Highlights</h2>
+    <div id="highlights"></div>
   </div>
 </div>
+
 <script>
-  const HIGHLIGHTS = {highlights_json};
+const DATA = {DATA};
+const $ = sel => document.querySelector(sel);
+const listConcepts = $('#concepts'), listBooks = $('#books'), listHL = $('#highlights');
+const booksTitle = $('#books-title'), hlTitle = $('#highlights-title');
+const searchInput = $('#concept-search');
 
-  function renderForBook(bookId, bookLabel) {{
-    const tbl = document.getElementById('hl-table');
-    const tbody = tbl.querySelector('tbody');
-    tbody.innerHTML = '';
-    const rows = HIGHLIGHTS[bookId] || [];
-    document.getElementById('side-title').textContent = bookLabel || 'Highlights';
-    document.getElementById('meta').textContent = rows.length ? (rows.length + ' highlights') : 'No highlights';
-    if (!rows.length) {{ tbl.style.display='none'; return; }}
-    for (const r of rows) {{
-      const tr = document.createElement('tr');
-      const tdText = document.createElement('td');
-      tdText.textContent = r.text.length > 300 ? r.text.slice(0,300) + '…' : r.text;
-      tr.appendChild(tdText);
-      tbody.appendChild(tr);
-    }}
-    tbl.style.display = '';
+function el(tag, attrs={{}}, ...children) {{
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {{
+    if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v; else n.setAttribute(k, v);
   }}
+  for (const c of children) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  return n;
+}}
 
-  // After pyvis initializes window.network & #mynetwork, mount two-pane and move the canvas.
-  (function waitNet(){{
-    const netDiv = document.getElementById('mynetwork');
-    if (!netDiv || !window.network) return setTimeout(waitNet, 30);
+function renderConcepts(filter="") {{
+  listConcepts.innerHTML = '';
+  const q = filter.trim().toLowerCase();
+  DATA.filter(c => !q || c.label.toLowerCase().includes(q)).forEach(c => {{
+    const li = el('li', {{class:'item'}},
+      el('span', {{text:c.label}}),
+      el('span', {{class:'badge'}}, String(c.total))
+    );
+    li.onclick = () => selectConcept(c);
+    listConcepts.appendChild(li);
+  }});
+}}
 
-    // Build two-pane and move #mynetwork into #graph
-    const graph = document.querySelector('#graph');
-    graph.appendChild(netDiv);
+function selectConcept(c) {{
+  booksTitle.textContent = 'Books – ' + c.label;
+  listBooks.innerHTML = '';
+  listHL.innerHTML = '';
+  hlTitle.textContent = 'Highlights';
+  c.books.forEach(b => {{
+    const li = el('li', {{class:'item'}},
+      el('span', {{text:b.label}}),
+      el('span', {{class:'badge'}}, String(b.count))
+    );
+    li.onclick = () => selectBook(c, b);
+    listBooks.appendChild(li);
+  }});
+}}
 
-    // Ensure sizes
-    netDiv.style.width  = '100%';
-    netDiv.style.height = '100%';
+function selectBook(c, b) {{
+  hlTitle.textContent    = 'Highlights – ' + b.label;
+  listHL.innerHTML = '';
+  b.highlights.forEach(txt => {{
+    if (!txt) return;
+    const t = txt.length > 320 ? txt.slice(0,320) + '…' : txt;
+    listHL.appendChild(el('div', {{class:'hl'}}, t));
+  }});
+}}
 
-    // Redraw to fit new container
-    try {{ network.redraw(); network.fit(); }} catch(e) {{}}
+searchInput.addEventListener('input', e => renderConcepts(e.target.value));
 
-    // Click to populate table
-    network.on('selectNode', function(params){{
-      const id = params.nodes[0];
-      if (id && HIGHLIGHTS[id]) {{
-        let label = id;
-        try {{
-          const n = network.body.data.nodes.get(id);
-          label = (n && n.title) ? n.title : (n && n.label) ? n.label : id;
-        }} catch(e) {{}}
-        renderForBook(id, label);
-      }}
-    }});
-
-    // Auto-select the book with most mentions
-    const ids = Object.keys(HIGHLIGHTS);
-    if (ids.length) {{
-      const best = ids.map(id => [id, HIGHLIGHTS[id].length]).sort((a,b)=>b[1]-a[1])[0][0];
-      try {{
-        const n = network.body.data.nodes.get(best);
-        const label = (n && n.title) ? n.title : (n && n.label) ? n.label : best;
-        renderForBook(best, label);
-        network.selectNodes([best]);
-      }} catch(e) {{}}
-    }}
-
-    // Resize handling
-    window.addEventListener('resize', function(){{
-      try {{ network.redraw(); network.fit(); }} catch(e) {{}}
-    }});
-  }})();
+// initial render: all concepts, select top one if available
+renderConcepts('');
+if (DATA.length) selectConcept(DATA[0]);
 </script>
+</body>
+</html>
 """
-
-    # Insert our app shell right after <body>, and keep the original pyvis #mynetwork where it is.
-    html_str = html_str.replace("<body>", "<body>" + INJECT)
-
     with open(out_html, "w", encoding="utf-8") as f:
-        f.write(html_str)
+        f.write(html)
     print("wrote", out_html)
+
 
 
 if __name__ == "__main__":
@@ -264,15 +280,19 @@ if __name__ == "__main__":
     ap.add_argument("--book-sim", action="store_true", help="plot Book↔Book similarity by shared concepts")
     ap.add_argument("--min-shared", type=int, default=2, help="minimum shared concepts to keep a book-book edge")
     ap.add_argument("--top-edges", type=int, default=200, help="cap number of similarity edges (after pruning)")
+    ap.add_argument("--browser", action="store_true", help="open 3-column Concept→Books→Highlights browser")
+
     args = ap.parse_args()
 
     rdf = load_rdf(args.path)
 
+    if args.browser:
+        concept_browser_all(rdf, out_html="concept_browser.html", max_highlights_per_book=200)
+
     if args.concept:
         c = resolve_curie(args.concept)
         G = concept_to_books(rdf, c)
-        plot_concept_books(G)
-        concept_to_books_two_pane(rdf, c, out_html="concept_books.html", max_snippets=6)
+        concept_three_column(rdf, c, out_html="concept_books.html", max_snippets=6)
 
     if args.book_sim:
         S = book_similarity_by_concepts(rdf, min_shared=args.min_shared, top_edges=args.top_edges)
