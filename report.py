@@ -10,6 +10,22 @@ KG = Namespace("https://your.name/kg/")
 SCHEMA = Namespace("http://schema.org/")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 
+def resolve_concept(user_input, concept_label):
+    s = user_input.strip()
+    if s.startswith("kg:"): return URIRef(str(KG) + s[3:])
+    if s.startswith("http://") or s.startswith("https://"): return URIRef(s)
+    for c, lbl in concept_label.items():
+        if str(lbl).lower() == s.lower(): return c
+    s_low = s.lower()
+    cand = []
+    for c, lbl in concept_label.items():
+        if str(c).lower().endswith("/" + s_low) or s_low in str(lbl).lower():
+            cand.append(c)
+    if not cand: return None
+    if len(cand) == 1: return cand[0]
+    cand.sort(key=lambda c: len(str(c)), reverse=True)
+    return cand[0]
+
 def resolve_entity(user_input, entity_label):
     """Return a URIRef for the entity. Accepts CURIE, full IRI, or a (partial) label/slug."""
     s = user_input.strip()
@@ -102,18 +118,53 @@ def plot_barh(labels, values, title):
     plt.tight_layout()
     plt.show()
 
+def build_counts_concepts(rdf):
+    """Return:
+       bc[(book, concept)] -> count
+       book_label[book], concept_label[concept]
+    """
+    bc = {}
+    book_label, concept_label = {}, {}
+    for h, b in rdf.subject_objects(KG.inBook):
+        book_label.setdefault(b, str(rdf.value(b, SCHEMA.name) or b))
+        for c in rdf.objects(h, KG.refersToConcept):
+            # label from skos:prefLabel or schema:name
+            concept_label.setdefault(c, str(rdf.value(c, SKOS.prefLabel) or rdf.value(c, SCHEMA.name) or c))
+            bc[(b, c)] = bc.get((b, c), 0) + 1
+    return bc, book_label, concept_label
+
+def top_concepts_global(bc, k=15):
+    totals = {}
+    for (_, c), cnt in bc.items():
+        totals[c] = totals.get(c, 0) + cnt
+    return sorted(totals.items(), key=lambda x: x[1], reverse=True)[:k]
+
+def books_for_concept(bc, c):
+    rows = [(b, cnt) for (b, c2), cnt in bc.items() if c2 == c]
+    return sorted(rows, key=lambda x: x[1], reverse=True)
+
+def top_concepts_for_book(bc, b, k=20):
+    rows = [(c, cnt) for (b2, c), cnt in bc.items() if b2 == b]
+    return sorted(rows, key=lambda x: x[1], reverse=True)[:k]
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("path", nargs="?", default="all_books.jsonld")
-    ap.add_argument("--top", type=int, help="top N entities (global)")
+    ap.add_argument("--top-entities", type=int, help="top N entities (global)")
     ap.add_argument("--list-books", action="store_true", help="list all books")
     ap.add_argument("--top-in-book", type=str, help="book id/label/slug to list top entities for")
     ap.add_argument("--books-for-entity", type=str, help="entity id/label/slug to list books mentioning it")
     ap.add_argument("--plot-entity", type=str, help="plot a single entity across books")
     ap.add_argument("--plot-book", type=str, help="plot top entities for a single book")
+    ap.add_argument("--top-concepts", type=int, help="top N concepts (global)")
+    ap.add_argument("--concepts-in-book", type=str, help="book id/label/slug to list top concepts for")
+    ap.add_argument("--books-for-concept", type=str, help="concept id/label/slug to list books mentioning it")
+    ap.add_argument("--plot-concept", type=str, help="plot a single concept across books")
     args = ap.parse_args()
     rdf = load_rdf(args.path)
-    be, book_label, entity_label = build_counts(rdf)
+    be, book_label_e, entity_label = build_counts(rdf)
+    bc, book_label_c, concept_label = build_counts_concepts(rdf)
+    book_label = {**book_label_e, **book_label_c}
 
     # 0) list books
     if args.list_books:
@@ -122,9 +173,9 @@ if __name__ == "__main__":
             print(f"- {lbl} id:{b}")
 
     # 1) global top entities
-    if args.top:
-        print(f"\nTop entities (global, top {args.top}):")
-        for e, tot in top_entities_global(be, k=args.top):
+    if args.top_entities:
+        print(f"\nTop entities (global, top {args.top_entities}):")
+        for e, tot in top_entities_global(be, k=args.top_entities):
             print(f"{tot:>4}  {entity_label[e]}")
 
     # 2) top entities in a given book
@@ -175,3 +226,48 @@ if __name__ == "__main__":
                 labs = [entity_label[e] for e, _ in rows]
                 vals = [c for _, c in rows]
                 plot_barh(labs, vals, f"Top entities in {book_label[b]}")
+
+
+
+
+    # 5) global top concepts
+    if args.top_concepts:
+        print(f"\nTop concepts (global, top {args.top_concepts}):")
+        for c, tot in top_concepts_global(bc, k=args.top_concepts):
+            print(f"{tot:>4}  {concept_label[c]}")
+
+    # 6) top concepts in a given book
+    if args.concepts_in_book:
+        b = resolve_book(args.concepts_in_book, book_label)
+        if not b:
+            print("\n[!] Could not resolve book:", args.concepts_in_book)
+        else:
+            print(f"\nTop concepts in book: {book_label[b]}")
+            rows = top_concepts_for_book(bc, b, k=25)
+            for c, cnt in rows:
+                print(f"{cnt:>4}  {concept_label[c]}")
+
+    # 7) books for a given concept
+    if args.books_for_concept:
+        c = resolve_concept(args.books_for_concept, concept_label)
+        if not c:
+            print("\n[!] Could not resolve concept:", args.books_for_concept)
+        else:
+            print(f"\nBooks mentioning concept {concept_label[c]}:")
+            rows = books_for_concept(bc, c)
+            for b, cnt in rows:
+                print(f"{cnt:>4}  {book_label[b]}")
+
+    # 8) plot concept across books
+    if args.plot_concept:
+        c = resolve_concept(args.plot_concept, concept_label)
+        if not c:
+            print("\n[!] Could not resolve concept for plot:", args.plot_concept)
+        else:
+            rows = books_for_concept(bc, c)[:20]
+            if not rows:
+                print("\nNo mentions for", args.plot_concept)
+            else:
+                labs = [book_label[b] for b, _ in rows]
+                vals = [cnt for _, cnt in rows]
+                plot_barh(labs, vals, f"Books mentioning concept {concept_label[c]}")

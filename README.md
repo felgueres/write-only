@@ -3,6 +3,7 @@
 =====================
 
 Why do it?
+* How does Knowledge Graphs work
 * Help understand concepts better
 * Personal recommendation system
 * Make a map of what I know 
@@ -14,14 +15,21 @@ What should it do?
 * Recommend and compare to wikipages
 * LLM legible context for my queries 
 
-Classes
+Classes / Types
 * Book
 * Highlight
-* Entity 
+* Entity (people, orgs, places, things)
+* Concept
 
-Predicates
-* inBook
-* mentionsEntity
+Predicates: connects resources
+* inBook (Highlight -> Book)
+* mentionsEntity (Highlight -> Entity)
+* refersToConcept (Highlight -> Concept)
+
+Ontology
+* Defines which classes exist and how they relate
+* Defines classes or types, properties or predicates, and constraints like inBook has domain Highlight and range Book
+* KG is the instances following those definitions
 
 Setup
 - pip3 install spacy

@@ -1,4 +1,5 @@
 import json, re
+from ai_utils import extract_concepts
 from entities import extract_entities
 
 CONTEXT_PATH = "./context.jsonld"
@@ -15,6 +16,12 @@ def to_jsonld_graph(books, ctx_obj):
         key = ("Entity", eid)
         if key in seen: return
         graph.append({"id": eid, "type": "Entity", "prefLabel": label})
+        seen.add(key)
+
+    def add_concept(cid, label):
+        key = ("Concept", cid)
+        if key in seen: return
+        graph.append({"id": cid, "type": "Concept", "prefLabel": label})
         seen.add(key)
 
     for b in books:
@@ -40,6 +47,12 @@ def to_jsonld_graph(books, ctx_obj):
                 for eid, label in ents:
                     add_entity(eid, label)
 
+            concepts = extract_concepts(h["text"])
+            if concepts:
+                hnode["refersToConcept"] = [cid for cid,_ in concepts]
+                for cid, label in concepts:
+                    add_concept(cid,label)
+
     return {"@context": ctx_obj, "@graph": graph}
 
 if __name__ == "__main__":
@@ -54,7 +67,7 @@ if __name__ == "__main__":
 
     out = to_jsonld_graph(books, context_obj)
 
-    with open("read_graph.jsonld", "w", encoding="utf-8") as wf:
+    with open("read_graph_09012025.jsonld", "w", encoding="utf-8") as wf:
         json.dump(out, wf, ensure_ascii=False, indent=2)
 
     print(f"wrote all_books.jsonld with {len(out['@graph'])} nodes from {len(books)} books")

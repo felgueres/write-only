@@ -10,10 +10,13 @@
   "image": "schema:image",
 
   "Book": "https://your.name/kg/Book",
-  "inBook": { "@id": "https://your.name/kg/inBook", "@type": "@id" },
+  "inBook": { "@id": "kg:inBook", "@type": "@id" },
 
   "Highlight": "https://your.name/kg/Highlight",
   "highlightText": "https://your.name/kg/highlightText",
+
+  "Concept": "https://your.name/kg/Concept",
+  "refersToConcept": { "@id": "kg:refersToConcept", "@type": "@id" },
 
   "Entity": "https://your.name/kg/Entity",
   "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
