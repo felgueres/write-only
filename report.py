@@ -227,9 +227,6 @@ if __name__ == "__main__":
                 vals = [c for _, c in rows]
                 plot_barh(labs, vals, f"Top entities in {book_label[b]}")
 
-
-
-
     # 5) global top concepts
     if args.top_concepts:
         print(f"\nTop concepts (global, top {args.top_concepts}):")
