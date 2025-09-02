@@ -1,5 +1,3 @@
-# viz_views.py
-# pip install rdflib networkx matplotlib pyvis
 import math, argparse
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -129,62 +127,69 @@ def highlights_for_concept(rdf, concept_iri, max_per_book=10, snippet=180):
 
 def concept_browser_all(rdf, out_html="concept_browser.html",
                         max_books_per_concept=200, max_highlights_per_book=200):
-    # ---- build index: concept -> {book -> [highlights]} + labels ----
-    from rdflib import Namespace
+    # ---- build index: concept -> book -> [highlights + entities] ----
     SCHEMA = Namespace("http://schema.org/")
     SKOS   = Namespace("http://www.w3.org/2004/02/skos/core#")
 
     def label_book(b):    return str(rdf.value(b, SCHEMA.name) or b)
     def label_concept(c): return str(rdf.value(c, SKOS.prefLabel) or rdf.value(c, SCHEMA.name) or c)
+    def label_entity(e):  return str(rdf.value(e, SKOS.prefLabel) or rdf.value(e, SCHEMA.name) or e)
 
-    cbh = {}          # concept -> book -> [highlight_text]
+    cbh = {}   # concept -> {book -> {"highlights": [...], "entities": set()}}
     for h, b in rdf.subject_objects(KG.inBook):
         for c in rdf.objects(h, KG.refersToConcept):
             txt = str(rdf.value(h, KG.highlightText) or "")
-            cbh.setdefault(c, {}).setdefault(b, []).append(txt)
+            ents = [label_entity(e) for e in rdf.objects(h, KG.mentionsEntity)]
+            slot = cbh.setdefault(c, {}).setdefault(b, {"highlights": [], "entities": set()})
+            slot["highlights"].append(txt)
+            slot["entities"].update(ents)
 
     # serialize to JSON (sorted, capped)
     concepts = []
     for c, books in cbh.items():
-        books_rows = sorted(
-            ((b, label_book(b), len(hls), hls[:max_highlights_per_book]) for b, hls in books.items()),
-            key=lambda x: x[2], reverse=True
-        )[:max_books_per_concept]
+        books_rows = []
+        for b, data in books.items():
+            hls = data["highlights"][:max_highlights_per_book]
+            ents = list(data["entities"])
+            books_rows.append((b, label_book(b), len(hls), hls, ents))
+        books_rows = sorted(books_rows, key=lambda x: x[2], reverse=True)[:max_books_per_concept]
+
         concepts.append({
             "id": str(c),
             "label": label_concept(c),
-            "total": sum(n for _,_,n,_ in books_rows),
+            "total": sum(n for _, _, n, _, _ in books_rows),
             "books": [
-                {"id": str(b), "label": blabel, "count": n, "highlights": hls}
-                for (b, blabel, n, hls) in books_rows
+                {"id": str(b), "label": blabel, "count": n,
+                 "highlights": hls, "entities": ents}
+                for (b, blabel, n, hls, ents) in books_rows
             ],
         })
 
-    # order concepts by total mentions desc, then label
     concepts.sort(key=lambda d: (-d["total"], d["label"].lower()))
 
     import json
     DATA = json.dumps(concepts)
 
-    # ---- dump minimal HTML (3 columns) ----
-    html = f"""<!DOCTYPE html>
+    # ---- dump minimal HTML (3 columns, inline entity highlighting) ----
+    html = """<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8"/>
 <title>Concept Browser</title>
 <style>
-  html,body {{ margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }}
-  #app {{ display:flex; height:100vh; }}
-  .col {{ flex:1; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }}
-  .col:last-child {{ border-right:none; }}
-  h2 {{ margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }}
-  .search {{ width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }}
-  ul {{ list-style:none; margin:0; padding:0; }}
-  li.item {{ padding:6px 8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; gap:8px; }}
-  li.item:hover {{ background:#f3f4f6; }}
-  .badge {{ padding:0 8px; background:#eef2ff; color:#4338ca; border-radius:999px; font-size:12px; }}
-  .muted {{ color:#6b7280; font-size:12px; }}
-  .hl {{ border-bottom:1px solid #e5e7eb; padding:8px 0; font-size:14px; }}
+  html,body { margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  #app { display:flex; height:100vh; }
+  .col { flex:1; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
+  .col:last-child { border-right:none; }
+  h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
+  .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
+  ul { list-style:none; margin:0; padding:0; }
+  li.item { padding:6px 8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; gap:8px; }
+  li.item:hover { background:#f3f4f6; }
+  .badge { padding:0 8px; background:#eef2ff; color:#4338ca; border-radius:999px; font-size:12px; }
+  .muted { color:#6b7280; font-size:12px; }
+  .hl { border-bottom:1px solid #e5e7eb; padding:8px 0; font-size:14px; }
+  .ent { border-bottom: 2px solid #ef4444; background: #fff1f2; }
 </style>
 </head>
 <body>
@@ -205,73 +210,83 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 </div>
 
 <script>
-const DATA = {DATA};
-const $ = sel => document.querySelector(sel);
+const DATA = REPLACE_DATA;
+const $ = s => document.querySelector(s);
 const listConcepts = $('#concepts'), listBooks = $('#books'), listHL = $('#highlights');
 const booksTitle = $('#books-title'), hlTitle = $('#highlights-title');
 const searchInput = $('#concept-search');
 
-function el(tag, attrs={{}}, ...children) {{
+function el(tag, attrs={}, ...children) {
   const n = document.createElement(tag);
-  for (const [k,v] of Object.entries(attrs)) {{
+  for (const [k,v] of Object.entries(attrs)) {
     if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v; else n.setAttribute(k, v);
-  }}
+  }
   for (const c of children) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
   return n;
-}}
+}
 
-function renderConcepts(filter="") {{
+function escapeReg(s){ return s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'); }
+
+function highlightEntities(text, entityLabels) {
+  if (!entityLabels.length) return text;
+  const sorted = [...new Set(entityLabels)].sort((a,b)=>b.length-a.length).map(escapeReg);
+  const re = new RegExp('\\\\b(' + sorted.join('|') + ')\\\\b', 'gi');
+  return text.replace(re, (m)=>`<span class="ent">${m}</span>`);
+}
+
+function renderConcepts(filter="") {
   listConcepts.innerHTML = '';
   const q = filter.trim().toLowerCase();
-  DATA.filter(c => !q || c.label.toLowerCase().includes(q)).forEach(c => {{
-    const li = el('li', {{class:'item'}},
-      el('span', {{text:c.label}}),
-      el('span', {{class:'badge'}}, String(c.total))
+  DATA.filter(c => !q || c.label.toLowerCase().includes(q)).forEach(c => {
+    const li = el('li', {class:'item'},
+      el('span', {text:c.label}),
+      el('span', {class:'badge'}, String(c.total))
     );
     li.onclick = () => selectConcept(c);
     listConcepts.appendChild(li);
-  }});
-}}
+  });
+}
 
-function selectConcept(c) {{
+function selectConcept(c) {
   booksTitle.textContent = 'Books – ' + c.label;
   listBooks.innerHTML = '';
-  listHL.innerHTML = '';
   hlTitle.textContent = 'Highlights';
-  c.books.forEach(b => {{
-    const li = el('li', {{class:'item'}},
-      el('span', {{text:b.label}}),
-      el('span', {{class:'badge'}}, String(b.count))
+  listHL.innerHTML = '';
+  c.books.forEach(b => {
+    const li = el('li', {class:'item'},
+      el('span', {text:b.label}),
+      el('span', {class:'badge'}, String(b.count))
     );
     li.onclick = () => selectBook(c, b);
     listBooks.appendChild(li);
-  }});
-}}
+  });
+}
 
-function selectBook(c, b) {{
-  hlTitle.textContent    = 'Highlights – ' + b.label;
+function selectBook(c, b) {
+  hlTitle.textContent = 'Highlights – ' + b.label;
   listHL.innerHTML = '';
-  b.highlights.forEach(txt => {{
+  const entityLabels = b.entities || [];
+  b.highlights.forEach(txt => {
     if (!txt) return;
-    const t = txt.length > 320 ? txt.slice(0,320) + '…' : txt;
-    listHL.appendChild(el('div', {{class:'hl'}}, t));
-  }});
-}}
+    const html = highlightEntities(txt, entityLabels);
+    const div = el('div', {class:'hl'});
+    div.innerHTML = html;
+    listHL.appendChild(div);
+  });
+}
 
 searchInput.addEventListener('input', e => renderConcepts(e.target.value));
-
-// initial render: all concepts, select top one if available
 renderConcepts('');
 if (DATA.length) selectConcept(DATA[0]);
 </script>
 </body>
-</html>
-"""
+</html>"""
+
+    html = html.replace("REPLACE_DATA", DATA)
+
     with open(out_html, "w", encoding="utf-8") as f:
         f.write(html)
     print("wrote", out_html)
-
-
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -287,12 +302,11 @@ if __name__ == "__main__":
     rdf = load_rdf(args.path)
 
     if args.browser:
-        concept_browser_all(rdf, out_html="concept_browser.html", max_highlights_per_book=200)
+        concept_browser_all(rdf, out_html="concept_browser_1.html", max_highlights_per_book=200)
 
     if args.concept:
         c = resolve_curie(args.concept)
         G = concept_to_books(rdf, c)
-        concept_three_column(rdf, c, out_html="concept_books.html", max_snippets=6)
 
     if args.book_sim:
         S = book_similarity_by_concepts(rdf, min_shared=args.min_shared, top_edges=args.top_edges)
