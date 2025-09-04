@@ -654,7 +654,7 @@ if __name__ == "__main__":
     rdf = load_rdf(args.path)
 
     if args.browser:
-        concept_browser_all(rdf, out_html="concept_browser_1.html", max_highlights_per_book=200)
+        concept_browser_all(rdf, out_html="concept_browser.html", max_highlights_per_book=200)
 
     if args.concept:
         c = resolve_curie(args.concept)
