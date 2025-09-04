@@ -215,6 +215,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   html,body { margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
   #app { display:flex; height:100vh; }
   .col { flex:1; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
+  .col.first-col { flex:0 0 220px; max-width:240px; min-width:160px; }
   .path-col { flex:0 0 300px; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
@@ -246,7 +247,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 </head>
 <body>
 <div id="app">
-  <div class="col">
+  <div class="col first-col">
     <h2>Concepts</h2>
     <input id="concept-search" class="search" placeholder="Filter concepts…" />
     <ul id="concepts"></ul>
