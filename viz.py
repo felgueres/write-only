@@ -126,7 +126,8 @@ def highlights_for_concept(rdf, concept_iri, max_per_book=10, snippet=180):
     return out
 
 def concept_browser_all(rdf, out_html="concept_browser.html",
-                        max_books_per_concept=200, max_highlights_per_book=200):
+                        max_books_per_concept=200, max_highlights_per_book=200, 
+                        include_shortest_path=True):
     # ---- build index: concept -> book -> [highlights + entities] ----
     SCHEMA = Namespace("http://schema.org/")
     SKOS   = Namespace("http://www.w3.org/2004/02/skos/core#")
@@ -169,6 +170,39 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 
     import json
     DATA = json.dumps(concepts)
+    
+    # ---- build NetworkX graph for shortest path functionality ----
+    GRAPH_DATA = "null"
+    if include_shortest_path:
+        from nx_loader import build_nx, shortest_path
+        try:
+            G = build_nx(rdf)
+            # Export simplified graph structure for client-side pathfinding
+            nodes_data = []
+            edges_data = []
+            
+            for node_uri, data in G.nodes(data=True):
+                nodes_data.append({
+                    'id': str(node_uri),
+                    'label': data.get('label', str(node_uri)[-50:]),
+                    'types': list(data.get('types', set()))
+                })
+            
+            for u, v, data in G.edges(data=True):
+                edges_data.append({
+                    'from': str(u),
+                    'to': str(v), 
+                    'predicate': data.get('predicate', '')
+                })
+            
+            graph_structure = {
+                'nodes': nodes_data,
+                'edges': edges_data
+            }
+            GRAPH_DATA = json.dumps(graph_structure)
+        except Exception as e:
+            print(f"Warning: Could not build graph data for shortest path: {e}")
+            GRAPH_DATA = "null"
 
     # ---- dump minimal HTML (3 columns, inline entity highlighting) ----
     html = """<!DOCTYPE html>
@@ -176,10 +210,12 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 <head>
 <meta charset="utf-8"/>
 <title>Concept Browser</title>
+<script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
 <style>
   html,body { margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
   #app { display:flex; height:100vh; }
   .col { flex:1; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
+  .path-col { flex:0 0 300px; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
   .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
@@ -190,6 +226,22 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .muted { color:#6b7280; font-size:12px; }
   .hl { border-bottom:1px solid #e5e7eb; padding:8px 0; font-size:14px; }
   .ent { border-bottom: 2px solid #ef4444; background: #fff1f2; }
+  .path-input { width:100%; box-sizing:border-box; padding:6px 8px; margin:2px 0; border:1px solid #e5e7eb; border-radius:4px; }
+  .path-btn { padding:6px 12px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer; margin:4px 0; }
+  .path-btn:hover { background:#2563eb; }
+  .path-result { margin:8px 0; padding:8px; border:1px solid #e5e7eb; border-radius:4px; background:#f9fafb; }
+  .path-node { padding:4px 8px; margin:2px 0; border-radius:4px; font-size:12px; }
+  .path-book { background:#dbeafe; color:#1e40af; }
+  .path-entity { background:#fef3c7; color:#92400e; }
+  .path-highlight { background:#f3e8ff; color:#7c2d12; }
+  .suggestions { position:relative; max-height:150px; overflow-y:auto; border:1px solid #e5e7eb; border-radius:4px; background:white; display:none; }
+  .suggestions:not(:empty) { display:block; }
+  .suggestions .item { padding:6px 8px; cursor:pointer; border-bottom:1px solid #f3f4f6; }
+  .suggestions .item:hover { background:#f3f4f6; }
+  .suggestions .item:last-child { border-bottom:none; }
+  #cy { width:100%; height:400px; border:1px solid #e5e7eb; border-radius:4px; margin-top:8px; background:#fafafa; }
+  .path-controls { margin-bottom:8px; }
+  .path-info { font-size:12px; color:#6b7280; margin:4px 0; }
 </style>
 </head>
 <body>
@@ -207,10 +259,23 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
     <h2 id="highlights-title" class="muted">Highlights</h2>
     <div id="highlights"></div>
   </div>
+  <div class="col path-col">
+    <h2>Shortest Path</h2>
+    <div class="path-controls">
+      <input id="path-from" class="path-input" placeholder="From (search nodes...)" />
+      <div id="from-suggestions" class="suggestions"></div>
+      <input id="path-to" class="path-input" placeholder="To (search nodes...)" />
+      <div id="to-suggestions" class="suggestions"></div>
+      <button id="find-path" class="path-btn">Find Path</button>
+      <div id="path-info" class="path-info"></div>
+    </div>
+    <div id="cy"></div>
+  </div>
 </div>
 
 <script>
 const DATA = REPLACE_DATA;
+const GRAPH_DATA = REPLACE_GRAPH_DATA;
 const $ = s => document.querySelector(s);
 const listConcepts = $('#concepts'), listBooks = $('#books'), listHL = $('#highlights');
 const booksTitle = $('#books-title'), hlTitle = $('#highlights-title');
@@ -278,11 +343,297 @@ function selectBook(c, b) {
 searchInput.addEventListener('input', e => renderConcepts(e.target.value));
 renderConcepts('');
 if (DATA.length) selectConcept(DATA[0]);
+
+// ---- Shortest Path Functionality ----
+if (GRAPH_DATA) {
+  const pathFromInput = $('#path-from');
+  const pathToInput = $('#path-to');
+  const findPathBtn = $('#find-path');
+  const pathInfo = $('#path-info');
+  let cy = null;
+  
+  // Initialize Cytoscape
+  function initializeCytoscape() {
+    cy = cytoscape({
+      container: $('#cy'),
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'label': 'data(label)',
+            'font-size': '10px',
+            'text-wrap': 'wrap',
+            'text-max-width': '80px',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'background-color': '#ccc',
+            'width': '30px',
+            'height': '30px'
+          }
+        },
+        {
+          selector: 'node[type = "Book"]',
+          style: {
+            'background-color': '#3b82f6',
+            'width': '40px',
+            'height': '40px',
+            'font-weight': 'bold'
+          }
+        },
+        {
+          selector: 'node[type = "Entity"]',
+          style: {
+            'background-color': '#f59e0b',
+            'width': '35px',
+            'height': '35px'
+          }
+        },
+        {
+          selector: 'node[type = "Highlight"]',
+          style: {
+            'background-color': '#8b5cf6',
+            'width': '25px',
+            'height': '25px'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'width': 2,
+            'line-color': '#ddd',
+            'target-arrow-color': '#ddd',
+            'target-arrow-shape': 'triangle',
+            'curve-style': 'bezier'
+          }
+        },
+        {
+          selector: '.path',
+          style: {
+            'line-color': '#ef4444',
+            'target-arrow-color': '#ef4444',
+            'width': 4,
+            'z-index': 999
+          }
+        },
+        {
+          selector: '.path-node',
+          style: {
+            'border-width': 3,
+            'border-color': '#ef4444',
+            'z-index': 999
+          }
+        }
+      ],
+      layout: { name: 'preset' },
+      elements: []
+    });
+  }
+  
+  initializeCytoscape();
+  
+  // Helper functions
+  function getNodeType(types) {
+    if (types.some(t => t.includes('Book'))) return 'Book';
+    if (types.some(t => t.includes('Entity'))) return 'Entity';
+    if (types.some(t => t.includes('Highlight'))) return 'Highlight';
+    return 'Other';
+  }
+  
+  function truncateLabel(label, maxLength = 30) {
+    return label.length > maxLength ? label.substring(0, maxLength) + '…' : label;
+  }
+  
+  // Search nodes for autocomplete
+  function searchNodes(query) {
+    if (!query || query.length < 2) return [];
+    const q = query.toLowerCase();
+    return GRAPH_DATA.nodes
+      .filter(node => node.label.toLowerCase().includes(q))
+      .slice(0, 10);
+  }
+  
+  // Show autocomplete suggestions
+  function showSuggestions(input, suggestionsDiv, callback) {
+    const query = input.value.trim();
+    const suggestions = searchNodes(query);
+    
+    suggestionsDiv.innerHTML = '';
+    suggestions.forEach(node => {
+      const div = el('div', {
+        class: 'item',
+        text: `${node.label} (${node.types.map(t => t.split('/').pop()).join(', ')})`
+      });
+      div.onclick = () => {
+        input.value = node.label;
+        input.dataset.nodeId = node.id;
+        suggestionsDiv.innerHTML = '';
+        callback && callback(node);
+      };
+      suggestionsDiv.appendChild(div);
+    });
+  }
+  
+  // Find and visualize shortest path
+  function findAndVisualizePath(fromId, toId) {
+    if (!fromId || !toId) {
+      pathInfo.textContent = 'Please select valid start and end nodes';
+      return;
+    }
+    
+    // Create a temporary graph with path-relevant nodes
+    const nodeMap = new Map();
+    GRAPH_DATA.nodes.forEach(node => nodeMap.set(node.id, node));
+    
+    // Build adjacency list for BFS
+    const graph = new Map();
+    GRAPH_DATA.nodes.forEach(node => graph.set(node.id, new Set()));
+    
+    GRAPH_DATA.edges.forEach(edge => {
+      if (graph.has(edge.from) && graph.has(edge.to)) {
+        graph.get(edge.from).add(edge.to);
+        graph.get(edge.to).add(edge.from); // Make undirected
+      }
+    });
+    
+    // BFS shortest path
+    function findPath(start, end) {
+      if (start === end) return [start];
+      
+      const queue = [[start]];
+      const visited = new Set([start]);
+      
+      while (queue.length > 0) {
+        const path = queue.shift();
+        const current = path[path.length - 1];
+        
+        for (const neighbor of graph.get(current) || []) {
+          if (neighbor === end) {
+            return [...path, neighbor];
+          }
+          
+          if (!visited.has(neighbor)) {
+            visited.add(neighbor);
+            queue.push([...path, neighbor]);
+          }
+        }
+      }
+      return null;
+    }
+    
+    const path = findPath(fromId, toId);
+    
+    if (!path) {
+      pathInfo.textContent = 'No path found between selected nodes';
+      cy.elements().remove();
+      return;
+    }
+    
+    pathInfo.textContent = `Found path with ${path.length} nodes`;
+    
+    // Get neighbors of path nodes for context
+    const pathSet = new Set(path);
+    const contextNodes = new Set(path);
+    
+    path.forEach(nodeId => {
+      const neighbors = graph.get(nodeId) || new Set();
+      neighbors.forEach(neighbor => {
+        contextNodes.add(neighbor);
+      });
+    });
+    
+    // Limit context nodes for performance (show up to 50 total)
+    const contextArray = Array.from(contextNodes);
+    const nodesToShow = contextArray.slice(0, 50);
+    
+    // Prepare cytoscape elements
+    const elements = [];
+    
+    // Add nodes
+    nodesToShow.forEach(nodeId => {
+      const node = nodeMap.get(nodeId);
+      if (node) {
+        elements.push({
+          data: {
+            id: nodeId,
+            label: truncateLabel(node.label),
+            type: getNodeType(node.types)
+          },
+          classes: pathSet.has(nodeId) ? 'path-node' : ''
+        });
+      }
+    });
+    
+    // Add edges
+    GRAPH_DATA.edges.forEach(edge => {
+      if (nodesToShow.includes(edge.from) && nodesToShow.includes(edge.to)) {
+        const isInPath = pathSet.has(edge.from) && pathSet.has(edge.to) &&
+                        (path.indexOf(edge.from) === path.indexOf(edge.to) - 1 ||
+                         path.indexOf(edge.to) === path.indexOf(edge.from) - 1);
+        
+        elements.push({
+          data: {
+            id: `${edge.from}-${edge.to}`,
+            source: edge.from,
+            target: edge.to
+          },
+          classes: isInPath ? 'path' : ''
+        });
+      }
+    });
+    
+    // Update graph
+    cy.elements().remove();
+    cy.add(elements);
+    
+    // Apply layout
+    cy.layout({
+      name: 'breadthfirst',
+      directed: true,
+      roots: `#${fromId}`,
+      padding: 10,
+      spacingFactor: 1.2
+    }).run();
+    
+    // Center on path
+    setTimeout(() => {
+      cy.fit(cy.nodes('.path-node'), 50);
+    }, 100);
+  }
+  
+  // Event listeners
+  pathFromInput.addEventListener('input', () => {
+    showSuggestions(pathFromInput, $('#from-suggestions'));
+  });
+  
+  pathToInput.addEventListener('input', () => {
+    showSuggestions(pathToInput, $('#to-suggestions'));
+  });
+  
+  findPathBtn.addEventListener('click', () => {
+    const fromId = pathFromInput.dataset.nodeId;
+    const toId = pathToInput.dataset.nodeId;
+    findAndVisualizePath(fromId, toId);
+  });
+  
+  // Add click handler to show node info
+  cy.on('tap', 'node', function(evt) {
+    const node = evt.target;
+    pathInfo.textContent = `Selected: ${node.data('label')} (${node.data('type')})`;
+  });
+  
+} else {
+  // No graph data available
+  const pathCol = $('.path-col');
+  if (pathCol) {
+    pathCol.innerHTML = '<h2>Shortest Path</h2><div class="muted">Graph data not available</div>';
+  }
+}
 </script>
 </body>
 </html>"""
 
     html = html.replace("REPLACE_DATA", DATA)
+    html = html.replace("REPLACE_GRAPH_DATA", GRAPH_DATA)
 
     with open(out_html, "w", encoding="utf-8") as f:
         f.write(html)
