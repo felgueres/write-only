@@ -210,7 +210,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 <head>
 <meta charset="utf-8"/>
 <title>Concept Browser</title>
-<script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
   html,body { margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
   #app { display:flex; height:100vh; }
@@ -240,9 +240,24 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .suggestions .item { padding:6px 8px; cursor:pointer; border-bottom:1px solid #f3f4f6; }
   .suggestions .item:hover { background:#f3f4f6; }
   .suggestions .item:last-child { border-bottom:none; }
-  #cy { width:100%; height:400px; border:1px solid #e5e7eb; border-radius:4px; margin-top:8px; background:#fafafa; }
+  #network { width:100%; height:calc(100vh - 120px); border:1px solid #e5e7eb; margin-top:8px; background:#ffffff; }
+  .node { font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; }
+  .node-rect { fill: white; stroke: black; stroke-width: 1; }
+  .node-text { font-family: Arial, Helvetica, sans-serif; fill: black; text-anchor: middle; dominant-baseline: central; }
+  .node-text-title { font-size: 12px; font-weight: bold; }
+  .node-text-content { font-size: 11px; font-weight: normal; }
+  .edge-line { stroke: black; stroke-width: 1; fill: none; }
+  .arrow { fill: black; }
+  .divider-line { stroke: black; stroke-width: 1; }
   .path-controls { margin-bottom:8px; }
   .path-info { font-size:12px; color:#6b7280; margin:4px 0; }
+  .info-panel { position:fixed; top:20px; right:20px; width:400px; max-height:80vh; background:white; border:1px solid #e5e7eb; border-radius:8px; padding:16px; box-shadow:0 10px 25px rgba(0,0,0,0.1); z-index:1000; overflow-y:auto; display:none; }
+  .info-panel h3 { margin:0 0 12px 0; font-size:16px; font-weight:600; color:#374151; }
+  .info-panel .close-btn { position:absolute; top:12px; right:12px; background:none; border:none; font-size:18px; cursor:pointer; color:#6b7280; }
+  .info-panel .close-btn:hover { color:#374151; }
+  .info-panel .field { margin-bottom:12px; }
+  .info-panel .field-label { font-weight:600; color:#374151; margin-bottom:4px; }
+  .info-panel .field-value { color:#6b7280; word-break:break-word; }
 </style>
 </head>
 <body>
@@ -261,17 +276,23 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
     <div id="highlights"></div>
   </div>
   <div class="col path-col">
-    <h2>Shortest Path</h2>
+    <h2>Search connections</h2>
     <div class="path-controls">
-      <input id="path-from" class="path-input" placeholder="From (search nodes...)" />
+      <input id="path-from" class="path-input" placeholder="From" />
       <div id="from-suggestions" class="suggestions"></div>
       <input id="path-to" class="path-input" placeholder="To (search nodes...)" />
       <div id="to-suggestions" class="suggestions"></div>
       <button id="find-path" class="path-btn">Find Path</button>
       <div id="path-info" class="path-info"></div>
     </div>
-    <div id="cy"></div>
+    <div id="network"></div>
   </div>
+</div>
+
+<div id="info-panel" class="info-panel">
+  <button class="close-btn">&times;</button>
+  <h3 id="info-title">Node Information</h3>
+  <div id="info-content"></div>
 </div>
 
 <script>
@@ -345,92 +366,54 @@ searchInput.addEventListener('input', e => renderConcepts(e.target.value));
 renderConcepts('');
 if (DATA.length) selectConcept(DATA[0]);
 
-// ---- Shortest Path Functionality ----
+// ---- D3.js Network Visualization ----
 if (GRAPH_DATA) {
   const pathFromInput = $('#path-from');
   const pathToInput = $('#path-to');
   const findPathBtn = $('#find-path');
   const pathInfo = $('#path-info');
-  let cy = null;
+  let svg, g;
   
-  // Initialize Cytoscape
-  function initializeCytoscape() {
-    cy = cytoscape({
-      container: $('#cy'),
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'label': 'data(label)',
-            'font-size': '10px',
-            'text-wrap': 'wrap',
-            'text-max-width': '80px',
-            'text-valign': 'center',
-            'text-halign': 'center',
-            'background-color': '#ccc',
-            'width': '30px',
-            'height': '30px'
-          }
-        },
-        {
-          selector: 'node[type = "Book"]',
-          style: {
-            'background-color': '#3b82f6',
-            'width': '40px',
-            'height': '40px',
-            'font-weight': 'bold'
-          }
-        },
-        {
-          selector: 'node[type = "Entity"]',
-          style: {
-            'background-color': '#f59e0b',
-            'width': '35px',
-            'height': '35px'
-          }
-        },
-        {
-          selector: 'node[type = "Highlight"]',
-          style: {
-            'background-color': '#8b5cf6',
-            'width': '25px',
-            'height': '25px'
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'width': 2,
-            'line-color': '#ddd',
-            'target-arrow-color': '#ddd',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier'
-          }
-        },
-        {
-          selector: '.path',
-          style: {
-            'line-color': '#ef4444',
-            'target-arrow-color': '#ef4444',
-            'width': 4,
-            'z-index': 999
-          }
-        },
-        {
-          selector: '.path-node',
-          style: {
-            'border-width': 3,
-            'border-color': '#ef4444',
-            'z-index': 999
-          }
-        }
-      ],
-      layout: { name: 'preset' },
-      elements: []
-    });
+  // Initialize D3 SVG
+  function initializeNetwork() {
+    const container = d3.select('#network');
+    container.selectAll('*').remove();
+    
+    svg = container
+      .append('svg')
+      .attr('width', '100%')
+      .attr('height', '100%');
+    
+    // Define arrow marker
+    const defs = svg.append('defs');
+    
+    defs.append('marker')
+      .attr('id', 'arrowhead')
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 8)
+      .attr('refY', 0)
+      .attr('markerWidth', 8)
+      .attr('markerHeight', 8)
+      .attr('orient', 'auto')
+      .attr('markerUnits', 'strokeWidth')
+      .append('path')
+      .attr('d', 'M 0,-5 L 10,0 L 0,5')
+      .attr('fill', 'black')
+      .attr('stroke', 'black');
+    
+    g = svg.append('g');
+    
+    // Add zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([0.1, 3])
+      .on('zoom', (event) => {
+        g.attr('transform', event.transform);
+      });
+    
+    svg.call(zoom);
   }
   
-  initializeCytoscape();
+  initializeNetwork();
   
   // Helper functions
   function getNodeType(types) {
@@ -440,8 +423,146 @@ if (GRAPH_DATA) {
     return 'Other';
   }
   
-  function truncateLabel(label, maxLength = 30) {
+  function truncateLabel(label, maxLength = 40) {
     return label.length > maxLength ? label.substring(0, maxLength) + '…' : label;
+  }
+  
+  // Clean up entity labels to show readable names instead of URLs
+  function cleanEntityLabel(label, nodeType) {
+    if (nodeType === 'Entity' && typeof label === 'string') {
+      // Extract from URLs like "https://example.com/napoleon" -> "napoleon"
+      if (label.includes('http')) {
+        const parts = label.split('/');
+        const lastPart = parts[parts.length - 1];
+        if (lastPart && lastPart !== '') {
+          return lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
+        }
+      }
+      // Extract from URIs like "kg:entity/napoleon" -> "napoleon"
+      if (label.includes(':') || label.includes('/')) {
+        const parts = label.split(/[:/]/);
+        const lastPart = parts[parts.length - 1];
+        if (lastPart && lastPart !== '') {
+          return lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
+        }
+      }
+    }
+    return label;
+  }
+  
+  // Get node styling for D3
+  function getNodeStyle(type) {
+    switch (type) {
+      case 'Book':
+        return { fill: '#f8f9fa', stroke: '#000000', width: 160, height: 50 };
+      case 'Entity':
+        return { fill: '#ffffff', stroke: '#000000', width: 120, height: 40 };
+      case 'Highlight':
+        return { fill: '#e9ecef', stroke: '#000000', width: 200, height: 60 };
+      default:
+        return { fill: '#f1f3f4', stroke: '#000000', width: 140, height: 45 };
+    }
+  }
+  
+  // Render network with D3
+  function renderNetwork(nodes, edges) {
+    g.selectAll('*').remove();
+    
+    // Draw edges first (so they appear behind nodes)
+    const edgeSelection = g.selectAll('.edge')
+      .data(edges)
+      .enter()
+      .append('g')
+      .attr('class', 'edge');
+    
+    edgeSelection.append('line')
+      .attr('class', 'edge-line')
+      .attr('x1', d => d.source.x + d.source.width)
+      .attr('y1', d => d.source.y + d.source.height/2)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y + d.target.height/2)
+      .attr('stroke', 'black')
+      .attr('stroke-width', 1)
+      .attr('marker-end', 'url(#arrowhead)');
+    
+    // Draw nodes
+    const nodeSelection = g.selectAll('.node')
+      .data(nodes)
+      .enter()
+      .append('g')
+      .attr('class', 'node')
+      .attr('transform', d => `translate(${d.x}, ${d.y})`)
+      .style('cursor', 'pointer')
+      .on('click', function(event, d) {
+        showNodeInfo(d.data);
+        pathInfo.textContent = `Selected: ${d.data.label} (${d.type})`;
+      });
+    
+    // Add rectangles with sharp corners
+    nodeSelection.append('rect')
+      .attr('class', 'node-rect')
+      .attr('width', d => d.width)
+      .attr('height', d => d.height)
+      .attr('fill', d => d.style.fill)
+      .attr('stroke', d => d.style.stroke)
+      .attr('rx', 0)  // Sharp corners
+      .attr('ry', 0); // Sharp corners
+    
+    // Add horizontal divider line
+    nodeSelection.append('line')
+      .attr('class', 'divider-line')
+      .attr('x1', 0)
+      .attr('y1', d => d.height * 0.35)  // 35% down from top
+      .attr('x2', d => d.width)
+      .attr('y2', d => d.height * 0.35);
+    
+    // Add type labels (top section)
+    nodeSelection.append('text')
+      .attr('class', 'node-text node-text-title')
+      .attr('x', d => d.width/2)
+      .attr('y', d => d.height * 0.2)  // Centered in top section
+      .text(d => d.type.toUpperCase());
+    
+    // Add main content (bottom section with word wrapping)
+    nodeSelection.each(function(d) {
+      const textElement = d3.select(this);
+      const words = d.cleanLabel.split(' ');
+      const lineHeight = 13;
+      const startY = d.height * 0.5;  // Start in bottom section
+      const maxWidth = d.width - 10;
+      let y = startY;
+      let line = [];
+      
+      for (let word of words) {
+        line.push(word);
+        const testLine = line.join(' ');
+        
+        // Better character width estimation for Arial
+        if (testLine.length * 7 > maxWidth) {
+          if (line.length > 1) {
+            line.pop();
+            textElement.append('text')
+              .attr('class', 'node-text node-text-content')
+              .attr('x', d.width/2)
+              .attr('y', y)
+              .text(line.join(' '));
+            line = [word];
+            y += lineHeight;
+            
+            // Prevent overflow below box
+            if (y > d.height - 5) break;
+          }
+        }
+      }
+      
+      if (line.length > 0 && y <= d.height - 5) {
+        textElement.append('text')
+          .attr('class', 'node-text node-text-content')
+          .attr('x', d.width/2)
+          .attr('y', y)
+          .text(line.join(' '));
+      }
+    });
   }
   
   // Search nodes for autocomplete
@@ -474,6 +595,76 @@ if (GRAPH_DATA) {
     });
   }
   
+  // Create hierarchical static layout like Graphviz
+  function createHierarchicalLayout(nodes, edges, path = []) {
+    const positions = new Map();
+    
+    if (path.length > 0) {
+      // For path visualization: smart 2D grid
+      const nodesPerRow = Math.ceil(Math.sqrt(path.length));
+      const spacing = 260;
+      
+      path.forEach((nodeId, index) => {
+        const row = Math.floor(index / nodesPerRow);
+        const col = index % nodesPerRow;
+        positions.set(nodeId, { 
+          x: col * spacing + 50, 
+          y: row * spacing + 50 
+        });
+      });
+    } else {
+      // For general visualization: improved grouped layout
+      const groups = {
+        'Book': [],
+        'Entity': [],
+        'Highlight': [],
+        'Other': []
+      };
+      
+      nodes.forEach(node => {
+        const nodeType = getNodeType(node.types || []);
+        if (groups[nodeType]) {
+          groups[nodeType].push(node);
+        } else {
+          groups['Other'].push(node);
+        }
+      });
+      
+      // Layout parameters - better spacing for arrow visibility
+      const nodeSpacing = 100;
+      const levelSpacing = 280;
+      const nodesPerColumn = 6; // Wrap columns after 6 nodes
+      
+      let levelIndex = 0;
+      
+      // Position each group in tighter columns
+      Object.entries(groups).forEach(([type, typeNodes]) => {
+        if (typeNodes.length === 0) return;
+        
+        const columnsNeeded = Math.ceil(typeNodes.length / nodesPerColumn);
+        
+        for (let col = 0; col < columnsNeeded; col++) {
+          const startIdx = col * nodesPerColumn;
+          const endIdx = Math.min(startIdx + nodesPerColumn, typeNodes.length);
+          const columnNodes = typeNodes.slice(startIdx, endIdx);
+          
+          const x = (levelIndex + col) * levelSpacing;
+          
+          columnNodes.forEach((node, index) => {
+            positions.set(node.id, { 
+              x, 
+              y: index * nodeSpacing + 30
+            });
+          });
+        }
+        
+        levelIndex += columnsNeeded;
+      });
+    }
+    
+    return positions;
+  }
+
   // Find and visualize shortest path
   function findAndVisualizePath(fromId, toId) {
     if (!fromId || !toId) {
@@ -525,69 +716,79 @@ if (GRAPH_DATA) {
     
     if (!path) {
       pathInfo.textContent = 'No path found between selected nodes';
-      cy.elements().remove();
+      renderNetwork([], []);
       return;
     }
     
     pathInfo.textContent = `Found path with ${path.length} nodes`;
     
-    // Only show path nodes, no additional context
-    const pathSet = new Set(path);
-    const nodesToShow = path;
+    // Create D3 nodes and edges
+    const d3Nodes = [];
+    const d3Edges = [];
+    const nodeMap2 = new Map();
     
-    // Prepare cytoscape elements
-    const elements = [];
+    // Create a better 2D layout for path visualization
+    const nodesPerRow = Math.ceil(Math.sqrt(path.length));
+    const horizontalSpacing = 280;
+    const verticalSpacing = 150;
     
-    // Add nodes
-    nodesToShow.forEach(nodeId => {
+    path.forEach((nodeId, index) => {
       const node = nodeMap.get(nodeId);
       if (node) {
-        elements.push({
-          data: {
-            id: nodeId,
-            label: truncateLabel(node.label),
-            type: getNodeType(node.types)
-          },
-          classes: pathSet.has(nodeId) ? 'path-node' : ''
-        });
-      }
-    });
-    
-    // Add edges
-    GRAPH_DATA.edges.forEach(edge => {
-      if (nodesToShow.includes(edge.from) && nodesToShow.includes(edge.to)) {
-        const isInPath = pathSet.has(edge.from) && pathSet.has(edge.to) &&
-                        (path.indexOf(edge.from) === path.indexOf(edge.to) - 1 ||
-                         path.indexOf(edge.to) === path.indexOf(edge.from) - 1);
+        const nodeType = getNodeType(node.types);
+        const style = getNodeStyle(nodeType);
+        const cleanLabel = cleanEntityLabel(node.label, nodeType);
+        const truncatedLabel = truncateLabel(cleanLabel, 40);
         
-        elements.push({
-          data: {
-            id: `${edge.from}-${edge.to}`,
-            source: edge.from,
-            target: edge.to
-          },
-          classes: isInPath ? 'path' : ''
-        });
+        // Calculate 2D position
+        const row = Math.floor(index / nodesPerRow);
+        const col = index % nodesPerRow;
+        
+        // Center the layout
+        const totalWidth = nodesPerRow * horizontalSpacing;
+        const totalHeight = Math.ceil(path.length / nodesPerRow) * verticalSpacing;
+        
+        const d3Node = {
+          id: nodeId,
+          type: nodeType,
+          cleanLabel: truncatedLabel,
+          data: node,
+          x: col * horizontalSpacing + 50,
+          y: row * verticalSpacing + 50,
+          width: style.width,
+          height: style.height,
+          style: style
+        };
+        
+        d3Nodes.push(d3Node);
+        nodeMap2.set(nodeId, d3Node);
       }
     });
     
-    // Update graph
-    cy.elements().remove();
-    cy.add(elements);
+    // Create edges between consecutive path nodes
+    for (let i = 0; i < path.length - 1; i++) {
+      const sourceNode = nodeMap2.get(path[i]);
+      const targetNode = nodeMap2.get(path[i + 1]);
+      if (sourceNode && targetNode) {
+        d3Edges.push({
+          source: sourceNode,
+          target: targetNode
+        });
+      }
+    }
     
-    // Apply layout
-    cy.layout({
-      name: 'breadthfirst',
-      directed: true,
-      roots: `#${fromId}`,
-      padding: 10,
-      spacingFactor: 1.2
-    }).run();
+    renderNetwork(d3Nodes, d3Edges);
     
-    // Center on path
-    setTimeout(() => {
-      cy.fit(cy.nodes('.path-node'), 50);
-    }, 100);
+    // Fit to view
+    const bbox = g.node().getBBox();
+    if (bbox.width > 0 && bbox.height > 0) {
+      const svgRect = svg.node().getBoundingClientRect();
+      const scale = Math.min(svgRect.width / (bbox.width + 100), svgRect.height / (bbox.height + 100), 1);
+      const x = svgRect.width / 2 - (bbox.x + bbox.width / 2) * scale;
+      const y = svgRect.height / 2 - (bbox.y + bbox.height / 2) * scale;
+      
+      svg.call(d3.zoom().transform, d3.zoomIdentity.translate(x, y).scale(scale));
+    }
   }
   
   // Event listeners
@@ -605,17 +806,64 @@ if (GRAPH_DATA) {
     findAndVisualizePath(fromId, toId);
   });
   
-  // Add click handler to show node info
-  cy.on('tap', 'node', function(evt) {
-    const node = evt.target;
-    pathInfo.textContent = `Selected: ${node.data('label')} (${node.data('type')})`;
+  // Info panel functionality
+  const infoPanel = $('#info-panel');
+  const infoTitle = $('#info-title');
+  const infoContent = $('#info-content');
+  const closeBtn = infoPanel.querySelector('.close-btn');
+  
+  function showNodeInfo(node) {
+    const nodeType = getNodeType(node.types);
+    infoTitle.textContent = `${nodeType} Information`;
+    
+    let content = `
+      <div class="field">
+        <div class="field-label">Type</div>
+        <div class="field-value">${nodeType}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Full Label</div>
+        <div class="field-value">${node.label}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">ID</div>
+        <div class="field-value">${node.id}</div>
+      </div>
+    `;
+    
+    if (node.types && node.types.length > 0) {
+      content += `
+        <div class="field">
+          <div class="field-label">Types</div>
+          <div class="field-value">${node.types.join(', ')}</div>
+        </div>
+      `;
+    }
+    
+    infoContent.innerHTML = content;
+    infoPanel.style.display = 'block';
+  }
+  
+  function hideNodeInfo() {
+    infoPanel.style.display = 'none';
+  }
+  
+  closeBtn.addEventListener('click', hideNodeInfo);
+  
+  // Close panel when clicking outside
+  document.addEventListener('click', function(e) {
+    if (infoPanel.style.display === 'block' && !infoPanel.contains(e.target) && !e.target.closest('#network')) {
+      hideNodeInfo();
+    }
   });
+  
+  // Click handlers are now handled in renderNetwork function
   
 } else {
   // No graph data available
   const pathCol = $('.path-col');
   if (pathCol) {
-    pathCol.innerHTML = '<h2>Shortest Path</h2><div class="muted">Graph data not available</div>';
+    pathCol.innerHTML = '<h2>Search connections</h2><div class="muted">Graph data not available</div>';
   }
 }
 </script>
