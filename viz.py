@@ -214,16 +214,16 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 <style>
   html,body { margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
   #app { display:flex; height:100vh; }
-  .col { flex:1; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
+  .col { flex:0 0 200px; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
   .col.first-col { flex:0 0 220px; max-width:240px; min-width:160px; }
-  .path-col { flex:0 0 300px; }
+  .path-col { flex:1; min-width:500px; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
   .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
   ul { list-style:none; margin:0; padding:0; }
   li.item { padding:6px 8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; gap:8px; }
   li.item:hover { background:#f3f4f6; }
-  .badge { padding:0 8px; background:#eef2ff; color:#4338ca; border-radius:999px; font-size:12px; }
+  .badge { padding:2px 6px; background:#eef2ff; color:#4338ca; border-radius:10px; font-size:11px; min-width:20px; text-align:center; white-space:nowrap; height:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .muted { color:#6b7280; font-size:12px; }
   .hl { border-bottom:1px solid #e5e7eb; padding:8px 0; font-size:14px; }
   .ent { border-bottom: 2px solid #ef4444; background: #fff1f2; }
@@ -531,20 +531,9 @@ if (GRAPH_DATA) {
     
     pathInfo.textContent = `Found path with ${path.length} nodes`;
     
-    // Get neighbors of path nodes for context
+    // Only show path nodes, no additional context
     const pathSet = new Set(path);
-    const contextNodes = new Set(path);
-    
-    path.forEach(nodeId => {
-      const neighbors = graph.get(nodeId) || new Set();
-      neighbors.forEach(neighbor => {
-        contextNodes.add(neighbor);
-      });
-    });
-    
-    // Limit context nodes for performance (show up to 50 total)
-    const contextArray = Array.from(contextNodes);
-    const nodesToShow = contextArray.slice(0, 50);
+    const nodesToShow = path;
     
     // Prepare cytoscape elements
     const elements = [];
