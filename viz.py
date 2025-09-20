@@ -216,7 +216,8 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   #app { display:flex; height:100vh; }
   .col { flex:0 0 200px; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
   .col.first-col { flex:0 0 220px; max-width:240px; min-width:160px; }
-  .path-col { flex:1; min-width:500px; }
+  .graph-col { flex:1; min-width:400px; }
+  .control-col { flex:0 0 300px; min-width:280px; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
   .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
@@ -240,7 +241,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .suggestions .item { padding:6px 8px; cursor:pointer; border-bottom:1px solid #f3f4f6; }
   .suggestions .item:hover { background:#f3f4f6; }
   .suggestions .item:last-child { border-bottom:none; }
-  #network { width:100%; height:calc(100vh - 120px); border:1px solid #e5e7eb; margin-top:8px; background:#ffffff; }
+  #network { width:100%; height:calc(100vh - 60px); border:1px solid #e5e7eb; background:#ffffff; }
   .node { font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; }
   .node-rect { fill: white; stroke: black; stroke-width: 1; }
   .node-text { font-family: Arial, Helvetica, sans-serif; fill: black; text-anchor: middle; dominant-baseline: central; }
@@ -258,6 +259,9 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .info-panel .field { margin-bottom:12px; }
   .info-panel .field-label { font-weight:600; color:#374151; margin-bottom:4px; }
   .info-panel .field-value { color:#6b7280; word-break:break-word; }
+  .control-section { margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #e5e7eb; }
+  .control-section:last-child { border-bottom:none; }
+  .control-section h3 { margin:0 0 8px 0; font-size:13px; font-weight:600; color:#374151; }
 </style>
 </head>
 <body>
@@ -271,21 +275,37 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
     <h2 id="books-title" class="muted">Books</h2>
     <ul id="books"></ul>
   </div>
-  <div class="col">
-    <h2 id="highlights-title" class="muted">Highlights</h2>
-    <div id="highlights"></div>
+  <div class="col graph-col">
+    <h2 id="graph-title">Graph View</h2>
+    <div id="network"></div>
   </div>
-  <div class="col path-col">
-    <h2>Search connections</h2>
-    <div class="path-controls">
+  <div class="col control-col">
+    <h2>Graph Controls</h2>
+
+    <div class="control-section">
+      <h3>Shortest Path</h3>
       <input id="path-from" class="path-input" placeholder="From" />
       <div id="from-suggestions" class="suggestions"></div>
-      <input id="path-to" class="path-input" placeholder="To (search nodes...)" />
+      <input id="path-to" class="path-input" placeholder="To" />
       <div id="to-suggestions" class="suggestions"></div>
       <button id="find-path" class="path-btn">Find Path</button>
       <div id="path-info" class="path-info"></div>
     </div>
-    <div id="network"></div>
+
+    <div class="control-section">
+      <h3>Neighborhood</h3>
+      <input id="neighborhood-node" class="path-input" placeholder="Select node" />
+      <div id="neighborhood-suggestions" class="suggestions"></div>
+      <input id="neighborhood-depth" class="path-input" type="number" value="1" min="1" max="3" placeholder="Depth" />
+      <button id="explore-neighborhood" class="path-btn">Explore</button>
+    </div>
+
+    <div class="control-section">
+      <h3>Graph Properties</h3>
+      <button id="show-clusters" class="path-btn">Show Clusters</button>
+      <button id="show-centrality" class="path-btn">Show Centrality</button>
+      <div id="graph-stats" class="path-info"></div>
+    </div>
   </div>
 </div>
 
@@ -296,12 +316,29 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 </div>
 
 <script>
+console.log('Script starting...');
+
+document.addEventListener('DOMContentLoaded', function() {
+console.log('DOM loaded, starting main script...');
+
 const DATA = REPLACE_DATA;
 const GRAPH_DATA = REPLACE_GRAPH_DATA;
+
+console.log('DATA loaded:', !!DATA, 'length:', DATA ? DATA.length : 0);
+console.log('GRAPH_DATA loaded:', !!GRAPH_DATA);
+
 const $ = s => document.querySelector(s);
-const listConcepts = $('#concepts'), listBooks = $('#books'), listHL = $('#highlights');
-const booksTitle = $('#books-title'), hlTitle = $('#highlights-title');
+const listConcepts = $('#concepts'), listBooks = $('#books');
+const booksTitle = $('#books-title'), graphTitle = $('#graph-title');
 const searchInput = $('#concept-search');
+
+console.log('DOM elements found:', {
+  listConcepts: !!listConcepts,
+  listBooks: !!listBooks,
+  booksTitle: !!booksTitle,
+  graphTitle: !!graphTitle,
+  searchInput: !!searchInput
+});
 
 function el(tag, attrs={}, ...children) {
   const n = document.createElement(tag);
@@ -335,10 +372,11 @@ function renderConcepts(filter="") {
 }
 
 function selectConcept(c) {
+  console.log('selectConcept called with:', c);
   booksTitle.textContent = 'Books – ' + c.label;
+  graphTitle.textContent = 'Graph – ' + c.label;
   listBooks.innerHTML = '';
-  hlTitle.textContent = 'Highlights';
-  listHL.innerHTML = '';
+
   c.books.forEach(b => {
     const li = el('li', {class:'item'},
       el('span', {text:b.label}),
@@ -347,36 +385,163 @@ function selectConcept(c) {
     li.onclick = () => selectBook(c, b);
     listBooks.appendChild(li);
   });
+
+  // Show concept-books graph
+  console.log('About to call showConceptBooksGraph');
+  showConceptBooksGraph(c);
 }
 
 function selectBook(c, b) {
-  hlTitle.textContent = 'Highlights – ' + b.label;
-  listHL.innerHTML = '';
-  const entityLabels = b.entities || [];
-  b.highlights.forEach(txt => {
-    if (!txt) return;
-    const html = highlightEntities(txt, entityLabels);
-    const div = el('div', {class:'hl'});
-    div.innerHTML = html;
-    listHL.appendChild(div);
-  });
+  graphTitle.textContent = 'Graph – ' + b.label;
+
+  // Show book-highlights-entities graph
+  showBookHighlightsGraph(c, b);
 }
 
-searchInput.addEventListener('input', e => renderConcepts(e.target.value));
-renderConcepts('');
-if (DATA.length) selectConcept(DATA[0]);
+// ---- Graph Visualization Functions ----
+function showConceptBooksGraph(concept) {
+  console.log('showConceptBooksGraph called with:', concept);
+  console.log('GRAPH_DATA exists:', !!GRAPH_DATA);
+  console.log('svg exists:', !!svg);
+  console.log('g exists:', !!g);
+
+  if (!GRAPH_DATA) {
+    console.log('No GRAPH_DATA, returning');
+    return;
+  }
+
+  // Create nodes: concept + related books
+  const d3Nodes = [];
+  const d3Edges = [];
+  const nodeMap = new Map();
+
+  // Add concept node
+  const conceptNode = {
+    id: concept.id,
+    type: 'Concept',
+    cleanLabel: concept.label,
+    data: { id: concept.id, label: concept.label, types: ['Concept'] },
+    x: 200,
+    y: 150,
+    width: 160,
+    height: 50,
+    style: { fill: '#e9ecef', stroke: '#000000', width: 160, height: 50 }
+  };
+  d3Nodes.push(conceptNode);
+  nodeMap.set(concept.id, conceptNode);
+
+  // Add book nodes in a circle around concept
+  const radius = 200;
+  const angleStep = (2 * Math.PI) / concept.books.length;
+
+  concept.books.forEach((book, index) => {
+    const angle = index * angleStep;
+    const x = 200 + radius * Math.cos(angle);
+    const y = 150 + radius * Math.sin(angle);
+
+    const bookNode = {
+      id: book.id,
+      type: 'Book',
+      cleanLabel: truncateLabel(book.label, 30),
+      data: { id: book.id, label: book.label, types: ['Book'] },
+      x: x,
+      y: y,
+      width: 140,
+      height: 40,
+      style: { fill: '#f8f9fa', stroke: '#000000', width: 140, height: 40 }
+    };
+    d3Nodes.push(bookNode);
+    nodeMap.set(book.id, bookNode);
+
+    // Add edge from concept to book
+    d3Edges.push({
+      source: conceptNode,
+      target: bookNode
+    });
+  });
+
+  console.log('About to call renderNetwork with nodes:', d3Nodes.length, 'edges:', d3Edges.length);
+  renderNetwork(d3Nodes, d3Edges);
+  console.log('renderNetwork call completed');
+}
+
+function showBookHighlightsGraph(concept, book) {
+  if (!GRAPH_DATA) return;
+
+  // Create a simplified graph showing book + highlights + entities from that book
+  const d3Nodes = [];
+  const d3Edges = [];
+
+  // Add book node at center
+  const bookNode = {
+    id: book.id,
+    type: 'Book',
+    cleanLabel: book.label,
+    data: { id: book.id, label: book.label, types: ['Book'] },
+    x: 200,
+    y: 100,
+    width: 160,
+    height: 50,
+    style: { fill: '#f8f9fa', stroke: '#000000', width: 160, height: 50 }
+  };
+  d3Nodes.push(bookNode);
+
+  // Add highlights as nodes (simplified - just show count for now)
+  const highlightNode = {
+    id: book.id + '_highlights',
+    type: 'Highlights',
+    cleanLabel: `${book.count} highlights`,
+    data: { id: book.id + '_highlights', label: `${book.count} highlights`, types: ['Highlights'] },
+    x: 50,
+    y: 200,
+    width: 120,
+    height: 40,
+    style: { fill: '#e9ecef', stroke: '#000000', width: 120, height: 40 }
+  };
+  d3Nodes.push(highlightNode);
+
+  d3Edges.push({
+    source: bookNode,
+    target: highlightNode
+  });
+
+  // Add entities as nodes
+  if (book.entities && book.entities.length > 0) {
+    book.entities.forEach((entity, index) => {
+      const entityNode = {
+        id: `entity_${index}`,
+        type: 'Entity',
+        cleanLabel: truncateLabel(entity, 20),
+        data: { id: `entity_${index}`, label: entity, types: ['Entity'] },
+        x: 350 + (index % 3) * 120,
+        y: 150 + Math.floor(index / 3) * 80,
+        width: 100,
+        height: 35,
+        style: { fill: '#ffffff', stroke: '#000000', width: 100, height: 35 }
+      };
+      d3Nodes.push(entityNode);
+
+      d3Edges.push({
+        source: bookNode,
+        target: entityNode
+      });
+    });
+  }
+
+  renderNetwork(d3Nodes, d3Edges);
+}
 
 // ---- D3.js Network Visualization ----
-if (GRAPH_DATA) {
-  const pathFromInput = $('#path-from');
-  const pathToInput = $('#path-to');
-  const findPathBtn = $('#find-path');
-  const pathInfo = $('#path-info');
-  let svg, g;
-  
-  // Initialize D3 SVG
-  function initializeNetwork() {
+let svg, g; // Global variables for D3
+
+// Initialize D3 SVG function (global)
+function initializeNetwork() {
+    console.log('initializeNetwork: d3 available:', typeof d3);
+    console.log('initializeNetwork: looking for #network element');
+
     const container = d3.select('#network');
+    console.log('initializeNetwork: container found:', !container.empty());
+
     container.selectAll('*').remove();
     
     svg = container
@@ -412,11 +577,14 @@ if (GRAPH_DATA) {
     
     svg.call(zoom);
   }
-  
-  initializeNetwork();
-  
-  // Helper functions
-  function getNodeType(types) {
+
+// Initialize the network immediately
+console.log('Initializing network...');
+initializeNetwork();
+console.log('Network initialized, svg:', !!svg, 'g:', !!g);
+
+// Helper functions (make globally available)
+function getNodeType(types) {
     if (types.some(t => t.includes('Book'))) return 'Book';
     if (types.some(t => t.includes('Entity'))) return 'Entity';
     if (types.some(t => t.includes('Highlight'))) return 'Highlight';
@@ -464,106 +632,6 @@ if (GRAPH_DATA) {
     }
   }
   
-  // Render network with D3
-  function renderNetwork(nodes, edges) {
-    g.selectAll('*').remove();
-    
-    // Draw edges first (so they appear behind nodes)
-    const edgeSelection = g.selectAll('.edge')
-      .data(edges)
-      .enter()
-      .append('g')
-      .attr('class', 'edge');
-    
-    edgeSelection.append('line')
-      .attr('class', 'edge-line')
-      .attr('x1', d => d.source.x + d.source.width)
-      .attr('y1', d => d.source.y + d.source.height/2)
-      .attr('x2', d => d.target.x)
-      .attr('y2', d => d.target.y + d.target.height/2)
-      .attr('stroke', 'black')
-      .attr('stroke-width', 1)
-      .attr('marker-end', 'url(#arrowhead)');
-    
-    // Draw nodes
-    const nodeSelection = g.selectAll('.node')
-      .data(nodes)
-      .enter()
-      .append('g')
-      .attr('class', 'node')
-      .attr('transform', d => `translate(${d.x}, ${d.y})`)
-      .style('cursor', 'pointer')
-      .on('click', function(event, d) {
-        showNodeInfo(d.data);
-        pathInfo.textContent = `Selected: ${d.data.label} (${d.type})`;
-      });
-    
-    // Add rectangles with sharp corners
-    nodeSelection.append('rect')
-      .attr('class', 'node-rect')
-      .attr('width', d => d.width)
-      .attr('height', d => d.height)
-      .attr('fill', d => d.style.fill)
-      .attr('stroke', d => d.style.stroke)
-      .attr('rx', 0)  // Sharp corners
-      .attr('ry', 0); // Sharp corners
-    
-    // Add horizontal divider line
-    nodeSelection.append('line')
-      .attr('class', 'divider-line')
-      .attr('x1', 0)
-      .attr('y1', d => d.height * 0.35)  // 35% down from top
-      .attr('x2', d => d.width)
-      .attr('y2', d => d.height * 0.35);
-    
-    // Add type labels (top section)
-    nodeSelection.append('text')
-      .attr('class', 'node-text node-text-title')
-      .attr('x', d => d.width/2)
-      .attr('y', d => d.height * 0.2)  // Centered in top section
-      .text(d => d.type.toUpperCase());
-    
-    // Add main content (bottom section with word wrapping)
-    nodeSelection.each(function(d) {
-      const textElement = d3.select(this);
-      const words = d.cleanLabel.split(' ');
-      const lineHeight = 13;
-      const startY = d.height * 0.5;  // Start in bottom section
-      const maxWidth = d.width - 10;
-      let y = startY;
-      let line = [];
-      
-      for (let word of words) {
-        line.push(word);
-        const testLine = line.join(' ');
-        
-        // Better character width estimation for Arial
-        if (testLine.length * 7 > maxWidth) {
-          if (line.length > 1) {
-            line.pop();
-            textElement.append('text')
-              .attr('class', 'node-text node-text-content')
-              .attr('x', d.width/2)
-              .attr('y', y)
-              .text(line.join(' '));
-            line = [word];
-            y += lineHeight;
-            
-            // Prevent overflow below box
-            if (y > d.height - 5) break;
-          }
-        }
-      }
-      
-      if (line.length > 0 && y <= d.height - 5) {
-        textElement.append('text')
-          .attr('class', 'node-text node-text-content')
-          .attr('x', d.width/2)
-          .attr('y', y)
-          .text(line.join(' '));
-      }
-    });
-  }
   
   // Search nodes for autocomplete
   function searchNodes(query) {
@@ -790,66 +858,321 @@ if (GRAPH_DATA) {
       svg.call(d3.zoom().transform, d3.zoomIdentity.translate(x, y).scale(scale));
     }
   }
-  
+
+// Render network with D3 (global function)
+function renderNetwork(nodes, edges) {
+  console.log('renderNetwork called with:', nodes.length, 'nodes,', edges.length, 'edges');
+  console.log('g element:', g);
+
+  if (!g) {
+    console.error('g element is not available!');
+    return;
+  }
+
+  g.selectAll('*').remove();
+
+  // Draw edges first (so they appear behind nodes)
+  const edgeSelection = g.selectAll('.edge')
+    .data(edges)
+    .enter()
+    .append('g')
+    .attr('class', 'edge');
+
+  edgeSelection.append('line')
+    .attr('class', 'edge-line')
+    .attr('x1', d => d.source.x + d.source.width)
+    .attr('y1', d => d.source.y + d.source.height/2)
+    .attr('x2', d => d.target.x)
+    .attr('y2', d => d.target.y + d.target.height/2)
+    .attr('stroke', 'black')
+    .attr('stroke-width', 1)
+    .attr('marker-end', 'url(#arrowhead)');
+
+  // Draw nodes
+  const nodeSelection = g.selectAll('.node')
+    .data(nodes)
+    .enter()
+    .append('g')
+    .attr('class', 'node')
+    .attr('transform', d => `translate(${d.x}, ${d.y})`)
+    .style('cursor', 'pointer')
+    .on('click', function(event, d) {
+      showNodeInfo(d.data);
+      if (typeof pathInfo !== 'undefined') {
+        pathInfo.textContent = `Selected: ${d.data.label} (${d.type})`;
+      }
+    });
+
+  // Add rectangles with sharp corners
+  nodeSelection.append('rect')
+    .attr('class', 'node-rect')
+    .attr('width', d => d.width)
+    .attr('height', d => d.height)
+    .attr('fill', d => d.style.fill)
+    .attr('stroke', d => d.style.stroke)
+    .attr('rx', 0)  // Sharp corners
+    .attr('ry', 0); // Sharp corners
+
+  // Add horizontal divider line
+  nodeSelection.append('line')
+    .attr('class', 'divider-line')
+    .attr('x1', 0)
+    .attr('y1', d => d.height * 0.35)  // 35% down from top
+    .attr('x2', d => d.width)
+    .attr('y2', d => d.height * 0.35);
+
+  // Add type labels (top section)
+  nodeSelection.append('text')
+    .attr('class', 'node-text node-text-title')
+    .attr('x', d => d.width/2)
+    .attr('y', d => d.height * 0.2)  // Centered in top section
+    .text(d => d.type.toUpperCase());
+
+  // Add main content (bottom section with word wrapping)
+  nodeSelection.each(function(d) {
+    const textElement = d3.select(this);
+    const words = d.cleanLabel.split(' ');
+    const lineHeight = 13;
+    const startY = d.height * 0.5;  // Start in bottom section
+    const maxWidth = d.width - 10;
+    let y = startY;
+    let line = [];
+
+    for (let word of words) {
+      line.push(word);
+      const testLine = line.join(' ');
+
+      // Better character width estimation for Arial
+      if (testLine.length * 7 > maxWidth) {
+        if (line.length > 1) {
+          line.pop();
+          textElement.append('text')
+            .attr('class', 'node-text node-text-content')
+            .attr('x', d.width/2)
+            .attr('y', y)
+            .text(line.join(' '));
+          line = [word];
+          y += lineHeight;
+
+          // Prevent overflow below box
+          if (y > d.height - 5) break;
+        }
+      }
+    }
+
+    if (line.length > 0 && y <= d.height - 5) {
+      textElement.append('text')
+        .attr('class', 'node-text node-text-content')
+        .attr('x', d.width/2)
+        .attr('y', y)
+        .text(line.join(' '));
+    }
+  });
+}
+
+// Info panel functionality (global function)
+function showNodeInfo(node) {
+  const nodeType = getNodeType(node.types);
+  const infoTitle = $('#info-title');
+  const infoContent = $('#info-content');
+  const infoPanel = $('#info-panel');
+
+  infoTitle.textContent = `${nodeType} Information`;
+
+  let content = `
+    <div class="field">
+      <div class="field-label">Type</div>
+      <div class="field-value">${nodeType}</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Full Label</div>
+      <div class="field-value">${node.label}</div>
+    </div>
+    <div class="field">
+      <div class="field-label">ID</div>
+      <div class="field-value">${node.id}</div>
+    </div>
+  `;
+
+  if (node.types && node.types.length > 0) {
+    content += `
+      <div class="field">
+        <div class="field-label">Types</div>
+        <div class="field-value">${node.types.join(', ')}</div>
+      </div>
+    `;
+  }
+
+  infoContent.innerHTML = content;
+  infoPanel.style.display = 'block';
+}
+
+function hideNodeInfo() {
+  const infoPanel = $('#info-panel');
+  infoPanel.style.display = 'none';
+}
+
+// Initialize concepts list and event handlers AFTER network is ready
+searchInput.addEventListener('input', e => renderConcepts(e.target.value));
+renderConcepts('');
+if (DATA.length) selectConcept(DATA[0]);
+
+if (GRAPH_DATA) {
+  const pathFromInput = $('#path-from');
+  const pathToInput = $('#path-to');
+  const findPathBtn = $('#find-path');
+  const pathInfo = $('#path-info');
+
   // Event listeners
   pathFromInput.addEventListener('input', () => {
     showSuggestions(pathFromInput, $('#from-suggestions'));
   });
-  
+
   pathToInput.addEventListener('input', () => {
     showSuggestions(pathToInput, $('#to-suggestions'));
   });
-  
+
   findPathBtn.addEventListener('click', () => {
     const fromId = pathFromInput.dataset.nodeId;
     const toId = pathToInput.dataset.nodeId;
     findAndVisualizePath(fromId, toId);
   });
-  
-  // Info panel functionality
-  const infoPanel = $('#info-panel');
-  const infoTitle = $('#info-title');
-  const infoContent = $('#info-content');
-  const closeBtn = infoPanel.querySelector('.close-btn');
-  
-  function showNodeInfo(node) {
-    const nodeType = getNodeType(node.types);
-    infoTitle.textContent = `${nodeType} Information`;
-    
-    let content = `
-      <div class="field">
-        <div class="field-label">Type</div>
-        <div class="field-value">${nodeType}</div>
-      </div>
-      <div class="field">
-        <div class="field-label">Full Label</div>
-        <div class="field-value">${node.label}</div>
-      </div>
-      <div class="field">
-        <div class="field-label">ID</div>
-        <div class="field-value">${node.id}</div>
-      </div>
-    `;
-    
-    if (node.types && node.types.length > 0) {
-      content += `
-        <div class="field">
-          <div class="field-label">Types</div>
-          <div class="field-value">${node.types.join(', ')}</div>
-        </div>
-      `;
+
+  // Neighborhood exploration
+  const neighborhoodInput = $('#neighborhood-node');
+  const neighborhoodSuggestions = $('#neighborhood-suggestions');
+  const neighborhoodDepth = $('#neighborhood-depth');
+  const exploreBtn = $('#explore-neighborhood');
+
+  neighborhoodInput.addEventListener('input', () => {
+    showSuggestions(neighborhoodInput, neighborhoodSuggestions);
+  });
+
+  exploreBtn.addEventListener('click', () => {
+    const nodeId = neighborhoodInput.dataset.nodeId;
+    const depth = parseInt(neighborhoodDepth.value) || 1;
+    if (nodeId) {
+      exploreNeighborhood(nodeId, depth);
     }
-    
-    infoContent.innerHTML = content;
-    infoPanel.style.display = 'block';
+  });
+
+  // Graph properties
+  $('#show-clusters').addEventListener('click', showClusters);
+  $('#show-centrality').addEventListener('click', showCentrality);
+
+  // Neighborhood exploration function
+  function exploreNeighborhood(nodeId, depth) {
+    const nodeMap = new Map();
+    GRAPH_DATA.nodes.forEach(node => nodeMap.set(node.id, node));
+
+    // Build adjacency list
+    const graph = new Map();
+    GRAPH_DATA.nodes.forEach(node => graph.set(node.id, new Set()));
+    GRAPH_DATA.edges.forEach(edge => {
+      if (graph.has(edge.from) && graph.has(edge.to)) {
+        graph.get(edge.from).add(edge.to);
+        graph.get(edge.to).add(edge.from);
+      }
+    });
+
+    // BFS to find neighborhood
+    const visited = new Set([nodeId]);
+    const queue = [[nodeId, 0]];
+    const neighborhoodNodes = new Set([nodeId]);
+
+    while (queue.length > 0) {
+      const [currentId, currentDepth] = queue.shift();
+
+      if (currentDepth < depth) {
+        for (const neighborId of graph.get(currentId) || []) {
+          if (!visited.has(neighborId)) {
+            visited.add(neighborId);
+            neighborhoodNodes.add(neighborId);
+            queue.push([neighborId, currentDepth + 1]);
+          }
+        }
+      }
+    }
+
+    // Create visualization
+    const d3Nodes = [];
+    const d3Edges = [];
+    const positions = createHierarchicalLayout(Array.from(neighborhoodNodes), GRAPH_DATA.edges);
+
+    Array.from(neighborhoodNodes).forEach(id => {
+      const node = nodeMap.get(id);
+      if (node) {
+        const nodeType = getNodeType(node.types);
+        const style = getNodeStyle(nodeType);
+        const cleanLabel = cleanEntityLabel(node.label, nodeType);
+        const pos = positions.get(id) || { x: 0, y: 0 };
+
+        d3Nodes.push({
+          id: id,
+          type: nodeType,
+          cleanLabel: truncateLabel(cleanLabel, 30),
+          data: node,
+          x: pos.x,
+          y: pos.y,
+          width: style.width,
+          height: style.height,
+          style: style
+        });
+      }
+    });
+
+    // Add edges between neighborhood nodes
+    GRAPH_DATA.edges.forEach(edge => {
+      if (neighborhoodNodes.has(edge.from) && neighborhoodNodes.has(edge.to)) {
+        const sourceNode = d3Nodes.find(n => n.id === edge.from);
+        const targetNode = d3Nodes.find(n => n.id === edge.to);
+        if (sourceNode && targetNode) {
+          d3Edges.push({ source: sourceNode, target: targetNode });
+        }
+      }
+    });
+
+    renderNetwork(d3Nodes, d3Edges);
+    $('#path-info').textContent = `Showing ${neighborhoodNodes.size} nodes in ${depth}-hop neighborhood`;
   }
-  
-  function hideNodeInfo() {
-    infoPanel.style.display = 'none';
+
+  // Graph clustering (simplified)
+  function showClusters() {
+    $('#graph-stats').textContent = 'Clustering analysis not yet implemented';
   }
-  
+
+  // Centrality analysis (simplified)
+  function showCentrality() {
+    if (!GRAPH_DATA) return;
+
+    // Simple degree centrality
+    const degreeMap = new Map();
+    GRAPH_DATA.nodes.forEach(node => degreeMap.set(node.id, 0));
+
+    GRAPH_DATA.edges.forEach(edge => {
+      if (degreeMap.has(edge.from)) degreeMap.set(edge.from, degreeMap.get(edge.from) + 1);
+      if (degreeMap.has(edge.to)) degreeMap.set(edge.to, degreeMap.get(edge.to) + 1);
+    });
+
+    const sorted = Array.from(degreeMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const stats = sorted.map(([id, degree]) => {
+      const node = GRAPH_DATA.nodes.find(n => n.id === id);
+      const label = node ? node.label.substring(0, 30) : id;
+      return `${label}: ${degree} connections`;
+    }).join('<br>');
+
+    $('#graph-stats').innerHTML = `<strong>Top 5 by degree:</strong><br>${stats}`;
+  }
+
+  // Info panel event listeners
+  const infoPanel = $('#info-panel');
+  const closeBtn = infoPanel.querySelector('.close-btn');
+
   closeBtn.addEventListener('click', hideNodeInfo);
-  
+
   // Close panel when clicking outside
   document.addEventListener('click', function(e) {
     if (infoPanel.style.display === 'block' && !infoPanel.contains(e.target) && !e.target.closest('#network')) {
@@ -861,11 +1184,13 @@ if (GRAPH_DATA) {
   
 } else {
   // No graph data available
-  const pathCol = $('.path-col');
-  if (pathCol) {
-    pathCol.innerHTML = '<h2>Search connections</h2><div class="muted">Graph data not available</div>';
+  const controlCol = $('.control-col');
+  if (controlCol) {
+    controlCol.innerHTML = '<h2>Graph Controls</h2><div class="muted">Graph data not available</div>';
   }
 }
+
+}); // End DOMContentLoaded
 </script>
 </body>
 </html>"""
