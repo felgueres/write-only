@@ -135,6 +135,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
     def label_book(b):    return str(rdf.value(b, SCHEMA.name) or b)
     def label_concept(c): return str(rdf.value(c, SKOS.prefLabel) or rdf.value(c, SCHEMA.name) or c)
     def label_entity(e):  return str(rdf.value(e, SKOS.prefLabel) or rdf.value(e, SCHEMA.name) or e)
+    def get_book_image(b): return str(rdf.value(b, SCHEMA.image) or "")
 
     cbh = {}   # concept -> {book -> {"highlights": [...], "entities": set()}}
     for h, b in rdf.subject_objects(KG.inBook):
@@ -152,17 +153,18 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
         for b, data in books.items():
             hls = data["highlights"][:max_highlights_per_book]
             ents = list(data["entities"])
-            books_rows.append((b, label_book(b), len(hls), hls, ents))
+            img = get_book_image(b)
+            books_rows.append((b, label_book(b), len(hls), hls, ents, img))
         books_rows = sorted(books_rows, key=lambda x: x[2], reverse=True)[:max_books_per_concept]
 
         concepts.append({
             "id": str(c),
             "label": label_concept(c),
-            "total": sum(n for _, _, n, _, _ in books_rows),
+            "total": sum(n for _, _, n, _, _, _ in books_rows),
             "books": [
                 {"id": str(b), "label": blabel, "count": n,
-                 "highlights": hls, "entities": ents}
-                for (b, blabel, n, hls, ents) in books_rows
+                 "highlights": hls, "entities": ents, "image": img}
+                for (b, blabel, n, hls, ents, img) in books_rows
             ],
         })
 
@@ -182,11 +184,15 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
             edges_data = []
             
             for node_uri, data in G.nodes(data=True):
-                nodes_data.append({
+                node_data = {
                     'id': str(node_uri),
                     'label': data.get('label', str(node_uri)[-50:]),
                     'types': list(data.get('types', set()))
-                })
+                }
+                # Include image if available for books
+                if 'image' in data:
+                    node_data['image'] = data['image']
+                nodes_data.append(node_data)
             
             for u, v, data in G.edges(data=True):
                 edges_data.append({
@@ -217,7 +223,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .col { flex:0 0 200px; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
   .col.first-col { flex:0 0 220px; max-width:240px; min-width:160px; }
   .graph-col { flex:1; min-width:400px; }
-  .control-col { flex:0 0 300px; min-width:280px; }
+  .control-col { flex:0 0 300px; min-width:280px; display:flex; flex-direction:column; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
   .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
@@ -285,38 +291,9 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
     <div id="network"></div>
   </div>
   <div class="col control-col">
-    <h2>Graph Controls</h2>
-
-    <div class="control-section">
-      <h3>Shortest Path</h3>
-      <input id="path-from" class="path-input" placeholder="From" />
-      <div id="from-suggestions" class="suggestions"></div>
-      <input id="path-to" class="path-input" placeholder="To" />
-      <div id="to-suggestions" class="suggestions"></div>
-      <button id="find-path" class="path-btn">Find Path</button>
-      <div id="path-info" class="path-info"></div>
-    </div>
-
-    <div class="control-section">
-      <h3>Neighborhood</h3>
-      <input id="neighborhood-node" class="path-input" placeholder="Select node" />
-      <div id="neighborhood-suggestions" class="suggestions"></div>
-      <input id="neighborhood-depth" class="path-input" type="number" value="1" min="1" max="3" placeholder="Depth" />
-      <button id="explore-neighborhood" class="path-btn">Explore</button>
-    </div>
-
-    <div class="control-section">
-      <h3>Graph Properties</h3>
-      <button id="show-clusters" class="path-btn">Show Clusters</button>
-      <button id="show-centrality" class="path-btn">Show Centrality</button>
-      <div id="graph-stats" class="path-info"></div>
-    </div>
-
-    <div class="control-section">
-      <h3>Selected Node</h3>
-      <div id="node-metadata" class="node-metadata">
-        Click a node to see details
-      </div>
+    <h2>Selected Node</h2>
+    <div id="node-metadata" class="node-metadata" style="flex: 1;">
+      Click a node to see details
     </div>
   </div>
 </div>
@@ -406,6 +383,15 @@ function selectConcept(c) {
 function selectBook(c, b) {
   graphTitle.textContent = 'Graph – ' + b.label;
 
+  // Update control panel metadata for the selected book
+  const bookNode = {
+    id: b.id,
+    label: b.label,
+    types: ['Book'],
+    image: b.image // Include image from the book data
+  };
+  showNodeInfo(bookNode);
+
   // Show book-highlights-entities graph
   showBookHighlightsGraph(c, b);
 }
@@ -480,16 +466,28 @@ function showConceptBooksGraph(concept) {
 function showBookHighlightsGraph(concept, book) {
   if (!GRAPH_DATA) return;
 
+  // Find the actual book node from GRAPH_DATA to get the complete data including image
+  const actualBookNode = GRAPH_DATA.nodes.find(node =>
+    node.types.includes('Book') && (
+      node.id === book.id ||
+      node.label === book.label ||
+      node.id.includes(book.id.split('/').pop())
+    )
+  );
+
+  console.log('Found actual book node:', actualBookNode);
+
   // Create a simplified graph showing book + highlights + entities from that book
   const d3Nodes = [];
   const d3Edges = [];
 
-  // Add book node at center
+  // Add book node at center (use actual book data if found)
+  const bookData = actualBookNode || { id: book.id, label: book.label, types: ['Book'] };
   const bookNode = {
-    id: book.id,
+    id: bookData.id,
     type: 'Book',
-    cleanLabel: book.label,
-    data: { id: book.id, label: book.label, types: ['Book'] },
+    cleanLabel: bookData.label,
+    data: bookData, // This will include the image if available
     x: 200,
     y: 100,
     width: 160,
@@ -1007,6 +1005,59 @@ function showNodeInfo(node) {
         <div class="field-value">${node.types.join(', ')}</div>
       </div>
     `;
+  }
+
+  // Add book cover image and highlights if it's a book node
+  if (nodeType === 'Book') {
+    let imageUrl = null;
+    let highlights = [];
+
+    // First check if the node already has image data
+    if (node.image) {
+      imageUrl = node.image;
+    } else {
+      // Search in the DATA structure for the book image and highlights
+      for (const concept of DATA || []) {
+        for (const book of concept.books || []) {
+          if (book.id === node.id) {
+            if (book.image) imageUrl = book.image;
+            if (book.highlights) highlights = book.highlights;
+            break;
+          }
+        }
+        if (imageUrl || highlights.length > 0) break;
+      }
+    }
+
+    // Add book cover if available
+    if (imageUrl) {
+      content += `
+        <div class="field">
+          <div class="field-label">Cover</div>
+          <div class="field-value">
+            <img src="${imageUrl}" alt="Book cover" style="max-width: 120px; max-height: 180px; border-radius: 4px; border: 1px solid #e5e7eb;" />
+          </div>
+        </div>
+      `;
+    }
+
+    // Add highlights if available
+    if (highlights && highlights.length > 0) {
+      content += `
+        <div class="field">
+          <div class="field-label">Highlights (${highlights.length})</div>
+          <div class="field-value">
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px; background: #ffffff;">
+              ${highlights.map(highlight => `
+                <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; font-size: 12px; line-height: 1.4;">
+                  "${highlight}"
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
   }
 
   if (infoContent) infoContent.innerHTML = content;
