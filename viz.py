@@ -262,6 +262,11 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .control-section { margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #e5e7eb; }
   .control-section:last-child { border-bottom:none; }
   .control-section h3 { margin:0 0 8px 0; font-size:13px; font-weight:600; color:#374151; }
+  .node-metadata { padding:12px; background:#f9fafb; border-radius:6px; border:1px solid #e5e7eb; font-size:12px; line-height:1.4; }
+  .node-metadata .field { margin-bottom:8px; }
+  .node-metadata .field:last-child { margin-bottom:0; }
+  .node-metadata .field-label { font-weight:600; color:#374151; margin-bottom:2px; }
+  .node-metadata .field-value { color:#6b7280; word-break:break-word; }
 </style>
 </head>
 <body>
@@ -305,6 +310,13 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
       <button id="show-clusters" class="path-btn">Show Clusters</button>
       <button id="show-centrality" class="path-btn">Show Centrality</button>
       <div id="graph-stats" class="path-info"></div>
+    </div>
+
+    <div class="control-section">
+      <h3>Selected Node</h3>
+      <div id="node-metadata" class="node-metadata">
+        Click a node to see details
+      </div>
     </div>
   </div>
 </div>
@@ -633,35 +645,6 @@ function getNodeType(types) {
   }
   
   
-  // Search nodes for autocomplete
-  function searchNodes(query) {
-    if (!query || query.length < 2) return [];
-    const q = query.toLowerCase();
-    return GRAPH_DATA.nodes
-      .filter(node => node.label.toLowerCase().includes(q))
-      .slice(0, 10);
-  }
-  
-  // Show autocomplete suggestions
-  function showSuggestions(input, suggestionsDiv, callback) {
-    const query = input.value.trim();
-    const suggestions = searchNodes(query);
-    
-    suggestionsDiv.innerHTML = '';
-    suggestions.forEach(node => {
-      const div = el('div', {
-        class: 'item',
-        text: `${node.label} (${node.types.map(t => t.split('/').pop()).join(', ')})`
-      });
-      div.onclick = () => {
-        input.value = node.label;
-        input.dataset.nodeId = node.id;
-        suggestionsDiv.innerHTML = '';
-        callback && callback(node);
-      };
-      suggestionsDiv.appendChild(div);
-    });
-  }
   
   // Create hierarchical static layout like Graphviz
   function createHierarchicalLayout(nodes, edges, path = []) {
@@ -897,8 +880,29 @@ function renderNetwork(nodes, edges) {
     .attr('transform', d => `translate(${d.x}, ${d.y})`)
     .style('cursor', 'pointer')
     .on('click', function(event, d) {
+      console.log('Node clicked:', d);
       showNodeInfo(d.data);
-      if (typeof pathInfo !== 'undefined') {
+
+      // Populate control panel inputs
+      const pathFromInput = $('#path-from');
+      const pathToInput = $('#path-to');
+      const neighborhoodInput = $('#neighborhood-node');
+      const pathInfo = $('#path-info');
+
+      if (pathFromInput && !pathFromInput.value) {
+        pathFromInput.value = d.data.label;
+        pathFromInput.dataset.nodeId = d.data.id;
+      } else if (pathToInput && !pathToInput.value) {
+        pathToInput.value = d.data.label;
+        pathToInput.dataset.nodeId = d.data.id;
+      }
+
+      if (neighborhoodInput) {
+        neighborhoodInput.value = d.data.label;
+        neighborhoodInput.dataset.nodeId = d.data.id;
+      }
+
+      if (pathInfo) {
         pathInfo.textContent = `Selected: ${d.data.label} (${d.type})`;
       }
     });
@@ -973,11 +977,13 @@ function renderNetwork(nodes, edges) {
 // Info panel functionality (global function)
 function showNodeInfo(node) {
   const nodeType = getNodeType(node.types);
+
+  // Update popup panel
   const infoTitle = $('#info-title');
   const infoContent = $('#info-content');
   const infoPanel = $('#info-panel');
 
-  infoTitle.textContent = `${nodeType} Information`;
+  if (infoTitle) infoTitle.textContent = `${nodeType} Information`;
 
   let content = `
     <div class="field">
@@ -1003,13 +1009,140 @@ function showNodeInfo(node) {
     `;
   }
 
-  infoContent.innerHTML = content;
-  infoPanel.style.display = 'block';
+  if (infoContent) infoContent.innerHTML = content;
+
+  // Update control panel metadata section
+  const nodeMetadata = $('#node-metadata');
+  if (nodeMetadata) {
+    nodeMetadata.innerHTML = content;
+  }
+
+  // Show popup (optional - could remove this if you prefer only control panel)
+  // if (infoPanel) infoPanel.style.display = 'block';
 }
 
 function hideNodeInfo() {
   const infoPanel = $('#info-panel');
   infoPanel.style.display = 'none';
+}
+
+// Neighborhood exploration function (global)
+function exploreNeighborhood(nodeId, depth) {
+  console.log('exploreNeighborhood called with:', nodeId, 'depth:', depth);
+  console.log('GRAPH_DATA available:', !!GRAPH_DATA);
+
+  if (!GRAPH_DATA) {
+    console.error('GRAPH_DATA not available for neighborhood exploration');
+    const pathInfo = $('#path-info');
+    if (pathInfo) pathInfo.textContent = 'Graph data not available';
+    return;
+  }
+
+  const nodeMap = new Map();
+  GRAPH_DATA.nodes.forEach(node => nodeMap.set(node.id, node));
+
+  // Build adjacency list
+  const graph = new Map();
+  GRAPH_DATA.nodes.forEach(node => graph.set(node.id, new Set()));
+  GRAPH_DATA.edges.forEach(edge => {
+    if (graph.has(edge.from) && graph.has(edge.to)) {
+      graph.get(edge.from).add(edge.to);
+      graph.get(edge.to).add(edge.from);
+    }
+  });
+
+  // BFS to find neighborhood
+  const visited = new Set([nodeId]);
+  const queue = [[nodeId, 0]];
+  const neighborhoodNodes = new Set([nodeId]);
+
+  while (queue.length > 0) {
+    const [currentId, currentDepth] = queue.shift();
+
+    if (currentDepth < depth) {
+      for (const neighborId of graph.get(currentId) || []) {
+        if (!visited.has(neighborId)) {
+          visited.add(neighborId);
+          neighborhoodNodes.add(neighborId);
+          queue.push([neighborId, currentDepth + 1]);
+        }
+      }
+    }
+  }
+
+  // Create visualization
+  const d3Nodes = [];
+  const d3Edges = [];
+  const positions = createHierarchicalLayout(Array.from(neighborhoodNodes), GRAPH_DATA.edges);
+
+  Array.from(neighborhoodNodes).forEach(id => {
+    const node = nodeMap.get(id);
+    if (node) {
+      const nodeType = getNodeType(node.types);
+      const style = getNodeStyle(nodeType);
+      const cleanLabel = cleanEntityLabel(node.label, nodeType);
+      const pos = positions.get(id) || { x: 0, y: 0 };
+
+      d3Nodes.push({
+        id: id,
+        type: nodeType,
+        cleanLabel: truncateLabel(cleanLabel, 30),
+        data: node,
+        x: pos.x,
+        y: pos.y,
+        width: style.width,
+        height: style.height,
+        style: style
+      });
+    }
+  });
+
+  // Add edges between neighborhood nodes
+  GRAPH_DATA.edges.forEach(edge => {
+    if (neighborhoodNodes.has(edge.from) && neighborhoodNodes.has(edge.to)) {
+      const sourceNode = d3Nodes.find(n => n.id === edge.from);
+      const targetNode = d3Nodes.find(n => n.id === edge.to);
+      if (sourceNode && targetNode) {
+        d3Edges.push({ source: sourceNode, target: targetNode });
+      }
+    }
+  });
+
+  renderNetwork(d3Nodes, d3Edges);
+  const pathInfo = $('#path-info');
+  if (pathInfo) pathInfo.textContent = `Showing ${neighborhoodNodes.size} nodes in ${depth}-hop neighborhood`;
+}
+
+// Search nodes for autocomplete (global)
+function searchNodes(query) {
+  if (!query || query.length < 2) return [];
+  if (!GRAPH_DATA) return [];
+
+  const q = query.toLowerCase();
+  return GRAPH_DATA.nodes
+    .filter(node => node.label.toLowerCase().includes(q))
+    .slice(0, 10);
+}
+
+// Show autocomplete suggestions (global)
+function showSuggestions(input, suggestionsDiv, callback) {
+  const query = input.value.trim();
+  const suggestions = searchNodes(query);
+
+  suggestionsDiv.innerHTML = '';
+  suggestions.forEach(node => {
+    const div = el('div', {
+      class: 'item',
+      text: `${node.label} (${node.types.map(t => t.split('/').pop()).join(', ')})`
+    });
+    div.onclick = () => {
+      input.value = node.label;
+      input.dataset.nodeId = node.id;
+      suggestionsDiv.innerHTML = '';
+      callback && callback(node);
+    };
+    suggestionsDiv.appendChild(div);
+  });
 }
 
 // Initialize concepts list and event handlers AFTER network is ready
@@ -1060,81 +1193,6 @@ if (GRAPH_DATA) {
   $('#show-clusters').addEventListener('click', showClusters);
   $('#show-centrality').addEventListener('click', showCentrality);
 
-  // Neighborhood exploration function
-  function exploreNeighborhood(nodeId, depth) {
-    const nodeMap = new Map();
-    GRAPH_DATA.nodes.forEach(node => nodeMap.set(node.id, node));
-
-    // Build adjacency list
-    const graph = new Map();
-    GRAPH_DATA.nodes.forEach(node => graph.set(node.id, new Set()));
-    GRAPH_DATA.edges.forEach(edge => {
-      if (graph.has(edge.from) && graph.has(edge.to)) {
-        graph.get(edge.from).add(edge.to);
-        graph.get(edge.to).add(edge.from);
-      }
-    });
-
-    // BFS to find neighborhood
-    const visited = new Set([nodeId]);
-    const queue = [[nodeId, 0]];
-    const neighborhoodNodes = new Set([nodeId]);
-
-    while (queue.length > 0) {
-      const [currentId, currentDepth] = queue.shift();
-
-      if (currentDepth < depth) {
-        for (const neighborId of graph.get(currentId) || []) {
-          if (!visited.has(neighborId)) {
-            visited.add(neighborId);
-            neighborhoodNodes.add(neighborId);
-            queue.push([neighborId, currentDepth + 1]);
-          }
-        }
-      }
-    }
-
-    // Create visualization
-    const d3Nodes = [];
-    const d3Edges = [];
-    const positions = createHierarchicalLayout(Array.from(neighborhoodNodes), GRAPH_DATA.edges);
-
-    Array.from(neighborhoodNodes).forEach(id => {
-      const node = nodeMap.get(id);
-      if (node) {
-        const nodeType = getNodeType(node.types);
-        const style = getNodeStyle(nodeType);
-        const cleanLabel = cleanEntityLabel(node.label, nodeType);
-        const pos = positions.get(id) || { x: 0, y: 0 };
-
-        d3Nodes.push({
-          id: id,
-          type: nodeType,
-          cleanLabel: truncateLabel(cleanLabel, 30),
-          data: node,
-          x: pos.x,
-          y: pos.y,
-          width: style.width,
-          height: style.height,
-          style: style
-        });
-      }
-    });
-
-    // Add edges between neighborhood nodes
-    GRAPH_DATA.edges.forEach(edge => {
-      if (neighborhoodNodes.has(edge.from) && neighborhoodNodes.has(edge.to)) {
-        const sourceNode = d3Nodes.find(n => n.id === edge.from);
-        const targetNode = d3Nodes.find(n => n.id === edge.to);
-        if (sourceNode && targetNode) {
-          d3Edges.push({ source: sourceNode, target: targetNode });
-        }
-      }
-    });
-
-    renderNetwork(d3Nodes, d3Edges);
-    $('#path-info').textContent = `Showing ${neighborhoodNodes.size} nodes in ${depth}-hop neighborhood`;
-  }
 
   // Graph clustering (simplified)
   function showClusters() {
