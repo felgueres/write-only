@@ -224,8 +224,8 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   #app { display:flex; height:100vh; }
   .col { flex:0 0 200px; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
   .col.first-col { flex:0 0 220px; max-width:240px; min-width:160px; }
-  .graph-col { flex:0 0 600px; min-width:500px; }
-  .control-col { flex:1; min-width:400px; display:flex; flex-direction:column; }
+  .graph-col { flex:0 0 400px; min-width:350px; }
+  .control-col { flex:1; min-width:500px; display:flex; flex-direction:column; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
   .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
