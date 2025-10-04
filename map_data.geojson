@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Great Britain",
+        "original_id": "great-britain",
+        "description": "island in the North Atlantic Ocean off the northwest coast of continental Europe",
+        "dates": {},
+        "wikidata_url": "https://www.wikidata.org/entity/Q23666"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.4166666666667,
+          53.833333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Europe",
+        "original_id": "europe",
+        "description": "continent in the Northern Hemisphere",
+        "dates": {},
+        "wikidata_url": "https://www.wikidata.org/entity/Q46"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.14062,
+          48.690959
+        ]
+      }
+    }
+  ]
+}

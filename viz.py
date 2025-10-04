@@ -217,13 +217,15 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 <meta charset="utf-8"/>
 <title>Concept Browser</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   html,body { margin:0; height:100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
   #app { display:flex; height:100vh; }
   .col { flex:0 0 200px; border-right:1px solid #e5e7eb; overflow:auto; padding:10px 12px; }
   .col.first-col { flex:0 0 220px; max-width:240px; min-width:160px; }
-  .graph-col { flex:1; min-width:400px; }
-  .control-col { flex:0 0 300px; min-width:280px; display:flex; flex-direction:column; }
+  .graph-col { flex:0 0 600px; min-width:500px; }
+  .control-col { flex:1; min-width:400px; display:flex; flex-direction:column; }
   .col:last-child { border-right:none; }
   h2 { margin:0 0 8px 0; font-size:14px; font-weight:600; color:#374151; }
   .search { width:100%; box-sizing:border-box; padding:6px 8px; margin-bottom:8px; border:1px solid #e5e7eb; border-radius:6px; }
@@ -248,6 +250,8 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   .suggestions .item:hover { background:#f3f4f6; }
   .suggestions .item:last-child { border-bottom:none; }
   #network { width:100%; height:calc(100vh - 60px); border:1px solid #e5e7eb; background:#ffffff; }
+  #entity-map { width:100%; height:300px; border:1px solid #e5e7eb; margin:8px 0; }
+  .entity-details { max-height:400px; overflow-y:auto; }
   .node { font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; }
   .node-rect { fill: white; stroke: black; stroke-width: 1; }
   .node-text { font-family: Arial, Helvetica, sans-serif; fill: black; text-anchor: middle; dominant-baseline: central; }
@@ -292,9 +296,11 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
   </div>
   <div class="col control-col">
     <h2>Selected Node</h2>
-    <div id="node-metadata" class="node-metadata" style="flex: 1;">
+    <div id="node-metadata" class="node-metadata">
       Click a node to see details
     </div>
+    <div id="entity-map" style="display:none;"></div>
+    <div id="entity-details" class="entity-details" style="display:none;"></div>
   </div>
 </div>
 
@@ -306,6 +312,7 @@ def concept_browser_all(rdf, out_html="concept_browser.html",
 
 <script>
 console.log('Script starting...');
+
 
 document.addEventListener('DOMContentLoaded', function() {
 console.log('DOM loaded, starting main script...');
@@ -592,6 +599,174 @@ function initializeNetwork() {
 console.log('Initializing network...');
 initializeNetwork();
 console.log('Network initialized, svg:', !!svg, 'g:', !!g);
+
+// Helper functions (make globally available)
+
+// Updated showNodeInfo to display node information
+function showNodeInfo(node) {
+  // For entity nodes, show basic info without enrichment
+  if (node.types && node.types.some(t => t.includes('Entity'))) {
+    const nodeMetadata = document.querySelector('#node-metadata');
+    const entityMapDiv = document.querySelector('#entity-map');
+    const entityDetailsDiv = document.querySelector('#entity-details');
+
+    nodeMetadata.innerHTML = `
+      <div class="field">
+        <div class="field-label">Type</div>
+        <div class="field-value">Entity</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Label</div>
+        <div class="field-value">${node.label}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">ID</div>
+        <div class="field-value">${node.id}</div>
+      </div>
+    `;
+
+    entityMapDiv.style.display = 'none';
+    entityDetailsDiv.style.display = 'none';
+    return;
+  }
+
+  // For non-entity nodes, show original behavior
+  const nodeType = getNodeType(node.types);
+
+  // Update popup panel (keep this for now)
+  const infoTitle = $('#info-title');
+  const infoContent = $('#info-content');
+
+  if (infoTitle) infoTitle.textContent = `${nodeType} Information`;
+
+  let content = `
+    <div class="field">
+      <div class="field-label">Type</div>
+      <div class="field-value">${nodeType}</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Full Label</div>
+      <div class="field-value">${node.label}</div>
+    </div>
+    <div class="field">
+      <div class="field-label">ID</div>
+      <div class="field-value">${node.id}</div>
+    </div>
+  `;
+
+  if (node.types && node.types.length > 0) {
+    content += `
+      <div class="field">
+        <div class="field-label">Types</div>
+        <div class="field-value">${node.types.join(', ')}</div>
+      </div>
+    `;
+  }
+
+  // Add book cover image and highlights if it's a book or concept node
+  if (nodeType === 'Book' || nodeType === 'Concept' || node.types.some(t => t.includes('Concept'))) {
+    let imageUrl = null;
+    let highlights = [];
+    let entities = [];
+
+    if (node.image) {
+      imageUrl = node.image;
+    }
+
+    // Look up data in the DATA array
+    for (const concept of DATA || []) {
+      // If this is a concept node, collect all highlights across all books
+      if (nodeType === 'Concept' || node.types.some(t => t.includes('Concept'))) {
+        if (concept.id === node.id) {
+          for (const book of concept.books || []) {
+            if (book.highlights) highlights.push(...book.highlights);
+            if (book.entities) entities.push(...book.entities);
+          }
+          break;
+        }
+      }
+      // If this is a book node, collect highlights for this specific book
+      else if (nodeType === 'Book') {
+        for (const book of concept.books || []) {
+          if (book.id === node.id) {
+            if (book.image) imageUrl = book.image;
+            if (book.highlights) highlights = book.highlights;
+            if (book.entities) entities = book.entities;
+            break;
+          }
+        }
+        if (imageUrl || highlights.length > 0) break;
+      }
+    }
+
+    if (imageUrl) {
+      content += `
+        <div class="field">
+          <div class="field-label">Cover</div>
+          <div class="field-value">
+            <img src="${imageUrl}" alt="Book cover" style="max-width: 120px; max-height: 180px; border-radius: 4px; border: 1px solid #e5e7eb;" />
+          </div>
+        </div>
+      `;
+    }
+
+    if (highlights && highlights.length > 0) {
+      // Remove duplicates
+      highlights = [...new Set(highlights)];
+
+      content += `
+        <div class="field">
+          <div class="field-label">Highlights (${highlights.length})</div>
+          <div class="field-value">
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px; background: #ffffff;">
+              ${highlights.map(highlight => `
+                <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; font-size: 12px; line-height: 1.4;">
+                  "${highlight}"
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (entities && entities.length > 0) {
+      // Remove duplicates
+      entities = [...new Set(entities)];
+
+      content += `
+        <div class="field">
+          <div class="field-label">Entities (${entities.length})</div>
+          <div class="field-value">
+            <div style="max-height: 150px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px; background: #ffffff;">
+              ${entities.slice(0, 20).map(entity => `
+                <span style="display: inline-block; margin: 2px 4px; padding: 2px 6px; background: #f3f4f6; border-radius: 4px; font-size: 11px;">
+                  ${entity}
+                </span>
+              `).join('')}
+              ${entities.length > 20 ? `<div style="margin-top: 4px; font-size: 11px; color: #6b7280;">...and ${entities.length - 20} more</div>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  if (infoContent) infoContent.innerHTML = content;
+
+  // Update control panel metadata section
+  const nodeMetadata = $('#node-metadata');
+  const entityMapDiv = $('#entity-map');
+  const entityDetailsDiv = $('#entity-details');
+
+  if (nodeMetadata) {
+    nodeMetadata.innerHTML = content;
+  }
+
+  // Hide entity-specific sections for non-entities
+  if (entityMapDiv) entityMapDiv.style.display = 'none';
+  if (entityDetailsDiv) entityDetailsDiv.style.display = 'none';
+}
 
 // Helper functions (make globally available)
 function getNodeType(types) {
@@ -973,104 +1148,6 @@ function renderNetwork(nodes, edges) {
 }
 
 // Info panel functionality (global function)
-function showNodeInfo(node) {
-  const nodeType = getNodeType(node.types);
-
-  // Update popup panel
-  const infoTitle = $('#info-title');
-  const infoContent = $('#info-content');
-  const infoPanel = $('#info-panel');
-
-  if (infoTitle) infoTitle.textContent = `${nodeType} Information`;
-
-  let content = `
-    <div class="field">
-      <div class="field-label">Type</div>
-      <div class="field-value">${nodeType}</div>
-    </div>
-    <div class="field">
-      <div class="field-label">Full Label</div>
-      <div class="field-value">${node.label}</div>
-    </div>
-    <div class="field">
-      <div class="field-label">ID</div>
-      <div class="field-value">${node.id}</div>
-    </div>
-  `;
-
-  if (node.types && node.types.length > 0) {
-    content += `
-      <div class="field">
-        <div class="field-label">Types</div>
-        <div class="field-value">${node.types.join(', ')}</div>
-      </div>
-    `;
-  }
-
-  // Add book cover image and highlights if it's a book node
-  if (nodeType === 'Book') {
-    let imageUrl = null;
-    let highlights = [];
-
-    // First check if the node already has image data
-    if (node.image) {
-      imageUrl = node.image;
-    } else {
-      // Search in the DATA structure for the book image and highlights
-      for (const concept of DATA || []) {
-        for (const book of concept.books || []) {
-          if (book.id === node.id) {
-            if (book.image) imageUrl = book.image;
-            if (book.highlights) highlights = book.highlights;
-            break;
-          }
-        }
-        if (imageUrl || highlights.length > 0) break;
-      }
-    }
-
-    // Add book cover if available
-    if (imageUrl) {
-      content += `
-        <div class="field">
-          <div class="field-label">Cover</div>
-          <div class="field-value">
-            <img src="${imageUrl}" alt="Book cover" style="max-width: 120px; max-height: 180px; border-radius: 4px; border: 1px solid #e5e7eb;" />
-          </div>
-        </div>
-      `;
-    }
-
-    // Add highlights if available
-    if (highlights && highlights.length > 0) {
-      content += `
-        <div class="field">
-          <div class="field-label">Highlights (${highlights.length})</div>
-          <div class="field-value">
-            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px; background: #ffffff;">
-              ${highlights.map(highlight => `
-                <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; font-size: 12px; line-height: 1.4;">
-                  "${highlight}"
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-  }
-
-  if (infoContent) infoContent.innerHTML = content;
-
-  // Update control panel metadata section
-  const nodeMetadata = $('#node-metadata');
-  if (nodeMetadata) {
-    nodeMetadata.innerHTML = content;
-  }
-
-  // Show popup (optional - could remove this if you prefer only control panel)
-  // if (infoPanel) infoPanel.style.display = 'block';
-}
 
 function hideNodeInfo() {
   const infoPanel = $('#info-panel');
@@ -1196,9 +1273,30 @@ function showSuggestions(input, suggestionsDiv, callback) {
   });
 }
 
+// Simple concept selection (back to original behavior)
+function selectConcept(c) {
+  console.log('selectConcept called with:', c);
+  booksTitle.textContent = 'Books – ' + c.label;
+  graphTitle.textContent = 'Graph – ' + c.label;
+  listBooks.innerHTML = '';
+
+  c.books.forEach(b => {
+    const li = el('li', {class:'item'},
+      el('span', {text:b.label}),
+      el('span', {class:'badge'}, String(b.count))
+    );
+    li.onclick = () => selectBook(c, b);
+    listBooks.appendChild(li);
+  });
+
+  // Show concept-books graph
+  showConceptBooksGraph(c);
+}
+
 // Initialize concepts list and event handlers AFTER network is ready
 searchInput.addEventListener('input', e => renderConcepts(e.target.value));
 renderConcepts('');
+
 if (DATA.length) selectConcept(DATA[0]);
 
 if (GRAPH_DATA) {

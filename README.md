@@ -58,3 +58,53 @@ What to support next?
 USAGE
 > python3 ./generator.py
 > python3 ./report.py read_graph.jsonld --plot kg:entity/america
+
+TODOs
+- Add spatial indexing
+- Add temporal indexing
+
+-----------------
+
+NOTES while coding
+
+here's what im thinking. i think about creating some analogous thing as RAG for the real world, perhaps
+   on satellite data, and starting with camera. i feel that computing a graph first and then asking 
+  questions could be very interesting here. 
+
+  so im doing exploratory work to do that. 
+
+  i want to build an ai layer to explore how llms can play a role in the physical world.
+
+CLAUDE
+That's a fascinating direction! Building a computational graph from real-world data (satellite
+  imagery, camera feeds) before querying it is a brilliant approach. You're essentially creating a
+  "scene graph" or "spatial knowledge graph" that an LLM can reason over.
+
+  Some compelling questions this could answer:
+
+  Spatial Reasoning:
+  - "What's the relationship between building density and green space coverage?"
+  - "Show me areas where urban development is encroaching on natural habitats"
+  - "Find regions with similar topological patterns to this reference area"
+
+  Temporal Analysis:
+  - "How has this coastline changed over the past 5 years?"
+  - "Which agricultural areas show signs of drought stress?"
+  - "Track vehicle movement patterns at this intersection"
+
+  Multi-modal Understanding:
+  - "What's the correlation between road network density and economic indicators?"
+  - "Identify areas suitable for solar installations based on roof orientation and shading"
+  - "Find optimal locations for emergency services based on population density and access routes"
+
+  Compositional Queries:
+  - "Show me forested areas within 5km of water sources but not near urban development"
+  - "Find parking lots that could be converted to green space based on usage patterns"
+
+  The key insight is that by pre-computing the graph (objects, relationships, spatial hierarchies), you
+   can ask much more sophisticated questions than just "what do you see in this image?"
+
+  What type of real-world scenario are you thinking of starting with? Urban planning, environmental
+  monitoring, infrastructure analysis?
+
+  

@@ -1,0 +1,49 @@
+{
+  "murray-rothbard": {
+    "original_name": "Murray Rothbard",
+    "wikidata_id": "Q297079",
+    "wikidata_label": "Murray Rothbard",
+    "description": "American economist (1926\u20131995)",
+    "coordinates": null,
+    "dates": {
+      "birth_date": "+1926-03-02T00:00:00Z",
+      "death_date": "+1995-01-07T00:00:00Z"
+    },
+    "wikidata_url": "https://www.wikidata.org/entity/Q297079"
+  },
+  "great-britain": {
+    "original_name": "Great Britain",
+    "wikidata_id": "Q23666",
+    "wikidata_label": "Great Britain",
+    "description": "island in the North Atlantic Ocean off the northwest coast of continental Europe",
+    "coordinates": {
+      "latitude": 53.833333333333,
+      "longitude": -2.4166666666667,
+      "precision": 0.016666666666667
+    },
+    "dates": {},
+    "wikidata_url": "https://www.wikidata.org/entity/Q23666"
+  },
+  "europe": {
+    "original_name": "Europe",
+    "wikidata_id": "Q46",
+    "wikidata_label": "Europe",
+    "description": "continent in the Northern Hemisphere",
+    "coordinates": {
+      "latitude": 48.690959,
+      "longitude": 9.14062,
+      "precision": 1e-06
+    },
+    "dates": {},
+    "wikidata_url": "https://www.wikidata.org/entity/Q46"
+  },
+  "the-industrial-revolution": {
+    "original_name": "Industrial Revolution",
+    "wikidata_id": "Q2269",
+    "wikidata_label": "Industrial Revolution",
+    "description": "transition to new manufacturing processes in Europe and the United States, in the 18th-19th centuries",
+    "coordinates": null,
+    "dates": {},
+    "wikidata_url": "https://www.wikidata.org/entity/Q2269"
+  }
+}
